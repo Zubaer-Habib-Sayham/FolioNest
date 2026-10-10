@@ -10,12 +10,27 @@ import { ConfirmDialog } from "./Dialog";
 
 const url = import.meta.env.VITE_SUPABASE_URL,
   key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const supabase =
-  url && key
-    ? createClient(url, key, {
-        auth: { flowType: "pkce", detectSessionInUrl: true },
-      })
-    : null;
+function optionalAuth() {
+  if (!url || !key) return null;
+  try {
+    const endpoint = new URL(url);
+    if (
+      endpoint.protocol !== "https:" ||
+      endpoint.username ||
+      endpoint.password ||
+      endpoint.pathname !== "/" ||
+      endpoint.search ||
+      endpoint.hash
+    )
+      return null;
+    return createClient(url, key, {
+      auth: { flowType: "pkce", detectSessionInUrl: true },
+    });
+  } catch {
+    return null;
+  }
+}
+const supabase = optionalAuth();
 export interface CloudLink {
   id: string;
   owner: string;
@@ -24,7 +39,6 @@ interface CloudRecord {
   id: string;
   title: string;
   slug: string | null;
-  data: PortfolioData;
   is_published: boolean;
   is_indexable: boolean;
   updated_at: string;
@@ -62,7 +76,7 @@ export default function CloudPanel({
   useEffect(() => {
     const node = dialog.current;
     node?.showModal();
-    void fetch("/api/config")
+    void fetch("/api/config", { signal: AbortSignal.timeout(8000) })
       .then(async (response) => {
         if (!response.ok) throw Error();
         setReady(Boolean((await response.json()).cloud) && Boolean(supabase));
@@ -72,13 +86,23 @@ export default function CloudPanel({
       });
     if (!supabase) return () => node?.close();
     let active = true;
-    void supabase.auth.getSession().then(({ data, error }) => {
-      if (active) {
-        setSession(data.session);
-        if (error)
+    void supabase.auth
+      .getSession()
+      .then(({ data, error }) => {
+        const callback = new URL(location.href);
+        for (const key of ["code", "error", "error_code", "error_description"])
+          callback.searchParams.delete(key);
+        history.replaceState(null, "", callback.pathname + callback.search);
+        if (active) {
+          setSession(data.session);
+          if (error)
+            setMessage("Your session could not be restored. Sign in again.");
+        }
+      })
+      .catch(() => {
+        if (active)
           setMessage("Your session could not be restored. Sign in again.");
-      }
-    });
+      });
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, next) => {
         setSession(next);

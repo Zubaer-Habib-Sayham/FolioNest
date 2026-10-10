@@ -74,7 +74,7 @@ async function createCV(data: PortfolioData) {
     characterToGlyph?: (code: number) => number;
   };
   const allText = JSON.stringify(data, (key, value) =>
-    ["photo", "image"].includes(key) ? "" : value,
+    ["photo", "image", "imageAlt"].includes(key) ? "" : value,
   );
   if (
     metadata.characterToGlyph &&

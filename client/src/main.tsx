@@ -19,7 +19,7 @@ function App() {
       return false;
     }
   });
-  const builder = location.pathname === "/builder";
+  const builder = location.pathname.replace(/\/$/, "") === "/builder";
   const [analyticsOn, setAnalyticsOn] = useState(analyticsEnabled);
   useEffect(() => {
     const clicked = (e: MouseEvent) => {

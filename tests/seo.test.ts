@@ -4,6 +4,9 @@ import { createApp } from "../server/src/app";
 import { publicDocument, landingDocument } from "../server/src/seo";
 import { samplePortfolio } from "../shared/src/schema";
 import type { Repository } from "../server/src/repository";
+import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 const data = { ...samplePortfolio(), sample: false };
 const record = {
   slug: "taylor-guest",
@@ -64,4 +67,31 @@ test("landing canonical is derived from configured origin, never an untrusted Ho
   );
   expect(html).toContain('href="https://folio.example/"');
   expect(html).toContain("og:image");
+});
+test("private builder accepts bounded email callbacks and rejects arbitrary query keys", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "folio-pages-"));
+  try {
+    await writeFile(
+      path.join(directory, "index.html"),
+      "<html><head><title>FolioNest</title></head><body>Workspace</body></html>",
+    );
+    const app = createApp({
+      origin: "https://folio.example",
+      clientDir: directory,
+    });
+    const response = await request(app).get(
+      "/builder?code=valid-callback-code",
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers["x-robots-tag"]).toContain("noindex");
+    expect(response.text).toContain('name="robots" content="noindex');
+    expect((await request(app).get("/builder?owner_id=untrusted")).status).toBe(
+      400,
+    );
+    expect(
+      (await request(app).get("/builder/?error=access_denied")).status,
+    ).toBe(200);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });

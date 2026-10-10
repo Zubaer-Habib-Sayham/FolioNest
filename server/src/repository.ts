@@ -37,17 +37,17 @@ export function createRepository(db: Queryable) {
   return {
     async list(owner: string) {
       const result = await db.query(
-        `SELECT ${columns} FROM public.portfolios WHERE owner_id=$1 ORDER BY updated_at DESC LIMIT 50`,
+        "SELECT id,title,slug,theme_id,is_published,is_indexable,published_at,updated_at,created_at FROM public.portfolios WHERE owner_id=$1 ORDER BY updated_at DESC LIMIT 50",
         [owner],
       );
-      return result.rows.map(record);
+      return result.rows;
     },
     async create(owner: string, data: PortfolioData) {
       const result = await db.query(
         `INSERT INTO public.portfolios (owner_id,title,theme_id,data) SELECT $1,$2,$3,$4::jsonb WHERE (SELECT count(*) FROM public.portfolios WHERE owner_id=$1)<50 RETURNING ${columns}`,
         [
           owner,
-          data.identity.name || "Untitled portfolio",
+          data.identity.name.trim() || "Untitled portfolio",
           data.theme,
           JSON.stringify(data),
         ],
@@ -67,7 +67,7 @@ export function createRepository(db: Queryable) {
         [
           id,
           owner,
-          data.identity.name || "Untitled portfolio",
+          data.identity.name.trim() || "Untitled portfolio",
           data.theme,
           JSON.stringify(data),
         ],
@@ -120,7 +120,7 @@ export function createRepository(db: Queryable) {
     },
     async sitemap() {
       const result = await db.query(
-        "SELECT slug,published_at FROM public.portfolios WHERE is_published=true AND is_indexable=true AND published_data IS NOT NULL AND published_data->>'sample'='false' ORDER BY slug",
+        "SELECT slug,published_at FROM public.portfolios WHERE is_published=true AND is_indexable=true AND published_data IS NOT NULL AND published_data->>'sample'='false' ORDER BY slug LIMIT 49999",
       );
       return result.rows;
     },

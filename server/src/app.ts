@@ -119,7 +119,6 @@ export function createApp(options: AppOptions) {
     }
     next();
   });
-  app.use(express.json({ limit: "2mb", strict: true }));
   const limiter = rateLimit({
     windowMs: 60000,
     limit: options.rateLimitMax ?? 60,
@@ -133,6 +132,7 @@ export function createApp(options: AppOptions) {
     },
   });
   app.use("/api/portfolios", limiter);
+  app.use("/api", express.json({ limit: "2mb", strict: true }));
   const noQuery: RequestHandler = (req, _res, next) => {
     empty.parse(req.query);
     next();
@@ -281,7 +281,18 @@ export function createApp(options: AppOptions) {
   });
   if (options.clientDir) {
     app.get("/builder", (req, res) => {
-      z.object({ template: templateSchema.optional() })
+      z.object({
+        template: templateSchema.optional(),
+        code: z
+          .string()
+          .min(1)
+          .max(2048)
+          .regex(/^[A-Za-z0-9_-]+$/)
+          .optional(),
+        error: z.string().max(160).optional(),
+        error_code: z.string().max(160).optional(),
+        error_description: z.string().max(500).optional(),
+      })
         .strict()
         .parse(req.query);
       res.set("X-Robots-Tag", "noindex, nofollow");
@@ -350,20 +361,24 @@ export function createApp(options: AppOptions) {
           code,
         }),
       );
-    res.status(status).json({
-      error: {
-        code,
-        message,
-        ...(error instanceof z.ZodError
-          ? {
-              fields: error.issues.map((issue) => ({
-                path: issue.path.join("."),
-                message: issue.message,
-              })),
-            }
-          : {}),
-      },
-    });
+    res
+      .set("X-Robots-Tag", "noindex")
+      .set("Cache-Control", "no-store")
+      .status(status)
+      .json({
+        error: {
+          code,
+          message,
+          ...(error instanceof z.ZodError
+            ? {
+                fields: error.issues.map((issue) => ({
+                  path: issue.path.join("."),
+                  message: issue.message,
+                })),
+              }
+            : {}),
+        },
+      });
   };
   app.use(errorHandler);
   return app;

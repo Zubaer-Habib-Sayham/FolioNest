@@ -267,7 +267,10 @@ export default function Builder() {
     data: PortfolioData;
     title: string;
   } | null>(null);
-  const [cloudOpen, setCloudOpen] = useState(false);
+  const [cloudOpen, setCloudOpen] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.has("code") || params.has("error");
+  });
   const [cloudLink, setCloudLink] = useState<CloudLink | null>(() => {
     try {
       const value = JSON.parse(

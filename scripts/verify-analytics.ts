@@ -90,6 +90,24 @@ try {
   await page.getByRole("button", { name: "Continue →", exact: true }).click();
   await page.waitForTimeout(300);
   assert.equal(events.length, count);
+  const dntPage = await browser.newPage();
+  let dntRequests = 0;
+  await dntPage.addInitScript({
+    content:
+      "Object.defineProperty(navigator,'doNotTrack',{get:()=> '1'}); localStorage.setItem('folionest-analytics','enabled');",
+  });
+  await dntPage.route("https://*.posthog.com/**", async (route) => {
+    dntRequests++;
+    await route.fulfill({ status: 200, body: "{}" });
+  });
+  await dntPage.goto("http://127.0.0.1:5174/builder");
+  await dntPage.getByRole("button", { name: /^Pinboard/ }).click();
+  await dntPage.getByText("Privacy & analytics", { exact: true }).click();
+  await expect(
+    dntPage.getByText("Usage analytics is off.", { exact: true }),
+  ).toBeVisible();
+  await dntPage.waitForTimeout(300);
+  assert.equal(dntRequests, 0);
   await mkdir("artifacts", { recursive: true });
   await writeFile(
     "artifacts/analytics-verification.json",
@@ -101,6 +119,7 @@ try {
           keys: Object.keys(e.properties),
         })),
         privateContentSent: false,
+        doNotTrackRequests: dntRequests,
       },
       null,
       2,

@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { validPhoto, MAX_BACKUP_BYTES } from "./images.js";
+import { templateIds } from "./templates.js";
+export { templateIds, templates } from "./templates.js";
 export const recordIdSchema = z.uuid();
-export const templateIds = ["editorial", "bento", "motion", "quest"] as const;
 export const templateSchema = z.enum(templateIds);
 const photoSchema = z
   .string()
@@ -153,7 +154,8 @@ export const portfolioSchema = z
   .strict()
   .refine(
     (p) =>
-      new TextEncoder().encode(JSON.stringify(p)).length <= MAX_BACKUP_BYTES,
+      new TextEncoder().encode(JSON.stringify(p, null, 2)).length <=
+      MAX_BACKUP_BYTES,
     "Keep the complete portfolio under 2 MB. Remove a photo or shorten some content.",
   );
 export type PortfolioData = z.infer<typeof portfolioSchema>;
@@ -226,28 +228,6 @@ export const publishSchema = z
     confirm: z.literal(true),
   })
   .strict();
-export const templates = [
-  {
-    id: "editorial",
-    name: "Editorial",
-    description: "Refined type. Generous breathing room.",
-  },
-  {
-    id: "bento",
-    name: "Pinboard / Bento",
-    description: "A playful collection of colorful cards.",
-  },
-  {
-    id: "motion",
-    name: "Motion Story",
-    description: "Bold chapters that let your story unfold.",
-  },
-  {
-    id: "quest",
-    name: "Quest / Level-Up",
-    description: "A professional timeline of your journey.",
-  },
-] as const;
 export function blankPortfolio(): PortfolioData {
   return {
     version: 1,

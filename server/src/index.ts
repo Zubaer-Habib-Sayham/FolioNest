@@ -13,10 +13,22 @@ const config = readConfig(process.env);
 let pool: Pool | undefined;
 if (config.databaseUrl) {
   const url = new URL(config.databaseUrl);
-  url.searchParams.delete("sslmode");
+  for (const key of [
+    "sslmode",
+    "sslrootcert",
+    "sslcert",
+    "sslkey",
+    "sslpassword",
+  ])
+    url.searchParams.delete(key);
   pool = new Pool({
     connectionString: url.toString(),
-    ssl: { rejectUnauthorized: true },
+    ssl: {
+      rejectUnauthorized: true,
+      ...(process.env.DATABASE_CA_CERT
+        ? { ca: process.env.DATABASE_CA_CERT.replace(/\\n/g, "\n") }
+        : {}),
+    },
     max: 4,
     connectionTimeoutMillis: 8000,
     idleTimeoutMillis: 30000,

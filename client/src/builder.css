@@ -855,8 +855,8 @@ dialog h2 {
   padding: 12px 0;
 }
 .photo-upload input::file-selector-button {
-  border: 1px solid var(--border);
-  background: var(--paper);
+  border: 1px solid var(--line);
+  background: var(--surface);
   color: inherit;
   border-radius: 8px;
   padding: 10px 12px;

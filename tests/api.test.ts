@@ -46,6 +46,10 @@ afterAll(async () => {
   await db.close();
 });
 test("authentication and strict request validation fail safely", async () => {
+  const listing = (await owner("get", "/api/portfolios/me")).body.portfolios;
+  expect(listing).toHaveLength(1);
+  expect(listing[0]).not.toHaveProperty("data");
+  expect(listing[0]).not.toHaveProperty("published_data");
   expect((await request(app).get("/api/portfolios/me")).status).toBe(401);
   expect((await owner("get", "/api/portfolios/me", "invalid")).status).toBe(
     401,

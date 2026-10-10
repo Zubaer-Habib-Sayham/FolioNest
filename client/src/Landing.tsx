@@ -1,4 +1,5 @@
 import React from "react";
+import { templates } from "../../shared/src/templates";
 export default function Landing() {
   return (
     <main id="main">
@@ -78,55 +79,20 @@ export default function Landing() {
           </p>
         </div>
         <div className="template-gallery">
-          {[
-            [
-              "editorial",
-              "Editorial",
-              "Quiet confidence. A little room to breathe.",
-            ],
-            [
-              "bento",
-              "Pinboard / Bento",
-              "An eclectic grid for your many good ideas.",
-            ],
-            [
-              "motion",
-              "Motion Story",
-              "Let your story unfold, one chapter at a time.",
-            ],
-            [
-              "quest",
-              "Quest / Level-Up",
-              "A thoughtful timeline of where you’re going.",
-            ],
-          ].map(([id, name, copy], i) => (
+          {templates.map(({ id, name, description: copy }) => (
             <a
               className="template-card"
               href={`/builder?template=${id}`}
               key={id}
             >
               <div className={`mini-preview mini-${id}`}>
-                <span className="mini-name">ALEX MORGAN</span>
-                <strong>
-                  {[
-                    "Making the<br/>ordinary matter.",
-                    "A collection<br/>of curiosities.",
-                    "Every good thing<br/>starts somewhere.",
-                    "The journey<br/>is the story.",
-                  ][i]
-                    .split("<br/>")
-                    .map((line, j) => (
-                      <React.Fragment key={line}>
-                        {j > 0 && <br />}
-                        {line}
-                      </React.Fragment>
-                    ))}
-                </strong>
-                <div className="mini-blocks">
-                  <i />
-                  <i />
-                  <i />
-                </div>
+                <img
+                  src={`/templates/${id}.png`}
+                  alt={`${name} sample portfolio preview`}
+                  width="960"
+                  height="1100"
+                  loading="lazy"
+                />
               </div>
               <div className="template-label">
                 <h3>{name}</h3>
