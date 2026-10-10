@@ -1,6 +1,24 @@
 {
- "name":"@folionest/client","private":true,"type":"module","version":"1.0.0",
- "scripts":{"dev":"vite --host 127.0.0.1","build":"vite build"},
- "dependencies":{"@folionest/shared":"1.0.0","react":"19.3.0","react-dom":"19.3.0","@supabase/supabase-js":"2.117.3","html-to-image":"1.11.13","jspdf":"4.2.1","jszip":"3.10.2","posthog-js":"1.438.7"},
- "devDependencies":{"vite":"8.3.4","@vitejs/plugin-react":"6.1.2"}
+  "name": "@folionest/client",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@folionest/shared": "1.0.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@supabase/supabase-js": "2.117.3",
+    "html-to-image": "1.11.13",
+    "jspdf": "4.2.1",
+    "jszip": "3.10.2",
+    "posthog-js": "1.438.7"
+  },
+  "devDependencies": {
+    "vite": "8.3.4",
+    "@vitejs/plugin-react": "6.1.2"
+  }
 }

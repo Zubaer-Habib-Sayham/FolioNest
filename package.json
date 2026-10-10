@@ -1,7 +1,16 @@
 {
-  "name": "folionest", "version": "1.0.0", "private": true,
-  "type": "module", "workspaces": ["client", "server", "shared"],
-  "engines": {"node": ">=22.12.0"},
+  "name": "folionest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "concurrently -k -n api,web \"npm run dev -w server\" \"npm run dev -w client\"",
     "build": "npm run build -w client && npm run build -w server",
@@ -13,10 +22,22 @@
     "check": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "devDependencies": {
-    "@eslint/js": "10.0.1", "@playwright/test": "1.64.0",
-    "@types/express": "5.0.6", "@types/node": "24.10.0", "@types/react": "19.3.0",
-    "@types/react-dom": "19.2.3", "@types/pg": "8.15.6", "@types/supertest": "6.0.3",
-    "concurrently": "10.0.6", "eslint": "10.12.0", "tsx": "4.23.15",
-    "typescript": "5.9.3", "typescript-eslint": "8.71.1", "vitest": "5.0.3", "supertest": "7.3.1"
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.0",
+    "@types/express": "5.0.6",
+    "@types/node": "24.10.0",
+    "@types/pg": "8.15.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.2.3",
+    "@types/supertest": "6.0.3",
+    "concurrently": "10.0.6",
+    "eslint": "10.12.0",
+    "pdfjs-dist": "6.4.299",
+    "prettier": "3.9.10",
+    "supertest": "7.3.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.1",
+    "vitest": "5.0.3"
   }
 }

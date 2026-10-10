@@ -1,1 +1,6 @@
-{"extends":"../tsconfig.json","compilerOptions":{"noEmit":false,"outDir":"dist","rootDir":".."},"include":["src","../shared/src"],"exclude":["../client","../tests"]}
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "noEmit": false, "outDir": "dist", "rootDir": ".." },
+  "include": ["src", "../shared/src"],
+  "exclude": ["../client", "../tests"]
+}
