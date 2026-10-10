@@ -148,6 +148,15 @@ export function Portfolio({
     "--accent": palettes[data.palette],
     "--paper": portfolioBackground(data),
   } as CSSProperties;
+  const portrait = data.identity.photo ? (
+    <img
+      className="portfolio-portrait"
+      src={data.identity.photo}
+      alt={`Portrait of ${data.identity.name || "the portfolio owner"}`}
+      width="240"
+      height="240"
+    />
+  ) : null;
   return (
     <article
       className={`portfolio template-${data.theme} portfolio-${data.appearance} font-${data.font}`}
@@ -161,23 +170,48 @@ export function Portfolio({
           <span>{data.identity.name || "Your name"}</span>
           <span>{data.identity.location}</span>
         </div>
-        {data.theme === "quest" && (
-          <p className="portfolio-kicker">
-            A CAREER IN PROGRESS / THE JOURNEY SO FAR
-          </p>
+        {data.theme === "studio" && (
+          <div className="studio-display" aria-hidden="true">
+            PORTFOLIO
+          </div>
         )}
-        <h1>{data.identity.name || "Your name"}</h1>
-        <p className="hero-name">
-          {data.identity.headline || "Add a headline to introduce your work."}
-        </p>
-        {data.identity.photo && (
-          <img
-            className="portfolio-portrait"
-            src={data.identity.photo}
-            alt={`Portrait of ${data.identity.name || "the portfolio owner"}`}
-            width="240"
-            height="240"
-          />
+        <div
+          className={
+            data.theme === "studio" ? "studio-introduction" : undefined
+          }
+        >
+          {data.theme === "studio" && (
+            <p className="portfolio-kicker">Hello, I’m</p>
+          )}
+          {data.theme === "quest" && (
+            <p className="portfolio-kicker">
+              A CAREER IN PROGRESS / THE JOURNEY SO FAR
+            </p>
+          )}
+          <h1>{data.identity.name || "Your name"}</h1>
+          <p className="hero-name">
+            {data.identity.headline || "Add a headline to introduce your work."}
+          </p>
+          {data.theme === "studio" && (
+            <div className="studio-signature" aria-hidden="true">
+              {data.identity.name || "Your name"}
+            </div>
+          )}
+        </div>
+        {data.theme === "studio" ? (
+          <div className="studio-photo-area">
+            <div className="studio-photo-circle" aria-hidden="true" />
+            {portrait}
+            {!data.identity.photo && preview && (
+              <p className="studio-photo-hint">
+                Your portrait goes here.
+                <br />
+                Add it in Introduction.
+              </p>
+            )}
+          </div>
+        ) : (
+          portrait
         )}
         <span className="portfolio-hero-decoration" aria-hidden="true">
           {data.theme === "quest" ? "01" : "✦"}

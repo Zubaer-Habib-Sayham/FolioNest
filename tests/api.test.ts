@@ -30,12 +30,13 @@ beforeAll(async () => {
     "create schema auth; create table auth.users(id uuid primary key); create role anon; create role authenticated; create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$; grant usage on schema auth to authenticated; grant execute on function auth.uid() to authenticated;",
   );
   await db.query("insert into auth.users values ($1),($2)", [a, b]);
-  await db.exec(
-    await fs.readFile(
-      "supabase/migrations/20261010182706_portfolios.sql",
-      "utf8",
-    ),
-  );
+  const migrations = (await fs.readdir("supabase/migrations"))
+    .filter((name) => name.endsWith(".sql"))
+    .sort();
+  for (const migration of migrations)
+    await db.exec(
+      await fs.readFile(`supabase/migrations/${migration}`, "utf8"),
+    );
   const response = await owner("post", "/api/portfolios").send({
     data: draft(),
   });
@@ -44,6 +45,22 @@ beforeAll(async () => {
 }, 20000);
 afterAll(async () => {
   await db.close();
+});
+test("the studio template saves and returns its background through the actual database", async () => {
+  const data = { ...draft(), theme: "studio", background: "sage" };
+  const saved = await owner("post", "/api/portfolios").send({ data });
+  expect(saved.status).toBe(201);
+  const loaded = await owner(
+    "get",
+    `/api/portfolios/${saved.body.portfolio.id}`,
+  );
+  expect(loaded.body.portfolio.data.theme).toBe("studio");
+  expect(loaded.body.portfolio.data.background).toBe("sage");
+  expect(
+    (await owner("get", `/api/portfolios/${saved.body.portfolio.id}`, "b"))
+      .status,
+  ).toBe(404);
+  await owner("delete", `/api/portfolios/${saved.body.portfolio.id}`);
 });
 test("authentication and strict request validation fail safely", async () => {
   const listing = (await owner("get", "/api/portfolios/me")).body.portfolios;

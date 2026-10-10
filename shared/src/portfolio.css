@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/fonts/BarlowCondensed-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-display: swap;
+}
 .portfolio {
   --paper: #f8f6f0;
   --text: #232a24;
@@ -562,6 +568,201 @@
   }
   .portfolio-hero-decoration {
     display: none;
+  }
+}
+.template-studio {
+  padding: 42px 40px;
+  container-type: inline-size;
+}
+.template-studio .portfolio-hero {
+  min-height: 640px;
+  padding-bottom: 30px;
+}
+.template-studio .portfolio-hero:has(.portfolio-portrait) {
+  padding-right: 0;
+}
+.template-studio .portfolio-masthead {
+  margin-bottom: 18px;
+  border-bottom: 0;
+}
+.studio-display {
+  font-family: "Barlow Condensed", Impact, sans-serif;
+  font-weight: 900;
+  font-size: clamp(64px, 29cqw, 260px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  transform: scaleY(1.3);
+  transform-origin: top;
+  margin-bottom: 70px;
+}
+.studio-introduction {
+  position: relative;
+  z-index: 2;
+  width: 42%;
+  padding: 28px 0;
+}
+.template-studio h1 {
+  font-family: Georgia, serif;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-size: clamp(36px, 7.3cqw, 64px);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 18px;
+}
+.template-studio .hero-name {
+  color: var(--accent);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+}
+.template-studio.portfolio-dark .hero-name {
+  color: var(--text);
+}
+.studio-signature {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 21px;
+  margin-top: 24px;
+  color: var(--subtle);
+}
+.studio-photo-circle {
+  position: absolute;
+  right: 0;
+  bottom: 48px;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 85%, var(--paper));
+}
+.studio-photo-area {
+  position: absolute;
+  width: 54%;
+  height: 390px;
+  right: 0;
+  bottom: 0;
+}
+.template-studio .portfolio-portrait {
+  width: 100%;
+  height: 390px;
+  right: 0;
+  top: auto;
+  bottom: 0;
+  object-position: center 25%;
+  border: 0;
+  border-radius: 46% 46% 2px 2px;
+  z-index: 1;
+}
+.studio-photo-hint {
+  position: absolute;
+  right: 0;
+  bottom: 160px;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 15px;
+  z-index: 1;
+}
+.template-studio .portfolio-hero-decoration {
+  display: none;
+}
+.template-studio .portfolio-section {
+  grid-template-columns: 180px 1fr;
+  padding: 26px 0;
+}
+.template-studio .portfolio-section-label h2 {
+  font-family: Georgia, serif;
+  text-transform: uppercase;
+  font-size: 23px;
+  overflow-wrap: normal;
+}
+.template-studio .section-projects {
+  display: block;
+}
+.template-studio .section-projects .portfolio-section-label {
+  margin-bottom: 22px;
+}
+.template-studio .project-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 18px;
+}
+.template-studio .project-art,
+.template-studio .project-photo {
+  height: 190px;
+  border-radius: 0;
+}
+.template-studio .project-body h3 {
+  font-size: 17px;
+}
+.template-studio .skill-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.template-studio .skill-list li {
+  border: 0;
+  border-bottom: 2px solid var(--section-accent);
+  border-radius: 0;
+  padding: 0 0 9px;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+@container (max-width: 600px) {
+  .template-studio .portfolio-hero {
+    min-height: auto;
+  }
+  .studio-display {
+    font-size: 29cqw;
+    transform: scaleY(1.2);
+    margin-bottom: 32px;
+  }
+  .studio-introduction {
+    width: 100%;
+    padding: 12px 0 24px;
+  }
+  .template-studio h1 {
+    max-width: 100%;
+    font-size: clamp(32px, 11cqw, 58px);
+  }
+  .template-studio .portfolio-portrait {
+    position: absolute;
+    width: 100%;
+    height: 340px;
+    right: auto;
+    margin: 0;
+  }
+  .studio-photo-circle {
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+  }
+  .studio-photo-area {
+    position: relative;
+    width: 100%;
+    height: 340px;
+  }
+  .studio-photo-hint {
+    position: absolute;
+    right: 0;
+    bottom: 80px;
+    width: 100%;
+    margin: 0;
+  }
+  .template-studio .portfolio-section {
+    display: block;
+  }
+  .template-studio .portfolio-section-label {
+    margin-bottom: 18px;
+  }
+  .template-studio .project-grid,
+  .template-studio .skill-list {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .template-studio {
+    padding: 26px 22px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

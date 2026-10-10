@@ -1,5 +1,6 @@
 import React from "react";
 import { templates } from "../../shared/src/templates";
+import previewDimensions from "./preview-dimensions.json";
 export default function Landing() {
   return (
     <main id="main">
@@ -76,6 +77,8 @@ export default function Landing() {
             Distinct ways to show up.
             <br />
             Every one ready to make your own.
+            <br />
+            Hover or focus a card to explore the full design.
           </p>
         </div>
         <div className="template-gallery">
@@ -90,7 +93,7 @@ export default function Landing() {
                   src={`/templates/${id}.png`}
                   alt={`${name} sample portfolio preview`}
                   width="960"
-                  height="1100"
+                  height={previewDimensions[id]}
                   loading="lazy"
                 />
               </div>

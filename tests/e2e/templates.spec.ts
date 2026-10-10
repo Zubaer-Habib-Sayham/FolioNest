@@ -1,6 +1,44 @@
 import { test, expect } from "@playwright/test";
 import { samplePortfolio, templates } from "../../shared/src/schema";
-test("real template previews and all four layouts stay readable on desktop and mobile", async ({
+
+test("gallery previews reveal their full page on hover and keyboard focus, and respect reduced motion", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const card = page.locator(".template-card").first();
+  const image = card.locator("img");
+  await card.scrollIntoViewIfNeeded();
+  expect(
+    await image.evaluate((el: HTMLImageElement) => el.naturalHeight),
+  ).toBeGreaterThan(1500);
+  await card.hover();
+  await expect
+    .poll(
+      () =>
+        image.evaluate(
+          (el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m42,
+        ),
+      { timeout: 7000 },
+    )
+    .toBeLessThan(-100);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(image).toHaveCSS("transform", "none");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const last = page.locator(".template-card").last();
+  await last.focus();
+  await expect
+    .poll(
+      () =>
+        last
+          .locator("img")
+          .evaluate(
+            (el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m42,
+          ),
+      { timeout: 7000 },
+    )
+    .toBeLessThan(-100);
+});
+test("real full-page previews and all five layouts stay readable on desktop and mobile", async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -47,6 +85,7 @@ test("real template previews and all four layouts stay readable on desktop and m
         new RegExp(`template-${template.id}`),
       );
       await expect(page.locator(".portfolio-portrait")).toBeVisible();
+      await expect(page.locator(".portfolio h1")).toHaveText(p.identity.name);
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= window.innerWidth,

@@ -337,7 +337,7 @@ h3 {
 }
 .template-gallery {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 20px;
 }
 .template-card {
@@ -348,6 +348,7 @@ h3 {
   transform: translateY(-4px);
 }
 .mini-preview {
+  --preview-height: 235px;
   height: 235px;
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -363,9 +364,16 @@ h3 {
 .mini-preview img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   object-position: top;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mini-preview img {
+    transition: transform 5s ease-in-out;
+  }
+  .template-card:is(:hover, :focus-visible) .mini-preview img {
+    transform: translateY(min(0px, calc(var(--preview-height) - 100%)));
+  }
 }
 .mini-name {
   display: block;
@@ -599,6 +607,7 @@ h3 {
     grid-template-columns: repeat(2, 1fr);
   }
   .mini-preview {
+    --preview-height: 260px;
     height: 260px;
   }
   .section {
@@ -684,6 +693,7 @@ h3 {
     gap: 18px 12px;
   }
   .mini-preview {
+    --preview-height: 210px;
     padding: 13px;
     height: 210px;
   }

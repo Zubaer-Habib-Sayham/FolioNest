@@ -566,6 +566,12 @@ progress::-webkit-progress-value {
   flex-wrap: wrap;
   gap: 8px;
 }
+.swatch-studio {
+  background: #f3e8d8;
+  color: #9b4934;
+  font-family: Georgia, serif;
+  font-size: 24px;
+}
 .background-options button {
   display: flex;
   align-items: center;

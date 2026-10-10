@@ -1,4 +1,10 @@
-export const templateIds = ["editorial", "bento", "motion", "quest"] as const;
+export const templateIds = [
+  "editorial",
+  "bento",
+  "motion",
+  "quest",
+  "studio",
+] as const;
 export const templates = [
   {
     id: "editorial",
@@ -19,5 +25,10 @@ export const templates = [
     id: "quest",
     name: "Quest / Level-Up",
     description: "A professional timeline of your journey.",
+  },
+  {
+    id: "studio",
+    name: "Creative Studio",
+    description: "Oversized type, warm paper and a portrait in the spotlight.",
   },
 ] as const;

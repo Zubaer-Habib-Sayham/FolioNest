@@ -7,6 +7,13 @@
 - The first isolated unit-test invocation could not read its temporary transformed modules; rerunning with access to the normal test-runner temporary directory passed. This was an environment limitation, not a passing result for the failed invocation.
 - Cloud services remain unconfigured, so provider sign-up and live database access are still unverified. No online deployment was performed.
 
+## Creative Studio and full gallery previews
+
+- Lint, typecheck, 31 unit/API tests and production builds passed. Eight browser tests passed. These cover all five templates on desktop/mobile, full-page gallery hover and keyboard focus, reduced motion, and real CV/PDF/PNG/ZIP exports for both Editorial and Creative Studio.
+- The studio ZIP was extracted and opened with the browser offline. Both photos decoded, the CSS applied, the name was the main heading and the locally bundled Barlow Condensed font loaded. The font is also embedded in image capture so export typography does not depend on the host machine’s installed fonts. Its OFL license is included.
+- The API test applies every migration in sequence to PostgreSQL, saves/loads a Studio draft with Sage background, and verifies a second account cannot retrieve it. Existing ownership, publishing and RLS checks also passed. This does not verify live Supabase provisioning.
+- Full-page gallery images were generated from the shared renderer and their actual dimensions recorded. The studio mobile screenshot and generated full preview were visually inspected. No fake portrait, testimonial or skill percentage was introduced. Uploaded portraits keep their original background; automatic cutout is not available.
+
 ## Foundation
 
 - `npm run check`: lint, typecheck, 1 unit test and both production builds passed.

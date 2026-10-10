@@ -199,11 +199,23 @@ async function capture(data: PortfolioData) {
       );
     iframe.style.height = `${height}px`;
     const { toCanvas } = await import("html-to-image");
+    let fontEmbedCSS = "";
+    if (data.theme === "studio") {
+      const response = await fetch("/fonts/BarlowCondensed-Black.ttf");
+      if (!response.ok)
+        throw new Error("The template font could not load. Try again.");
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      let binary = "";
+      for (let start = 0; start < bytes.length; start += 8192)
+        binary += String.fromCharCode(...bytes.subarray(start, start + 8192));
+      fontEmbedCSS = `@font-face{font-family:'Barlow Condensed';src:url(data:font/ttf;base64,${btoa(binary)}) format('truetype');font-weight:900}`;
+    }
     const canvas = await toCanvas(node, {
       width: 960,
       height,
       pixelRatio: 1,
       skipFonts: true,
+      fontEmbedCSS,
       backgroundColor: data.appearance === "dark" ? "#19231d" : "#f8f6f0",
     });
     const bounds = Array.from(
@@ -345,7 +357,33 @@ export async function exportPortfolio(
         html = html.replaceAll(image, asset);
       });
       zip.file("index.html", html);
-      zip.file("styles.css", websiteBaseCss + "\n" + portfolioCss);
+      let exportedCss = portfolioCss;
+      if (data.theme === "studio") {
+        for (const asset of [
+          "BarlowCondensed-Black.ttf",
+          "BarlowCondensed-OFL.txt",
+        ]) {
+          const response = await fetch(`/fonts/${asset}`);
+          if (!response.ok)
+            throw new Error("The website font could not load. Try again.");
+          const content = await response.arrayBuffer();
+          zip.file(`fonts/${asset}`, content);
+          if (asset.endsWith(".ttf")) {
+            const bytes = new Uint8Array(content);
+            let binary = "";
+            for (let start = 0; start < bytes.length; start += 8192)
+              binary += String.fromCharCode(
+                ...bytes.subarray(start, start + 8192),
+              );
+            // An embedded font also works when index.html is opened offline via file://.
+            exportedCss = exportedCss.replaceAll(
+              "/fonts/BarlowCondensed-Black.ttf",
+              `data:font/ttf;base64,${btoa(binary)}`,
+            );
+          }
+        }
+      }
+      zip.file("styles.css", websiteBaseCss + "\n" + exportedCss);
       zip.file("script.js", websiteScript);
       zip.file(
         "README.txt",

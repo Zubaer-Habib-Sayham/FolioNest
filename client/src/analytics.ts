@@ -1,9 +1,10 @@
 import type { CaptureResult, PostHogConfig } from "posthog-js";
+import { templateIds } from "../../shared/src/templates";
 
 const events: Record<string, Record<string, readonly (string | number)[]>> = {
   landing_cta_clicked: {},
   builder_started: {},
-  template_selected: { template: ["editorial", "bento", "motion", "quest"] },
+  template_selected: { template: templateIds },
   builder_step_completed: { step: [0, 1, 2, 3, 4, 5, 6, 7] },
   export_downloaded: {
     format: ["json", "cv_pdf", "portfolio_pdf", "png", "website_zip"],
