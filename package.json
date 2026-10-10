@@ -15,7 +15,7 @@
     "dev": "concurrently -k -n api,web \"npm run dev -w server\" \"npm run dev -w client\"",
     "build": "npm run build -w client && tsx --env-file-if-exists=.env scripts/prepare-client.tsx && npm run build -w server",
     "start": "npm run start -w server",
-    "lint": "eslint client/src server/src shared/src tests",
+    "lint": "eslint client/src server/src shared/src scripts functions tests",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",

@@ -39,3 +39,10 @@
 - `npm run check`: lint, typecheck, 23 unit/API tests and production builds passed. Five end-to-end tests passed, now including real portrait and project uploads, JPEG conversion, persistence after reload and an offline extracted ZIP with two decodable JPEG assets.
 - Visually inspected the exported website screenshot with both images. Raster-only schema tests reject SVG, remote URLs and malformed content; older backups restore with empty optional photo fields.
 - The initial migration remains unapplied remotely; its payload limits were updated for photos. Original uploads never leave the browser. Saved cloud photos will be inside the bounded JSON document, rather than an additional storage service.
+
+## Analytics and hosting preparation
+
+- `npm run check`: lint, typecheck, 29 unit/API/proxy tests and production builds passed; all five Chrome end-to-end tests passed.
+- A separate preview with a fake public analytics key was tested using `npm exec tsx -- scripts/verify-analytics.ts`. The real SDK emitted one intercepted step event, no requests before consent and no events after opt-out. Every event property was allowlisted; deliberately private form text was absent. Nothing was sent to the analytics provider.
+- The browser harness needed standard browser signals because the SDK excludes headless/automated browsers. A real integration fault was also caught: removing the SDK's public ingestion key caused it to drop events. The sanitizer now inserts only the configured public project key, never an authentication token. The test parses the actual batch transport envelope.
+- The Pages proxy's local tests check static-route exclusion, validated HTTPS upstream configuration, authorization forwarding, no-store private responses, preserved status/noindex and actionable upstream-failure 503s. Deployment configuration is prepared with automatic deploys off. Cloudflare/Render hosted behavior and cold starts have not been tested.

@@ -1,0 +1,11 @@
+# Optional usage analytics
+
+Set the public project token in `VITE_POSTHOG_KEY` and the ingestion origin in `VITE_POSTHOG_HOST` before building. Supported origins are `https://us.i.posthog.com` and `https://eu.i.posthog.com`. Leave the token blank to omit all analytics requests. Configure the same public variables on Express so its CSP allows that ingestion origin.
+
+Analytics is disabled by default. The footer's Privacy & analytics control enables it explicitly and stores only that preference. Do Not Track overrides consent. Turning analytics off immediately blocks capture and the final send hook. The SDK loads only when an allowed event occurs after consent. Failure to load it has no effect on editing or exports.
+
+Tracked events: `landing_cta_clicked`, `builder_started`, `template_selected` (fixed template ID), `builder_step_completed` (numbered step), `export_downloaded` (fixed format) and `contact_link_clicked` (email/website type only). No automatic page views are recorded, preventing duplicate SPA views. Export events occur only after successful artifact creation.
+
+There is no automatic click capture, replay, survey, experiment, performance collection, remote feature configuration, identity call or person profile. IDs are random per page load and remain in memory. The final `before_send` hook removes all properties except that anonymous ID, the event's exact enum properties, flags disabling person profiles/geolocation and the configured public analytics project token required for ingestion. It drops automatic/unknown events and all identity, URL, referrer and person-property payloads. Drafts, names, emails, authentication tokens, photo bytes and form values are never passed to analytics. Exported ZIPs and server-rendered public portfolios have no analytics script.
+
+As with any optional third-party network request, the ingestion provider can see the connection's IP address; FolioNest requests no geolocation enrichment. Read the provider's data-handling policy when enabling the service. No paid or secret analytics key is needed in the client. Tests use a fake SDK; an intercepted browser smoke check verifies the real SDK payload without sending visitor data to a provider.

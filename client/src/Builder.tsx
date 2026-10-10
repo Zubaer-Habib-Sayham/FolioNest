@@ -20,6 +20,7 @@ import "./builder.css";
 import { ConfirmDialog } from "./Dialog";
 import type { CloudLink } from "./CloudPanel";
 import { PhotoUpload } from "./PhotoUpload";
+import { track } from "./analytics";
 const CloudPanel = lazy(() => import("./CloudPanel"));
 
 const steps = [
@@ -303,6 +304,8 @@ export default function Builder() {
     for (const issue of parsed.error.issues)
       errors.set(issue.path.join("."), issue.message);
   function change(next: PortfolioData) {
+    if (next.theme !== data.theme)
+      void track("template_selected", { template: next.theme });
     setData({
       ...next,
       sample: next.sample && next.identity.name === "Alex Morgan",
@@ -311,6 +314,7 @@ export default function Builder() {
     setSaved("Saving on this device…");
   }
   useEffect(() => {
+    void track("builder_started");
     document.title = "Your workspace — FolioNest";
     const meta = document.createElement("meta");
     meta.name = "robots";
@@ -352,6 +356,7 @@ export default function Builder() {
         return;
       }
     }
+    void track("builder_step_completed", { step });
     navigate(Math.min(7, step + 1));
   }
   function identity(key: keyof PortfolioData["identity"], v: string) {
@@ -377,6 +382,7 @@ export default function Builder() {
     try {
       const module = await import("./exports");
       await module.exportPortfolio(format, data, previewRef.current);
+      void track("export_downloaded", { format });
       setNotice("Your file is ready. Check your downloads.");
     } catch (error) {
       setNotice(

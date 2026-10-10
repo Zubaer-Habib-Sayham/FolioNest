@@ -19,6 +19,7 @@
     "shared/src",
     "tests",
     "scripts",
+    "functions",
     "playwright.config.ts",
     "vitest.config.ts"
   ]

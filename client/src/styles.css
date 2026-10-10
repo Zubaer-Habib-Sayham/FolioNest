@@ -677,3 +677,16 @@ h3 {
     scroll-behavior: auto !important;
   }
 }
+.privacy-details {
+  max-width: 440px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.privacy-details summary {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.privacy-details p {
+  margin: 12px 0;
+}

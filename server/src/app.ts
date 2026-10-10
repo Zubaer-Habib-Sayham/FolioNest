@@ -36,6 +36,7 @@ export interface AppOptions {
   portfolioCss?: string;
   production?: boolean;
   rateLimitMax?: number;
+  analyticsHost?: string;
 }
 const empty = z.object({}).strict();
 const uuid = z.uuid();
@@ -75,7 +76,16 @@ export function createApp(options: AppOptions) {
           "script-src": ["'self'"],
           "style-src": ["'self'", "'unsafe-inline'"],
           "img-src": ["'self'", "data:", "blob:"],
-          "connect-src": ["'self'", "https://*.supabase.co"],
+          "connect-src": [
+            "'self'",
+            "https://*.supabase.co",
+            ...([
+              "https://us.i.posthog.com",
+              "https://eu.i.posthog.com",
+            ].includes(options.analyticsHost || "")
+              ? [options.analyticsHost!]
+              : []),
+          ],
           "frame-src": ["'self'", "blob:"],
           "object-src": ["'none'"],
           "base-uri": ["'self'"],
@@ -340,22 +350,20 @@ export function createApp(options: AppOptions) {
           code,
         }),
       );
-    res
-      .status(status)
-      .json({
-        error: {
-          code,
-          message,
-          ...(error instanceof z.ZodError
-            ? {
-                fields: error.issues.map((issue) => ({
-                  path: issue.path.join("."),
-                  message: issue.message,
-                })),
-              }
-            : {}),
-        },
-      });
+    res.status(status).json({
+      error: {
+        code,
+        message,
+        ...(error instanceof z.ZodError
+          ? {
+              fields: error.issues.map((issue) => ({
+                path: issue.path.join("."),
+                message: issue.message,
+              })),
+            }
+          : {}),
+      },
+    });
   };
   app.use(errorHandler);
   return app;

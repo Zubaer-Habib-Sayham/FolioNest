@@ -2,6 +2,7 @@ import React from "react";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import Landing from "../client/src/Landing";
+import { websiteBaseCss } from "../shared/src/html";
 const raw = readFileSync("client/dist/index.html", "utf8");
 const origin = (process.env.APP_ORIGIN || "http://127.0.0.1:5173").replace(
   /\/$/,
@@ -29,6 +30,10 @@ const index = raw
   )
   .replace("</head>", metadata + "</head>");
 writeFileSync("client/dist/index.html", index);
+writeFileSync(
+  "client/dist/portfolio.css",
+  websiteBaseCss + "\n" + readFileSync("shared/src/portfolio.css", "utf8"),
+);
 mkdirSync("client/dist/builder", { recursive: true });
 writeFileSync(
   "client/dist/builder/index.html",

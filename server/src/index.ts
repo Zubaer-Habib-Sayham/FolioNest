@@ -41,6 +41,9 @@ const supabase =
 const app = createApp({
   origin: config.origin,
   production: config.production,
+  analyticsHost: process.env.VITE_POSTHOG_KEY
+    ? process.env.VITE_POSTHOG_HOST || "https://us.i.posthog.com"
+    : undefined,
   clientDir: path.join(root, "client/dist"),
   portfolioCss: readFileSync(
     path.join(root, "shared/src/portfolio.css"),
