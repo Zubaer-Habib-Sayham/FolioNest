@@ -283,6 +283,7 @@ export function createApp(options: AppOptions) {
     app.get("/builder", (req, res) => {
       z.object({
         template: templateSchema.optional(),
+        account: z.literal("1").optional(),
         code: z
           .string()
           .min(1)

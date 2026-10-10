@@ -51,7 +51,7 @@ try {
   assert.equal(requests.length, 0, "No SDK requests without consent");
   await page.getByText("Privacy & analytics", { exact: true }).click();
   await page.getByRole("button", { name: "Turn usage analytics on" }).click();
-  await page.getByRole("button", { name: "Continue →", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect
     .poll(() => events.some((e) => e.event === "builder_step_completed"), {
       timeout: 10000,
@@ -87,7 +87,7 @@ try {
   assert.ok(!JSON.stringify(events).includes("PRIVATE"));
   await page.getByRole("button", { name: "Turn usage analytics off" }).click();
   const count = events.length;
-  await page.getByRole("button", { name: "Continue →", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.waitForTimeout(300);
   assert.equal(events.length, count);
   const dntPage = await browser.newPage();

@@ -7,7 +7,7 @@ test("guest editing, ordering, themes, reload and confirmed JSON restore", async
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await page.getByRole("link", { name: "Create your portfolio" }).click();
-  await page.getByRole("button", { name: "Continue →", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByLabel("Your name", { exact: true }).fill("Taylor Guest");
   await page
     .getByLabel("Professional headline", { exact: true })
@@ -58,6 +58,19 @@ test("guest editing, ordering, themes, reload and confirmed JSON restore", async
   await page.getByRole("button", { name: "Switch to dark mode" }).click();
   await expect(page.locator(".app")).toHaveClass(/dark/);
   await expect(page.locator(".portfolio")).toHaveClass(/portfolio-light/);
+  await page.getByRole("button", { name: "Sage", exact: true }).click();
+  await expect(page.locator(".portfolio")).toHaveCSS(
+    "background-color",
+    "rgb(234, 240, 227)",
+  );
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          JSON.parse(localStorage.getItem("folionest-draft-v1")!).background,
+      ),
+    )
+    .toBe("sage");
   await page.getByRole("button", { name: /Review & export$/ }).click();
   await page
     .getByRole("button", { name: "Move About section down", exact: true })
@@ -75,6 +88,7 @@ test("guest editing, ordering, themes, reload and confirmed JSON restore", async
   const backup = JSON.parse(raw);
   expect(backup.identity.name).toBe("Taylor Guest");
   expect(backup.skills).toHaveLength(3);
+  expect(backup.background).toBe("sage");
   backup.identity.name = "Restored Guest";
   await page.getByLabel("Choose a portfolio JSON backup").setInputFiles({
     name: "backup.json",

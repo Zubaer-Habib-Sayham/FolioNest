@@ -18,12 +18,14 @@ test("existing version-one backups gain optional photo fields without losing con
   const p = samplePortfolio();
   const legacy = JSON.parse(JSON.stringify(p));
   delete legacy.identity.photo;
+  delete legacy.background;
   for (const project of legacy.projects) {
     delete project.image;
     delete project.imageAlt;
   }
   const restored = portfolioSchema.parse(legacy);
   expect(restored.identity.photo).toBe("");
+  expect(restored.background).toBe("default");
   expect(restored.projects[0].image).toBe("");
   expect(restored.projects[0].title).toBe(p.projects[0].title);
 });

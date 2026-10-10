@@ -127,7 +127,7 @@ test("real CV, portfolio PDF, PNG and independently operating website ZIP", asyn
   standalone.on("pageerror", (e) => independentErrors.push(e.message));
   await standalone.goto(pathToFileURL(path.join(dir, "index.html")).href);
   await expect(standalone.getByRole("heading", { level: 1 })).toHaveText(
-    p.identity.headline,
+    p.identity.name,
   );
   await expect(
     standalone.getByRole("article", { name: "Export Verification portfolio" }),

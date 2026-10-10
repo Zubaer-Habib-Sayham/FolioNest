@@ -419,7 +419,7 @@ export default function CloudPanel({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Open your published portfolio ↗
+                  Open your published portfolio
                 </a>
               </p>
             )}

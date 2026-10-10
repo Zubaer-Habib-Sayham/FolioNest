@@ -1,5 +1,7 @@
 # Decisions
 
+The requested developer credit uses Zubaer Habib Sayham and the email supplied by the user. Gallery examples use that name, but work, qualifications and dates remain explicitly illustrative; they do not establish personal credentials. Names are the primary heading in every portfolio. Background choices are fixed, contrast-compatible light/dark pairs rather than user-supplied CSS. Existing version-one backups default to their previous background. The brand asset is displayed inside a tighter SVG viewport with a light badge, preserving the supplied artwork.
+
 - React/Vite and Express in npm workspaces with shared TypeScript schemas and portfolio rendering. CSS variables provide a small consistent design system.
 - One canonical schema bounds all text, lists, URLs, sections, fonts and palettes. Drafts may be incomplete; export/publish adds identity validation.
 - Templates share structured content but differ in composition: editorial columns, bento grid, narrative bands and a career timeline.

@@ -47,7 +47,7 @@ test("storage survives reload and reports failures without throwing", () => {
     },
   };
   expect(saveDraft(storage, samplePortfolio())).toBe("Saved on this device");
-  expect(loadDraft(storage).data.identity.name).toBe("Alex Morgan");
+  expect(loadDraft(storage).data.identity.name).toBe("Zubaer Habib Sayham");
   map.set(DRAFT_KEY, "broken");
   expect(loadDraft(storage).message).toContain("could not be read");
   expect(map.get(DRAFT_KEY)).toBe("broken");

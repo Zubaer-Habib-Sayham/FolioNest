@@ -3,6 +3,7 @@ import {
   Portfolio,
   blankPortfolio,
   palettes,
+  backgrounds,
   portfolioSchema,
   publishableSchema,
   recordIdSchema,
@@ -146,7 +147,7 @@ function OrderButtons({
         onClick={() => onMove(index - 1)}
         aria-label={`Move ${label} up`}
       >
-        ↑
+        Up
       </button>
       <button
         type="button"
@@ -154,7 +155,7 @@ function OrderButtons({
         onClick={() => onMove(index + 1)}
         aria-label={`Move ${label} down`}
       >
-        ↓
+        Down
       </button>
     </span>
   );
@@ -269,7 +270,9 @@ export default function Builder() {
   } | null>(null);
   const [cloudOpen, setCloudOpen] = useState(() => {
     const params = new URLSearchParams(location.search);
-    return params.has("code") || params.has("error");
+    return (
+      params.get("account") === "1" || params.has("code") || params.has("error")
+    );
   });
   const [cloudLink, setCloudLink] = useState<CloudLink | null>(() => {
     try {
@@ -311,7 +314,8 @@ export default function Builder() {
       void track("template_selected", { template: next.theme });
     setData({
       ...next,
-      sample: next.sample && next.identity.name === "Alex Morgan",
+      sample:
+        next.sample && next.identity.name === samplePortfolio().identity.name,
     });
     setDirty(true);
     setSaved("Saving on this device…");
@@ -491,6 +495,15 @@ export default function Builder() {
               You’re viewing sample content. Replace it with your own story.
             </p>
           )}
+          {data.sample && step === 7 && (
+            <label className="field-hint">
+              <input
+                type="checkbox"
+                onChange={() => change({ ...data, sample: false })}
+              />
+              I have replaced the sample content with my own.
+            </label>
+          )}
           {step === 0 && (
             <>
               <div className="design-options">
@@ -510,7 +523,7 @@ export default function Builder() {
                         : template.id === "bento"
                           ? "▦"
                           : template.id === "motion"
-                            ? "↓"
+                            ? "III"
                             : "Aa"}
                     </span>
                     <strong>{template.name}</strong>
@@ -564,7 +577,7 @@ export default function Builder() {
                 </div>
                 <div className="field">
                   <label htmlFor="portfolio-appearance">
-                    Portfolio background
+                    Portfolio appearance
                   </label>
                   <select
                     id="portfolio-appearance"
@@ -582,6 +595,30 @@ export default function Builder() {
                   </select>
                 </div>
               </div>
+              <fieldset className="palette-field background-field">
+                <legend>Whole portfolio background</legend>
+                <div className="background-options">
+                  {Object.entries(backgrounds).map(([key, background]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      aria-pressed={data.background === key}
+                      onClick={() =>
+                        change({
+                          ...data,
+                          background: key as PortfolioData["background"],
+                        })
+                      }
+                    >
+                      <span
+                        aria-hidden="true"
+                        style={{ background: background[data.appearance] }}
+                      />
+                      {background.name}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
               <p className="field-hint">
                 Your portfolio colors are independent of the editor’s light or
                 dark mode.
@@ -995,9 +1032,7 @@ export default function Builder() {
                     disabled={busy}
                     onClick={() => void exportFile(format)}
                   >
-                    <strong>
-                      {label} <span aria-hidden="true">↗</span>
-                    </strong>
+                    <strong>{label}</strong>
                     <small>{hint}</small>
                   </button>
                 ))}
@@ -1023,7 +1058,7 @@ export default function Builder() {
                 makes the information you include visible to anyone.
               </p>
               <button className="button" onClick={() => setCloudOpen(true)}>
-                Save to cloud / Publish ↗
+                Save to cloud / Publish
               </button>
             </>
           )}
@@ -1043,15 +1078,15 @@ export default function Builder() {
               disabled={step === 0}
               onClick={() => navigate(step - 1)}
             >
-              ← Back
+              Back
             </button>
             {step < 7 ? (
               <button className="button" onClick={next}>
-                Continue →
+                Continue
               </button>
             ) : (
               <button className="secondary" onClick={() => setPreview(true)}>
-                Full preview ↗
+                Full preview
               </button>
             )}
           </div>

@@ -18,6 +18,33 @@ export const palettes = {
   ink: "#303d4e",
 } as const;
 export type Palette = keyof typeof palettes;
+export const backgrounds = {
+  default: { name: "Template default", light: "#f8f6f0", dark: "#19231d" },
+  sage: { name: "Sage", light: "#eaf0e3", dark: "#192b22" },
+  sand: { name: "Warm sand", light: "#f3e8d8", dark: "#2b231d" },
+  lilac: { name: "Lilac", light: "#eee7f5", dark: "#281f33" },
+  ocean: { name: "Ocean", light: "#e3edf2", dark: "#172a34" },
+  rose: { name: "Rose", light: "#f4e7eb", dark: "#301e27" },
+} as const;
+export const backgroundSchema = z.enum([
+  "default",
+  "sage",
+  "sand",
+  "lilac",
+  "ocean",
+  "rose",
+]);
+export function portfolioBackground(
+  data: Pick<PortfolioData, "background" | "appearance" | "theme">,
+): string {
+  if (data.background === "default") {
+    if (data.theme === "bento")
+      return data.appearance === "dark" ? "#241d2d" : "#f4eff9";
+    if (data.theme === "quest")
+      return data.appearance === "dark" ? "#27261b" : "#f7f0dd";
+  }
+  return backgrounds[data.background][data.appearance];
+}
 export const paletteSchema = z.enum([
   "forest",
   "violet",
@@ -104,6 +131,7 @@ export const portfolioSchema = z
     theme: templateSchema,
     palette: paletteSchema,
     appearance: z.enum(["light", "dark"]),
+    background: backgroundSchema.default("default"),
     font: z.enum(["sans", "serif", "mono"]),
     identity: z
       .object({
@@ -235,6 +263,7 @@ export function blankPortfolio(): PortfolioData {
     theme: "editorial",
     palette: "forest",
     appearance: "light",
+    background: "default",
     font: "sans",
     identity: {
       name: "",
@@ -260,15 +289,15 @@ export function samplePortfolio(): PortfolioData {
     ...blankPortfolio(),
     sample: true,
     identity: {
-      name: "Alex Morgan",
-      headline: "Thoughtful design. Human stories.",
-      location: "London, UK",
-      email: "hello@example.com",
-      website: "https://example.com",
+      name: "Zubaer Habib Sayham",
+      headline: "A space for ideas, projects and creative work.",
+      location: "",
+      email: "",
+      website: "",
       photo: "",
     },
     about:
-      "I’m a designer and maker who turns complex ideas into calm, useful experiences. My work lives at the intersection of strategy, storytelling and a healthy dose of curiosity.",
+      "This is sample copy to help you explore the layout. Introduce yourself here: what you do, what matters to you, and the kind of work you want to make next.",
     skills: [
       "Product design",
       "Visual storytelling",
@@ -301,9 +330,9 @@ export function samplePortfolio(): PortfolioData {
     experience: [
       {
         id: "sample-work",
-        title: "Product designer",
-        organization: "Independent practice",
-        period: "2023 — Present",
+        title: "Example role — replace with your experience",
+        organization: "Example organization",
+        period: "Your dates",
         description:
           "Helping small teams make meaningful products with research, thoughtful design and close collaboration.",
       },
@@ -311,9 +340,9 @@ export function samplePortfolio(): PortfolioData {
     education: [
       {
         id: "sample-education",
-        title: "BA, Design",
+        title: "Example qualification",
         organization: "Example School of Art",
-        period: "2019 — 2022",
+        period: "Your dates",
         description:
           "Focused on communication, visual systems and inclusive design.",
       },
@@ -321,9 +350,9 @@ export function samplePortfolio(): PortfolioData {
     achievements: [
       {
         id: "sample-achievement",
-        title: "Accessible design certificate",
+        title: "Example achievement",
         organization: "Example learning program",
-        period: "2024",
+        period: "Your date",
         description: "Building experiences that work for more people.",
       },
     ],

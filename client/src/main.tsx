@@ -47,16 +47,14 @@ function App() {
       </a>
       <header className="site-header">
         <a className="brand" href="/">
-          <img
-            src="/brand/folionest-logo-icon.png"
-            width="36"
-            height="36"
-            alt=""
-          />
+          <img src="/brand/mark.svg" width="54" height="54" alt="" />
           FolioNest<span className="brand-dot">.</span>
         </a>
         <nav aria-label="Main navigation">
           {!builder && <a href="#templates">The templates</a>}
+          <a className="account-link" href="/builder?account=1">
+            Account
+          </a>
           <button
             className="quiet"
             onClick={toggle}
@@ -66,7 +64,7 @@ function App() {
           </button>
           {!builder && (
             <a className="button small" href="/builder">
-              Start building <span aria-hidden="true">↗</span>
+              Start building
             </a>
           )}
         </nav>
@@ -85,6 +83,17 @@ function App() {
         <Landing />
       )}
       <footer className="site-footer">
+        <div className="developer-note">
+          <span className="eyebrow">Meet the developer</span>
+          <h2>Built by Zubaer Habib Sayham.</h2>
+          <p>
+            A space to help you put your work out into the world. Want a
+            personalized portfolio? Let’s talk about what you have in mind.
+          </p>
+          <a data-contact-type="email" href="mailto:zubaersayhamcse1@gmail.com">
+            zubaersayhamcse1@gmail.com
+          </a>
+        </div>
         <a className="brand" href="/">
           FolioNest.
         </a>

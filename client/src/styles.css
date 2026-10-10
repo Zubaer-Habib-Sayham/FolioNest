@@ -533,11 +533,39 @@ h3 {
   padding: 27px 0;
   border-top: 1px solid var(--line);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   color: var(--muted);
   gap: 15px;
   font-size: 10px;
+}
+.brand img {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+.developer-note {
+  flex: 0 0 100%;
+  padding: 22px 0 30px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 10px;
+}
+.developer-note h2 {
+  color: var(--ink);
+  font-size: 25px;
+  margin: 12px 0;
+  letter-spacing: -0.7px;
+}
+.developer-note p {
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 620px;
+}
+.developer-note > a {
+  font-size: 14px;
+  overflow-wrap: anywhere;
 }
 .site-footer .brand {
   font-size: 19px;
@@ -596,19 +624,24 @@ h3 {
 @media (max-width: 600px) {
   .site-header {
     padding: 18px 5%;
+    flex-wrap: wrap;
+    gap: 14px;
   }
   .brand {
     font-size: 21px;
   }
   .brand img {
-    width: 29px;
-    height: 29px;
+    width: 46px;
+    height: 46px;
   }
   .site-header nav {
     gap: 9px;
   }
   .site-header nav > a:not(.button) {
     display: none;
+  }
+  .site-header nav > a.account-link {
+    display: block;
   }
   .button.small {
     padding: 9px;

@@ -10,7 +10,7 @@ import type { Repository } from "./repository.js";
 export function landingDocument(index: string, origin: string) {
   const title = "FolioNest — Your story, beautifully online.";
   const description =
-    "Build a portfolio that feels like you. Four thoughtful designs, local drafts and free exports. No account needed to start.";
+    "Build a portfolio that feels like you. Distinct thoughtful designs, local drafts and free exports. No account needed to start.";
   return index
     .replace(
       /<link[^>]*rel="canonical"[^>]*>|<meta[^>]*property="og:[^"]*"[^>]*>/g,
@@ -44,7 +44,7 @@ export function publicDocument(
     .replace(/</g, "\\u003c")
     .replace(/>/g, "\\u003e")
     .replace(/&/g, "\\u0026");
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${record.indexable ? "index, follow" : "noindex, follow"}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:type" content="profile"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}"><meta property="og:image" content="${escapeHtml(origin)}/brand/folionest-icon-512.png"><link rel="icon" href="/brand/favicon-32.png"><link rel="stylesheet" href="/portfolio.css"><script type="application/ld+json">${json}</script></head><body><a class="folio-skip" href="#portfolio-main">Skip to portfolio</a><main id="portfolio-main">${portfolioMarkup(p)}</main></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${record.indexable ? "index, follow" : "noindex, follow"}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:type" content="profile"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}"><meta property="og:image" content="${escapeHtml(origin)}/brand/folionest-icon-512.png"><link rel="icon" href="/brand/mark.svg"><link rel="stylesheet" href="/portfolio.css"><script type="application/ld+json">${json}</script></head><body><a class="folio-skip" href="#portfolio-main">Skip to portfolio</a><main id="portfolio-main">${portfolioMarkup(p)}</main></body></html>`;
 }
 function missingDocument() {
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Portfolio unavailable — FolioNest</title></head><body><main><h1>This portfolio isn’t available.</h1><p>The owner may have unpublished it, or the address may have changed.</p><a href="/">Visit FolioNest</a></main></body></html>';

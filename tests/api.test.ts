@@ -149,7 +149,7 @@ test("private updates do not alter published snapshot; public JSON excludes inte
   expect(
     (await request(app).get("/api/public/owner-portfolio")).body.data.identity
       .name,
-  ).toBe("Alex Morgan");
+  ).toBe("Zubaer Habib Sayham");
 });
 test("hidden fields are removed from public structured data", async () => {
   const hidden = draft();
@@ -179,7 +179,7 @@ test("stale draft cannot publish a different document accidentally", async () =>
 test("public status codes, initial HTML and sitemap use actual publication state", async () => {
   const response = await request(app).get("/p/owner-portfolio");
   expect(response.status).toBe(200);
-  expect(response.text).toContain("Alex Morgan");
+  expect(response.text).toContain("Zubaer Habib Sayham");
   expect(response.text).not.toContain("Private next version");
   expect(response.text).toContain(
     'href="http://127.0.0.1:5173/p/owner-portfolio"',

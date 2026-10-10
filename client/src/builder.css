@@ -556,9 +556,36 @@ progress::-webkit-progress-value {
   border-radius: 4px;
   background: var(--bg);
   color: var(--ink);
-  width: 27px;
-  height: 27px;
-  font-size: 14px;
+  min-width: 46px;
+  min-height: 36px;
+  padding: 6px;
+  font-size: 12px;
+}
+.background-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.background-options button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+}
+.background-options button[aria-pressed="true"] {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.background-options span {
+  width: 23px;
+  height: 23px;
+  border: 1px solid #879184;
+  border-radius: 50%;
 }
 .editor-panel h3 {
   font-size: 14px;

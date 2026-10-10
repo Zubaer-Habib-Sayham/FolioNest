@@ -22,7 +22,7 @@ const escaped = origin
   .replace(/&/g, "&amp;")
   .replace(/"/g, "&quot;")
   .replace(/</g, "&lt;");
-const metadata = `<link rel="canonical" href="${escaped}/"><meta property="og:type" content="website"><meta property="og:title" content="FolioNest — Your story, beautifully online."><meta property="og:description" content="Build a portfolio that feels like you. Four thoughtful designs and free exports."><meta property="og:url" content="${escaped}/"><meta property="og:image" content="${escaped}/brand/folionest-icon-512.png">`;
+const metadata = `<link rel="canonical" href="${escaped}/"><meta property="og:type" content="website"><meta property="og:title" content="FolioNest — Your story, beautifully online."><meta property="og:description" content="Build a portfolio that feels like you. Distinct thoughtful designs and free exports."><meta property="og:url" content="${escaped}/"><meta property="og:image" content="${escaped}/brand/folionest-icon-512.png">`;
 const index = raw
   .replace(
     /<div id="root">[\s\S]*?<\/div>/,

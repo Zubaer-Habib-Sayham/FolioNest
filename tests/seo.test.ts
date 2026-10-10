@@ -85,6 +85,8 @@ test("private builder accepts bounded email callbacks and rejects arbitrary quer
     expect(response.status).toBe(200);
     expect(response.headers["x-robots-tag"]).toContain("noindex");
     expect(response.text).toContain('name="robots" content="noindex');
+    expect((await request(app).get("/builder?account=1")).status).toBe(200);
+    expect((await request(app).get("/builder?account=2")).status).toBe(400);
     expect((await request(app).get("/builder?owner_id=untrusted")).status).toBe(
       400,
     );

@@ -1,5 +1,12 @@
 # Verification log
 
+## Requested UI revision: identity, branding and background
+
+- Lint, typecheck, 30 unit/API tests and production builds passed. All six browser tests passed, including real exports, offline ZIP operation, four responsive layouts and keyboard operation. The guest test now verifies the whole-page Sage color, autosave and the JSON backup field. Older version-one backups default to their existing template background.
+- Every template uses the owner’s name as its main heading. Decorative arrows were removed; reorder buttons retain descriptive accessible names and plain Up/Down text. The navbar and favicon use the supplied mark through a tighter SVG viewport and contrasting badge. Developer credit and the supplied email are visible in the footer. Account access opens the existing optional cloud panel.
+- The first isolated unit-test invocation could not read its temporary transformed modules; rerunning with access to the normal test-runner temporary directory passed. This was an environment limitation, not a passing result for the failed invocation.
+- Cloud services remain unconfigured, so provider sign-up and live database access are still unverified. No online deployment was performed.
+
 ## Foundation
 
 - `npm run check`: lint, typecheck, 1 unit test and both production builds passed.

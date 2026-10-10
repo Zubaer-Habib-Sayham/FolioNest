@@ -21,7 +21,7 @@ export default function Landing() {
             Turn what you do into something worth sharing.
           </p>
           <a className="button" href="/builder">
-            Create your portfolio <span aria-hidden="true">↗</span>
+            Create your portfolio
           </a>
           <p className="fine-print">
             No account needed · No code to write · Free to export
@@ -32,15 +32,15 @@ export default function Landing() {
           aria-label="Sample editorial portfolio preview"
         >
           <div className="art-top">
-            <span>AM / DESIGN & STRATEGY</span>
-            <span>Available for good things ↗</span>
+            <span>ZS / SELECTED WORK</span>
+            <span>A sample of what’s possible</span>
           </div>
           <div className="art-title">
-            Thoughtful design.
+            Zubaer Habib
             <br />
-            <em>Human stories.</em>
+            <em>Sayham.</em>
           </div>
-          <p>Alex Morgan — Designer, maker, and curious human.</p>
+          <p>Your projects. Your perspective. Your story.</p>
           <div className="art-grid">
             <div className="art-card art-lilac">
               <span>01 / SELECTED WORK</span>
@@ -73,7 +73,7 @@ export default function Landing() {
             <h2>Find your kind of canvas.</h2>
           </div>
           <p>
-            Four distinct ways to show up.
+            Distinct ways to show up.
             <br />
             Every one ready to make your own.
           </p>
@@ -96,7 +96,6 @@ export default function Landing() {
               </div>
               <div className="template-label">
                 <h3>{name}</h3>
-                <span aria-hidden="true">↗</span>
               </div>
               <p>{copy}</p>
             </a>
@@ -160,7 +159,6 @@ export default function Landing() {
           ].map((x) => (
             <div key={x}>
               <span>{x}</span>
-              <span aria-hidden="true">↗</span>
             </div>
           ))}
         </div>
@@ -169,7 +167,7 @@ export default function Landing() {
         <p className="eyebrow">There’s a place for your story</p>
         <h2>Let’s make it yours.</h2>
         <a className="button" href="/builder">
-          Start your portfolio <span aria-hidden="true">↗</span>
+          Start your portfolio
         </a>
       </section>
     </main>

@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import {
   palettes,
+  portfolioBackground,
   sectionNames,
   type PortfolioData,
   type SectionId,
@@ -74,7 +75,7 @@ function Content({ id, data }: { id: SectionId; data: PortfolioData }) {
                     rel="noopener noreferrer"
                     target="_blank"
                   >
-                    Explore project <span aria-hidden="true">↗</span>
+                    Explore project
                   </a>
                 )}
               </div>
@@ -102,7 +103,7 @@ function Content({ id, data }: { id: SectionId; data: PortfolioData }) {
             .map((link) => (
               <li key={link.id}>
                 <a href={link.url} rel="noopener noreferrer" target="_blank">
-                  {link.label || "Website"} <span aria-hidden="true">↗</span>
+                  {link.label || "Website"}
                 </a>
               </li>
             ))}
@@ -118,7 +119,7 @@ function Content({ id, data }: { id: SectionId; data: PortfolioData }) {
                 data-contact-type="email"
                 href={`mailto:${data.identity.email}`}
               >
-                Email me <span aria-hidden="true">↗</span>
+                Email me
               </a>
             )}
             {data.identity.website && (
@@ -128,7 +129,7 @@ function Content({ id, data }: { id: SectionId; data: PortfolioData }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                My website <span aria-hidden="true">↗</span>
+                My website
               </a>
             )}
           </div>
@@ -143,7 +144,10 @@ export function Portfolio({
   data: PortfolioData;
   preview?: boolean;
 }) {
-  const style = { "--accent": palettes[data.palette] } as CSSProperties;
+  const style = {
+    "--accent": palettes[data.palette],
+    "--paper": portfolioBackground(data),
+  } as CSSProperties;
   return (
     <article
       className={`portfolio template-${data.theme} portfolio-${data.appearance} font-${data.font}`}
@@ -162,9 +166,9 @@ export function Portfolio({
             A CAREER IN PROGRESS / THE JOURNEY SO FAR
           </p>
         )}
-        <h1>{data.identity.headline || "Your story begins here."}</h1>
+        <h1>{data.identity.name || "Your name"}</h1>
         <p className="hero-name">
-          {data.identity.name || "Add your name to make this space yours."}
+          {data.identity.headline || "Add a headline to introduce your work."}
         </p>
         {data.identity.photo && (
           <img
@@ -176,7 +180,7 @@ export function Portfolio({
           />
         )}
         <span className="portfolio-hero-decoration" aria-hidden="true">
-          {data.theme === "quest" ? "01" : data.theme === "motion" ? "↓" : "✦"}
+          {data.theme === "quest" ? "01" : "✦"}
         </span>
       </header>
       <div className="portfolio-sections">
@@ -209,7 +213,7 @@ export function Portfolio({
       </div>
       <footer className="portfolio-footer">
         <span>{data.identity.name || "Your name"}</span>
-        <a href="#">Back to the top ↑</a>
+        <a href="#">Back to the top</a>
       </footer>
     </article>
   );
