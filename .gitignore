@@ -13,3 +13,4 @@ artifacts/
 .DS_Store
 PORTFOLIONEST_*_BUILD_SPEC.md
 README_FIRST.md
+supabase/.temp/

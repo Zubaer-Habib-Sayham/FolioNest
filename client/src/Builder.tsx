@@ -19,6 +19,7 @@ import { loadDraft, saveDraft } from "./storage";
 import "./builder.css";
 import { ConfirmDialog } from "./Dialog";
 import type { CloudLink } from "./CloudPanel";
+import { PhotoUpload } from "./PhotoUpload";
 const CloudPanel = lazy(() => import("./CloudPanel"));
 
 const steps = [
@@ -359,12 +360,12 @@ export default function Builder() {
   async function importFile(file: File | undefined) {
     if (!file) return;
     try {
-      if (file.size > 150000) throw new Error("Maximum backup size is 150 KB.");
+      if (file.size > 2000000) throw new Error("Maximum backup size is 2 MB.");
       const restored = validateBackup(await file.text());
       setPending({ data: restored, title: "Replace this device’s draft?" });
     } catch {
       setNotice(
-        "This file is not a valid FolioNest backup. Choose a version 1 JSON backup under 150 KB. Your current draft is unchanged.",
+        "This file is not a valid FolioNest backup. Choose a version 1 JSON backup under 2 MB. Your current draft is unchanged.",
       );
     } finally {
       if (fileRef.current) fileRef.current.value = "";
@@ -603,6 +604,11 @@ export default function Builder() {
                 max={120}
                 hint="A city, a region, or simply ‘Working remotely’."
               />
+              <PhotoUpload
+                label="Portrait photo (optional)"
+                value={data.identity.photo}
+                onChange={(v) => identity("photo", v)}
+              />
             </>
           )}
           {step === 2 && (
@@ -715,6 +721,34 @@ export default function Builder() {
                       />
                     ),
                   )}
+                  <PhotoUpload
+                    label={`Project ${i + 1} photo (optional)`}
+                    value={project.image}
+                    onChange={(v) =>
+                      change({
+                        ...data,
+                        projects: data.projects.map((x) =>
+                          x.id === project.id ? { ...x, image: v } : x,
+                        ),
+                      })
+                    }
+                  />
+                  {project.image && (
+                    <Field
+                      label="Photo description"
+                      value={project.imageAlt}
+                      onChange={(v) =>
+                        change({
+                          ...data,
+                          projects: data.projects.map((x) =>
+                            x.id === project.id ? { ...x, imageAlt: v } : x,
+                          ),
+                        })
+                      }
+                      max={160}
+                      hint="Describe what the photo shows for people using screen readers."
+                    />
+                  )}
                 </fieldset>
               ))}
               <button
@@ -731,6 +765,8 @@ export default function Builder() {
                         description: "",
                         tags: "",
                         url: "",
+                        image: "",
+                        imageAlt: "",
                       },
                     ],
                   })

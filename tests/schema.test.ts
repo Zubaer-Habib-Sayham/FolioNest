@@ -24,7 +24,7 @@ test("rejects executable URLs, unknown properties, duplicates and oversized impo
   const duplicate = samplePortfolio();
   duplicate.sections[1] = duplicate.sections[0];
   expect(portfolioSchema.safeParse(duplicate).success).toBe(false);
-  expect(() => validateBackup(" ".repeat(150001))).toThrow("too large");
+  expect(() => validateBackup(" ".repeat(2000001))).toThrow("too large");
 });
 test("slugs reject reserved, malformed and overlong addresses", () => {
   for (const value of [

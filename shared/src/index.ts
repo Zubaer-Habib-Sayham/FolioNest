@@ -1,3 +1,3 @@
-export const templateIds = ["editorial", "bento", "motion", "quest"] as const;
+export * from "./images.js";
 export * from "./schema.js";
 export * from "./Portfolio.js";

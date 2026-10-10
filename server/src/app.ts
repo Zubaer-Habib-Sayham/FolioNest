@@ -109,7 +109,7 @@ export function createApp(options: AppOptions) {
     }
     next();
   });
-  app.use(express.json({ limit: "150kb", strict: true }));
+  app.use(express.json({ limit: "2mb", strict: true }));
   const limiter = rateLimit({
     windowMs: 60000,
     limit: options.rateLimitMax ?? 60,
@@ -326,7 +326,7 @@ export function createApp(options: AppOptions) {
     } else if (error?.type === "entity.too.large") {
       status = 413;
       code = "BODY_TOO_LARGE";
-      message = "The portfolio is too large. Maximum request size is 150 KB.";
+      message = "The portfolio is too large. Maximum request size is 2 MB.";
     } else if (error instanceof SyntaxError && "body" in error) {
       status = 400;
       code = "INVALID_JSON";

@@ -47,13 +47,23 @@ function Content({ id, data }: { id: SectionId; data: PortfolioData }) {
         <div className="project-grid">
           {data.projects.map((project, i) => (
             <article className="project-card" key={project.id}>
-              <div
-                className={`project-art project-art-${i % 3}`}
-                aria-hidden="true"
-              >
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <i />
-              </div>
+              {project.image ? (
+                <img
+                  className="project-photo"
+                  src={project.image}
+                  alt={project.imageAlt || project.title || "Project photo"}
+                  width="1200"
+                  height="800"
+                />
+              ) : (
+                <div
+                  className={`project-art project-art-${i % 3}`}
+                  aria-hidden="true"
+                >
+                  <span>{String(i + 1).padStart(2, "0")}</span>
+                  <i />
+                </div>
+              )}
               <div className="project-body">
                 <p className="portfolio-kicker">{project.tags}</p>
                 <h3>{project.title || "Untitled project"}</h3>
@@ -156,6 +166,15 @@ export function Portfolio({
         <p className="hero-name">
           {data.identity.name || "Add your name to make this space yours."}
         </p>
+        {data.identity.photo && (
+          <img
+            className="portfolio-portrait"
+            src={data.identity.photo}
+            alt={`Portrait of ${data.identity.name || "the portfolio owner"}`}
+            width="240"
+            height="240"
+          />
+        )}
         <span className="portfolio-hero-decoration" aria-hidden="true">
           {data.theme === "quest" ? "01" : data.theme === "motion" ? "↓" : "✦"}
         </span>

@@ -2,6 +2,7 @@ import {
   portfolioSchema,
   publishableSchema,
   sectionNames,
+  visiblePortfolio,
   type PortfolioData,
 } from "@folionest/shared";
 import {
@@ -54,6 +55,7 @@ function paragraph(doc: jsPDF, text: string, y: number, size = 10) {
   return y + 3;
 }
 async function createCV(data: PortfolioData) {
+  data = visiblePortfolio(data);
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
   const response = await fetch("/fonts/NotoSans-Regular.ttf");
@@ -71,7 +73,9 @@ async function createCV(data: PortfolioData) {
   const metadata = doc.getFont().metadata as {
     characterToGlyph?: (code: number) => number;
   };
-  const allText = JSON.stringify(data);
+  const allText = JSON.stringify(data, (key, value) =>
+    ["photo", "image"].includes(key) ? "" : value,
+  );
   if (
     metadata.characterToGlyph &&
     [...allText].some(
@@ -329,7 +333,18 @@ export async function exportPortfolio(
     case "website_zip": {
       const { default: JSZip } = await import("jszip");
       const zip = new JSZip();
-      zip.file("index.html", staticWebsite(data));
+      let html = staticWebsite(data);
+      const visible = visiblePortfolio(data);
+      const images = [
+        visible.identity.photo,
+        ...visible.projects.map((p) => p.image),
+      ].filter(Boolean);
+      images.forEach((image, i) => {
+        const asset = `assets/photo-${i + 1}.jpg`;
+        zip.file(asset, image.slice(23), { base64: true });
+        html = html.replaceAll(image, asset);
+      });
+      zip.file("index.html", html);
       zip.file("styles.css", websiteBaseCss + "\n" + portfolioCss);
       zip.file("script.js", websiteScript);
       zip.file(

@@ -843,3 +843,26 @@ dialog h2 {
     font-size: 20px;
   }
 }
+.photo-upload img {
+  display: block;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 12px 0;
+}
+.photo-upload input[type="file"] {
+  max-width: 100%;
+  font: inherit;
+  padding: 12px 0;
+}
+.photo-upload input::file-selector-button {
+  border: 1px solid var(--border);
+  background: var(--paper);
+  color: inherit;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.photo-upload [role="status"] {
+  font-size: 13px;
+}

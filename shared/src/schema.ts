@@ -1,6 +1,13 @@
 import { z } from "zod";
+import { validPhoto, MAX_BACKUP_BYTES } from "./images.js";
 export const recordIdSchema = z.uuid();
-export const templateSchema = z.enum(["editorial", "bento", "motion", "quest"]);
+export const templateIds = ["editorial", "bento", "motion", "quest"] as const;
+export const templateSchema = z.enum(templateIds);
+const photoSchema = z
+  .string()
+  .max(171000)
+  .refine(validPhoto, "Choose a supported photo using the upload control")
+  .default("");
 export const palettes = {
   forest: "#355b40",
   violet: "#65508a",
@@ -74,6 +81,8 @@ export const projectSchema = z
     description: text(1600),
     tags: text(200),
     url: webUrl,
+    image: photoSchema,
+    imageAlt: text(160).default(""),
   })
   .strict();
 export const journeySchema = z
@@ -102,6 +111,7 @@ export const portfolioSchema = z
         location: text(120),
         email: emailSchema,
         website: webUrl,
+        photo: photoSchema,
       })
       .strict(),
     about: text(4000),
@@ -140,7 +150,12 @@ export const portfolioSchema = z
       .length(sectionIds.length)
       .refine(unique, "Include every section once"),
   })
-  .strict();
+  .strict()
+  .refine(
+    (p) =>
+      new TextEncoder().encode(JSON.stringify(p)).length <= MAX_BACKUP_BYTES,
+    "Keep the complete portfolio under 2 MB. Remove a photo or shorten some content.",
+  );
 export type PortfolioData = z.infer<typeof portfolioSchema>;
 export type SectionId = (typeof sectionIds)[number];
 export type Journey = z.infer<typeof journeySchema>;
@@ -241,7 +256,14 @@ export function blankPortfolio(): PortfolioData {
     palette: "forest",
     appearance: "light",
     font: "sans",
-    identity: { name: "", headline: "", location: "", email: "", website: "" },
+    identity: {
+      name: "",
+      headline: "",
+      location: "",
+      email: "",
+      website: "",
+      photo: "",
+    },
     about: "",
     skills: [],
     projects: [],
@@ -263,6 +285,7 @@ export function samplePortfolio(): PortfolioData {
       location: "London, UK",
       email: "hello@example.com",
       website: "https://example.com",
+      photo: "",
     },
     about:
       "I’m a designer and maker who turns complex ideas into calm, useful experiences. My work lives at the intersection of strategy, storytelling and a healthy dose of curiosity.",
@@ -276,6 +299,8 @@ export function samplePortfolio(): PortfolioData {
     projects: [
       {
         id: "sample-1",
+        image: "",
+        imageAlt: "",
         title: "A softer kind of digital",
         description:
           "An independent exploration of more thoughtful digital spaces. From research to a clear, welcoming product experience.",
@@ -284,6 +309,8 @@ export function samplePortfolio(): PortfolioData {
       },
       {
         id: "sample-2",
+        image: "",
+        imageAlt: "",
         title: "Room to grow",
         description:
           "A visual identity for people making good things happen. A flexible system built around an optimistic, human voice.",
@@ -331,7 +358,7 @@ export function samplePortfolio(): PortfolioData {
   };
 }
 export function validateBackup(raw: string): PortfolioData {
-  if (new TextEncoder().encode(raw).length > 150000)
-    throw new Error("Backup is too large. Maximum size is 150 KB.");
+  if (new TextEncoder().encode(raw).length > MAX_BACKUP_BYTES)
+    throw new Error("Backup is too large. Maximum size is 2 MB.");
   return portfolioSchema.parse(JSON.parse(raw));
 }

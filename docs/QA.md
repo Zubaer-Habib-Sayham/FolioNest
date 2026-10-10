@@ -33,3 +33,9 @@
 - An initial production prerender failed because the script lacked its React import; corrected and the full check rerun successfully.
 - The compiled production server was started locally for HTTP smoke testing. No hosted deployment has been performed.
 - Supabase provisioning and live email authentication remain unverified: the connected project's cost-confirmation lookup is unavailable. No existing external database was modified.
+
+## Photo uploads
+
+- `npm run check`: lint, typecheck, 23 unit/API tests and production builds passed. Five end-to-end tests passed, now including real portrait and project uploads, JPEG conversion, persistence after reload and an offline extracted ZIP with two decodable JPEG assets.
+- Visually inspected the exported website screenshot with both images. Raster-only schema tests reject SVG, remote URLs and malformed content; older backups restore with empty optional photo fields.
+- The initial migration remains unapplied remotely; its payload limits were updated for photos. Original uploads never leave the browser. Saved cloud photos will be inside the bounded JSON document, rather than an additional storage service.

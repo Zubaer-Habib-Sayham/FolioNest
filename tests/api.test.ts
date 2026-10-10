@@ -227,7 +227,7 @@ test("origin, JSON size and rate limits are enforced", async () => {
     ).status,
   ).toBe(403);
   expect(
-    (await owner("post", "/api/portfolios").send({ data: "x".repeat(155000) }))
+    (await owner("post", "/api/portfolios").send({ data: "x".repeat(2100000) }))
       .status,
   ).toBe(413);
   const limited = createApp({

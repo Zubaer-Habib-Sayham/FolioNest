@@ -21,6 +21,30 @@ test("real CV, portfolio PDF, PNG and independently operating website ZIP", asyn
     localStorage.setItem("folionest-draft-v1", JSON.stringify(data));
   }, p);
   await page.reload();
+  await page.getByRole("button", { name: /Introduction$/ }).click();
+  await page
+    .getByLabel("Portrait photo (optional)", { exact: true })
+    .setInputFiles("client/public/brand/folionest-icon-512.png");
+  await expect(page.locator(".portfolio-portrait")).toBeVisible();
+  await page.getByRole("button", { name: /Projects$/ }).click();
+  await page
+    .getByLabel("Project 1 photo (optional)", { exact: true })
+    .setInputFiles("client/public/brand/folionest-icon-512.png");
+  await page
+    .getByLabel("Photo description", { exact: true })
+    .fill("A green leaf brand image used for export verification");
+  await expect(page.locator(".project-photo")).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          JSON.parse(localStorage.getItem("folionest-draft-v1")!).projects[0]
+            .image,
+      ),
+    )
+    .toMatch(/^data:image\/jpeg;base64,/);
+  await page.reload();
+  await expect(page.locator(".portfolio-portrait")).toBeVisible();
   await page.getByRole("button", { name: /Review & export$/ }).click();
   await fs.mkdir("artifacts/exports", { recursive: true });
   const saved: Record<string, string> = {};
@@ -69,19 +93,34 @@ test("real CV, portfolio PDF, PNG and independently operating website ZIP", asyn
   expect(png.readUInt32BE(16)).toBe(960);
   expect(png.readUInt32BE(20)).toBeGreaterThan(1000);
   const zip = await JSZip.loadAsync(await fs.readFile(saved["Website ZIP"]));
-  expect(Object.keys(zip.files).sort()).toEqual([
-    "README.txt",
-    "index.html",
-    "script.js",
-    "styles.css",
-  ]);
+  expect(Object.keys(zip.files)).toEqual(
+    expect.arrayContaining([
+      "index.html",
+      "styles.css",
+      "script.js",
+      "README.txt",
+      "assets/photo-1.jpg",
+      "assets/photo-2.jpg",
+    ]),
+  );
+  expect(
+    (await zip.file("assets/photo-1.jpg")!.async("nodebuffer"))
+      .subarray(0, 2)
+      .toString("hex"),
+  ).toBe("ffd8");
   const dir = path.resolve("artifacts/exports/standalone");
   await fs.mkdir(dir, { recursive: true });
-  for (const [filename, file] of Object.entries(zip.files))
+  for (const [filename, file] of Object.entries(zip.files)) {
+    if (file.dir) {
+      await fs.mkdir(path.join(dir, filename), { recursive: true });
+      continue;
+    }
+    await fs.mkdir(path.dirname(path.join(dir, filename)), { recursive: true });
     await fs.writeFile(
       path.join(dir, filename),
       await file.async("nodebuffer"),
     );
+  }
   const context = await browser.newContext({ offline: true });
   const standalone = await context.newPage();
   const independentErrors: string[] = [];
@@ -93,6 +132,17 @@ test("real CV, portfolio PDF, PNG and independently operating website ZIP", asyn
   await expect(
     standalone.getByRole("article", { name: "Export Verification portfolio" }),
   ).toBeVisible();
+  await expect(standalone.locator(".portfolio-portrait")).toBeVisible();
+  expect(
+    await standalone
+      .locator(".portfolio-portrait")
+      .evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0),
+  ).toBe(true);
+  expect(
+    await standalone
+      .locator(".project-photo")
+      .evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0),
+  ).toBe(true);
   expect(
     await standalone
       .locator(".portfolio")
