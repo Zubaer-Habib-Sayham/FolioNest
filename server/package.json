@@ -1,0 +1,5 @@
+{
+ "name":"@folionest/server","version":"1.0.0","private":true,"type":"module",
+ "scripts":{"dev":"tsx watch --env-file-if-exists=../.env src/index.ts","build":"tsc -p tsconfig.json","start":"node --env-file-if-exists=../.env dist/server/src/index.js"},
+ "dependencies":{"@folionest/shared":"1.0.0","@supabase/supabase-js":"2.117.3","express":"5.3.0","helmet":"8.3.0","express-rate-limit":"8.7.1","pg":"8.23.1","react":"19.3.0","react-dom":"19.3.0"}
+}

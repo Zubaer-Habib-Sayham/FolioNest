@@ -1,0 +1,1 @@
+export default function Builder(){return <main id="main" className="section"><p className="eyebrow">Your workspace</p><h1>Let’s tell your story.</h1><p>The guided editor is being prepared. Your portfolio will stay on this device until you choose to publish.</p><a href="/">Explore the designs</a></main>}

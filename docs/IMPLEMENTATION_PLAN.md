@@ -1,0 +1,15 @@
+# Implementation plan
+
+Build complete, verified slices on main. Preserve the original supplied kit; it is an implementation input, not application source.
+
+1. Workspace tooling, brand assets, accessible landing page and independent editor modes.
+2. Strict shared data schema, guided guest editor, local persistence and confirmed JSON restore.
+3. Four distinct responsive templates, live preview, curated fonts, palettes and per-section colors.
+4. Selectable CV PDF, paginated portfolio PDF, PNG and independent website ZIP; inspect actual artifacts.
+5. Optional Supabase Auth, PostgreSQL schema and parameterized owner-scoped APIs.
+6. Cloud management, explicit publishing, unique slugs and unpublishing.
+7. Initial-response public HTML, metadata, sitemap and robots; private-route noindex.
+8. Optional privacy-preserving analytics, security tests, responsive and keyboard checks.
+9. Setup, deployment, security, SEO and reproducible verification documentation.
+
+For every slice: lint, typecheck, relevant tests, production build, diff review, then a real commit. No deployment without approval. Record actual results and any unverified integrations in QA.md.

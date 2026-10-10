@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+coverage/
+test-results/
+playwright-report/
+artifacts/
+*.log
+*.dump
+*.sql.gz
+.DS_Store
+PORTFOLIONEST_*_BUILD_SPEC.md
+README_FIRST.md
