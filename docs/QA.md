@@ -24,3 +24,12 @@
 - Poppler rendered both pages of each PDF. All four page images and the portfolio PNG were visually inspected; no missing text, overlaps or clipped sample content were observed.
 - First-export development reload was found and fixed by pre-optimizing dependencies. Export-heavy rendering and PDF libraries remain loaded only on demand.
 - Limits: page PDF is rasterized; CV text is selectable. Noto Sans lacks some scripts/symbols; unsupported CV characters produce an actionable error recommending Portfolio PDF. Captures over 18,000 pixels high and artifacts over 30 MB are rejected before download.
+
+## Cloud boundaries and public pages
+
+- `npm run check`: lint, typecheck, 21 tests across five files and production builds passed. `npm run test:e2e`: five Chrome tests passed.
+- Tests apply the actual migration to PGlite's PostgreSQL engine. Two test accounts exercise parameterized ownership predicates, RLS reads, forbidden direct writes, duplicate/invalid slugs, stale-draft publishing, snapshots, hidden content, publishing/unpublishing and sitemap exclusions. Token verification is injected in these tests; they do not verify a live Supabase Auth provider.
+- Public HTML tests inspect real content, canonical/Open Graph/Person metadata, escaped hostile text, status codes and private-page noindex rules. Optional cloud setup leaves guest editing available and its dialog supports keyboard operation.
+- An initial production prerender failed because the script lacked its React import; corrected and the full check rerun successfully.
+- The compiled production server was started locally for HTTP smoke testing. No hosted deployment has been performed.
+- Supabase provisioning and live email authentication remain unverified: the connected project's cost-confirmation lookup is unavailable. No existing external database was modified.

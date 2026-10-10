@@ -18,6 +18,7 @@
     "server/src",
     "shared/src",
     "tests",
+    "scripts",
     "playwright.config.ts",
     "vitest.config.ts"
   ]

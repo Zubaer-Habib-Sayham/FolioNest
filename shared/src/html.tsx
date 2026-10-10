@@ -1,6 +1,10 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { Portfolio } from "./Portfolio";
-import { portfolioSchema, type PortfolioData } from "./schema";
+import { Portfolio } from "./Portfolio.js";
+import {
+  portfolioSchema,
+  visiblePortfolio,
+  type PortfolioData,
+} from "./schema.js";
 export function escapeHtml(value: string) {
   return value.replace(
     /[&<>"']/g,
@@ -14,7 +18,7 @@ export function portfolioMarkup(data: PortfolioData) {
   return renderToStaticMarkup(<Portfolio data={portfolioSchema.parse(data)} />);
 }
 export function staticWebsite(data: PortfolioData) {
-  const p = portfolioSchema.parse(data);
+  const p = visiblePortfolio(portfolioSchema.parse(data));
   return `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(p.identity.name)} — ${escapeHtml(p.identity.headline)}</title><meta name="description" content="${escapeHtml(p.about.slice(0, 160) || p.identity.headline)}"><link rel="stylesheet" href="styles.css"><script defer src="script.js"></script></head><body><a class="folio-skip" href="#portfolio-main">Skip to portfolio</a><main id="portfolio-main">${portfolioMarkup(p)}</main></body></html>`;
 }

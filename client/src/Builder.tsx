@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import {
   Portfolio,
   blankPortfolio,
   palettes,
   portfolioSchema,
   publishableSchema,
+  recordIdSchema,
   samplePortfolio,
   sectionNames,
   templates,
@@ -16,6 +17,9 @@ import {
 import "@folionest/shared/portfolio.css";
 import { loadDraft, saveDraft } from "./storage";
 import "./builder.css";
+import { ConfirmDialog } from "./Dialog";
+import type { CloudLink } from "./CloudPanel";
+const CloudPanel = lazy(() => import("./CloudPanel"));
 
 const steps = [
   "Design",
@@ -52,40 +56,6 @@ function initialDraft() {
       message: "Storage is unavailable. Download a JSON backup before leaving.",
     };
   }
-}
-export function ConfirmDialog({
-  title,
-  children,
-  onClose,
-  onConfirm,
-  confirmLabel = "Confirm",
-}: {
-  title: string;
-  children: ReactNode;
-  onClose: () => void;
-  onConfirm: () => void;
-  confirmLabel?: string;
-}) {
-  const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const node = ref.current;
-    node?.showModal();
-    return () => node?.close();
-  }, []);
-  return (
-    <dialog ref={ref} onCancel={onClose} aria-labelledby="dialog-title">
-      <h2 id="dialog-title">{title}</h2>
-      <div className="dialog-content">{children}</div>
-      <div className="dialog-actions">
-        <button className="secondary" autoFocus onClick={onClose}>
-          Cancel
-        </button>
-        <button className="button" onClick={onConfirm}>
-          {confirmLabel}
-        </button>
-      </div>
-    </dialog>
-  );
 }
 function Field({
   label,
@@ -296,6 +266,32 @@ export default function Builder() {
     title: string;
   } | null>(null);
   const [cloudOpen, setCloudOpen] = useState(false);
+  const [cloudLink, setCloudLink] = useState<CloudLink | null>(() => {
+    try {
+      const value = JSON.parse(
+        localStorage.getItem("folionest-cloud-link-v1") || "null",
+      );
+      return value &&
+        recordIdSchema.safeParse(value.id).success &&
+        recordIdSchema.safeParse(value.owner).success
+        ? { id: value.id, owner: value.owner }
+        : null;
+    } catch {
+      return null;
+    }
+  });
+  useEffect(() => {
+    try {
+      if (cloudLink)
+        localStorage.setItem(
+          "folionest-cloud-link-v1",
+          JSON.stringify(cloudLink),
+        );
+      else localStorage.removeItem("folionest-cloud-link-v1");
+    } catch {
+      /* Cloud binding remains available for this visit. */
+    }
+  }, [cloudLink]);
   const previewRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -306,7 +302,10 @@ export default function Builder() {
     for (const issue of parsed.error.issues)
       errors.set(issue.path.join("."), issue.message);
   function change(next: PortfolioData) {
-    setData({ ...next, sample: false });
+    setData({
+      ...next,
+      sample: next.sample && next.identity.name === "Alex Morgan",
+    });
     setDirty(true);
     setSaved("Saving on this device…");
   }
@@ -1050,6 +1049,7 @@ export default function Builder() {
           confirmLabel="Replace draft"
           onConfirm={() => {
             setData(pending.data);
+            setCloudLink(null);
             setSkillsText(pending.data.skills.join(", "));
             setDirty(true);
             setPending(null);
@@ -1063,17 +1063,20 @@ export default function Builder() {
         </ConfirmDialog>
       )}
       {cloudOpen && (
-        <ConfirmDialog
-          title="Cloud saving & publishing"
-          onClose={() => setCloudOpen(false)}
-          onConfirm={() => setCloudOpen(false)}
-          confirmLabel="Keep editing"
-        >
-          <p>
-            Cloud services aren’t connected yet. Your local draft and exports
-            remain available.
-          </p>
-        </ConfirmDialog>
+        <Suspense fallback={<p role="status">Opening cloud panel…</p>}>
+          <CloudPanel
+            data={data}
+            link={cloudLink}
+            onLink={setCloudLink}
+            onClose={() => setCloudOpen(false)}
+            onLoad={(next, link) => {
+              setData(next);
+              setSkillsText(next.skills.join(", "));
+              setDirty(true);
+              setCloudLink(link);
+            }}
+          />
+        </Suspense>
       )}
     </main>
   );

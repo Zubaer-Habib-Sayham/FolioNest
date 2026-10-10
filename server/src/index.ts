@@ -1,25 +1,74 @@
-import express from "express";
-import helmet from "helmet";
+import { Pool } from "pg";
+import { createClient } from "@supabase/supabase-js";
+import { createApp, HttpError } from "./app.js";
+import { createRepository } from "./repository.js";
+import { readConfig } from "./config.js";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-const app = express();
-app.disable("x-powered-by");
-app.use(helmet());
-app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+import { readFileSync } from "node:fs";
 const root = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../../..",
+  process.cwd(),
+  path.basename(process.cwd()) === "server" ? ".." : ".",
 );
-const client =
-  process.env.NODE_ENV === "production"
-    ? path.join(root, "client/dist")
-    : path.resolve("../client/dist");
-app.use(express.static(client));
-app.get("/builder", (_req, res) => {
-  res.set("X-Robots-Tag", "noindex");
-  res.sendFile(path.join(client, "index.html"));
+const config = readConfig(process.env);
+let pool: Pool | undefined;
+if (config.databaseUrl) {
+  const url = new URL(config.databaseUrl);
+  url.searchParams.delete("sslmode");
+  pool = new Pool({
+    connectionString: url.toString(),
+    ssl: { rejectUnauthorized: true },
+    max: 4,
+    connectionTimeoutMillis: 8000,
+    idleTimeoutMillis: 30000,
+    statement_timeout: 8000,
+  });
+  pool.on("error", () =>
+    console.error(
+      JSON.stringify({ level: "error", code: "DATABASE_CONNECTION" }),
+    ),
+  );
+}
+const supabase =
+  config.supabaseUrl && config.supabaseKey
+    ? createClient(config.supabaseUrl, config.supabaseKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: {
+          fetch: (input, init) =>
+            fetch(input, { ...init, signal: AbortSignal.timeout(8000) }),
+        },
+      })
+    : undefined;
+const app = createApp({
+  origin: config.origin,
+  production: config.production,
+  clientDir: path.join(root, "client/dist"),
+  portfolioCss: readFileSync(
+    path.join(root, "shared/src/portfolio.css"),
+    "utf8",
+  ),
+  repository: pool ? createRepository(pool) : undefined,
+  verifyToken: supabase
+    ? async (token) => {
+        const { data, error } = await supabase.auth.getUser(token);
+        if (error && (!error.status || error.status >= 500))
+          throw new HttpError(
+            503,
+            "AUTH_UNAVAILABLE",
+            "Sign-in services are unavailable. Try again later.",
+          );
+        return data.user && !data.user.is_anonymous ? data.user.id : null;
+      }
+    : undefined,
 });
-const server = app.listen(Number(process.env.PORT) || 3001, "127.0.0.1", () =>
-  console.log("FolioNest API: http://127.0.0.1:3001"),
+const server = app.listen(config.port, "0.0.0.0", () =>
+  console.log(`FolioNest API: http://127.0.0.1:${config.port}`),
 );
 server.requestTimeout = 15000;
+server.headersTimeout = 10000;
+async function shutdown() {
+  server.close();
+  await pool?.end();
+  process.exit(0);
+}
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

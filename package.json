@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "concurrently -k -n api,web \"npm run dev -w server\" \"npm run dev -w client\"",
-    "build": "npm run build -w client && npm run build -w server",
+    "build": "npm run build -w client && tsx --env-file-if-exists=.env scripts/prepare-client.tsx && npm run build -w server",
     "start": "npm run start -w server",
     "lint": "eslint client/src server/src shared/src tests",
     "typecheck": "tsc --noEmit",
@@ -22,6 +22,7 @@
     "check": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.64.0",
     "@types/express": "5.0.6",

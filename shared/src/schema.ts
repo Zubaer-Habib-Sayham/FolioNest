@@ -1,4 +1,5 @@
 import { z } from "zod";
+export const recordIdSchema = z.uuid();
 export const templateSchema = z.enum(["editorial", "bento", "motion", "quest"]);
 export const palettes = {
   forest: "#355b40",
@@ -143,6 +144,26 @@ export const portfolioSchema = z
 export type PortfolioData = z.infer<typeof portfolioSchema>;
 export type SectionId = (typeof sectionIds)[number];
 export type Journey = z.infer<typeof journeySchema>;
+export function visiblePortfolio(input: PortfolioData): PortfolioData {
+  const p = structuredClone(input);
+  const visible = new Set(p.sections.filter((s) => s.visible).map((s) => s.id));
+  if (!visible.has("about")) p.about = "";
+  if (!visible.has("skills")) p.skills = [];
+  for (const key of [
+    "projects",
+    "experience",
+    "education",
+    "achievements",
+    "links",
+  ] as const)
+    if (!visible.has(key)) p[key] = [];
+  if (!visible.has("contact")) {
+    p.contact = "";
+    p.identity.email = "";
+    p.identity.website = "";
+  }
+  return p;
+}
 export const publishableSchema = portfolioSchema.superRefine((p, ctx) => {
   if (!p.identity.name.trim())
     ctx.addIssue({

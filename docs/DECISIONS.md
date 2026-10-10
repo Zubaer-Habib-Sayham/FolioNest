@@ -9,4 +9,4 @@
 - Published content is a snapshot separate from drafts, so saving changes never silently publishes them.
 - The server serves the built client and public HTML locally and may be deployed as one service. A small optional Pages proxy supports the specification's split-host arrangement.
 - Analytics uses an explicit event/property allowlist, no automatic capture, page URL capture, identity, replay or personal data. It respects DNT and opt-out.
-- Tooling-only supplied documents remain intact outside the application commits. No authorship claims, manufactured history, remote pushes or deployments are part of ordinary local implementation.
+- Supplied build documents remain intact outside the application commits. Commits use the user's configured identity and verified slices are pushed to the existing FolioNest repository with authorization. Online deployment requires the user's final product review.

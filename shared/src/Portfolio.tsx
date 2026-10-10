@@ -5,7 +5,7 @@ import {
   type PortfolioData,
   type SectionId,
   type Journey,
-} from "./schema";
+} from "./schema.js";
 
 function JourneyList({ items, quest }: { items: Journey[]; quest: boolean }) {
   return (

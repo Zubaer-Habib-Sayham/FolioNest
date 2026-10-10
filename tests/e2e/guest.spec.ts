@@ -76,13 +76,11 @@ test("guest editing, ordering, themes, reload and confirmed JSON restore", async
   expect(backup.identity.name).toBe("Taylor Guest");
   expect(backup.skills).toHaveLength(3);
   backup.identity.name = "Restored Guest";
-  await page
-    .getByLabel("Choose a portfolio JSON backup")
-    .setInputFiles({
-      name: "backup.json",
-      mimeType: "application/json",
-      buffer: Buffer.from(JSON.stringify(backup)),
-    });
+  await page.getByLabel("Choose a portfolio JSON backup").setInputFiles({
+    name: "backup.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(backup)),
+  });
   await expect(page.getByRole("dialog")).toBeVisible();
   expect(await page.locator(".portfolio").innerText()).toContain(
     "Taylor Guest",
@@ -91,13 +89,11 @@ test("guest editing, ordering, themes, reload and confirmed JSON restore", async
     .getByRole("button", { name: "Replace draft", exact: true })
     .click();
   await expect(page.locator(".portfolio")).toContainText("Restored Guest");
-  await page
-    .getByLabel("Choose a portfolio JSON backup")
-    .setInputFiles({
-      name: "invalid.json",
-      mimeType: "application/json",
-      buffer: Buffer.from('{"bad":true}'),
-    });
+  await page.getByLabel("Choose a portfolio JSON backup").setInputFiles({
+    name: "invalid.json",
+    mimeType: "application/json",
+    buffer: Buffer.from('{"bad":true}'),
+  });
   await expect(page.getByRole("status").last()).toContainText("not a valid");
   await expect(page.locator(".portfolio")).toContainText("Restored Guest");
   await fs.mkdir("artifacts", { recursive: true });
@@ -106,6 +102,21 @@ test("guest editing, ordering, themes, reload and confirmed JSON restore", async
     fullPage: true,
   });
   expect(errors).toEqual([]);
+});
+test("cloud setup is optional and its dialog remains keyboard accessible", async ({
+  page,
+}) => {
+  await page.goto("/builder");
+  await page.getByRole("button", { name: /Review & export$/ }).click();
+  await page.getByRole("button", { name: /Save to cloud/ }).click();
+  await expect(page.getByRole("dialog")).toContainText(
+    "Cloud services aren’t connected yet.",
+  );
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: /^JSON backup/ }),
+  ).toBeEnabled();
 });
 test("mobile, keyboard, and reduced motion remain usable", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

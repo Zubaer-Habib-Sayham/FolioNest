@@ -9,6 +9,7 @@
     "start": "node --env-file-if-exists=../.env dist/server/src/index.js"
   },
   "dependencies": {
+    "zod": "4.6.5",
     "@folionest/shared": "1.0.0",
     "@supabase/supabase-js": "2.117.3",
     "express": "5.3.0",
