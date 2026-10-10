@@ -84,6 +84,20 @@ test("configured SDK uses privacy controls and only allowed event properties", a
   expect(capture).toHaveBeenCalledTimes(1);
 });
 test("unknown automatic events and arbitrary property values are discarded", () => {
+  const visit = sanitizeEvent(
+    {
+      uuid: "id",
+      event: "site_opened",
+      properties: {
+        page: "builder",
+        email: "PRIVATE",
+        $current_url: "https://example.com/builder?code=PRIVATE",
+      },
+    },
+    "anonymous",
+  );
+  expect(visit!.properties.page).toBe("builder");
+  expect(JSON.stringify(visit)).not.toContain("PRIVATE");
   expect(
     sanitizeEvent(
       { uuid: "id", event: "$autocapture", properties: { email: "private" } },

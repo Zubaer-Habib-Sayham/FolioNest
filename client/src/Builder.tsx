@@ -22,6 +22,7 @@ import { ConfirmDialog } from "./Dialog";
 import type { CloudLink } from "./CloudPanel";
 import { PhotoUpload } from "./PhotoUpload";
 import { track } from "./analytics";
+import HostingGuide from "./HostingGuide";
 const CloudPanel = lazy(() => import("./CloudPanel"));
 
 const steps = [
@@ -47,15 +48,17 @@ const hints = [
 function initialDraft() {
   try {
     const loaded = loadDraft(localStorage);
-    if (!localStorage.getItem("folionest-draft-v1")) {
-      const theme = new URLSearchParams(location.search).get("template");
-      if (templates.some((t) => t.id === theme))
-        loaded.data.theme = theme as PortfolioData["theme"];
-    }
-    return loaded;
+    const theme = new URLSearchParams(location.search).get("template");
+    const selected = templates.find((template) => template.id === theme);
+    const selectedTheme = Boolean(
+      selected && selected.id !== loaded.data.theme,
+    );
+    if (selected) loaded.data.theme = selected.id;
+    return { ...loaded, selectedTheme };
   } catch {
     return {
       data: blankPortfolio(),
+      selectedTheme: false,
       message: "Storage is unavailable. Download a JSON backup before leaving.",
     };
   }
@@ -256,7 +259,7 @@ export default function Builder() {
   const [initial] = useState(initialDraft);
   const [data, setData] = useState(initial.data);
   const [saved, setSaved] = useState(initial.message);
-  const [dirty, setDirty] = useState(false);
+  const [dirty, setDirty] = useState(initial.selectedTheme);
   const [step, setStep] = useState(0);
   const [preview, setPreview] = useState(false);
   const [previewWidth, setPreviewWidth] = useState<"desktop" | "mobile">(
@@ -331,7 +334,7 @@ export default function Builder() {
   }, []);
   useEffect(() => {
     if (!dirty) return;
-    const timer = setTimeout(() => {
+    const persist = () => {
       if (!portfolioSchema.safeParse(data).success) {
         setSaved("Finish the highlighted fields to save your latest changes");
         return;
@@ -343,8 +346,13 @@ export default function Builder() {
           "Storage is unavailable. Download a JSON backup before leaving.",
         );
       }
-    }, 450);
-    return () => clearTimeout(timer);
+    };
+    const timer = setTimeout(persist, 450);
+    window.addEventListener("pagehide", persist);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("pagehide", persist);
+    };
   }, [data, dirty]);
   function navigate(to: number) {
     setStep(to);
@@ -1052,6 +1060,7 @@ export default function Builder() {
                   Restore a JSON backup
                 </button>
               </div>
+              <HostingGuide compact />
               <h3 className="subheading">A home on the web</h3>
               <p className="field-hint">
                 Sign in only for cloud saving and online publishing. Publishing

@@ -2,6 +2,8 @@
 
 The requested developer credit uses Zubaer Habib Sayham and the email supplied by the user. Gallery examples use that name, but work, qualifications and dates remain explicitly illustrative; they do not establish personal credentials. Names are the primary heading in every portfolio. Background choices are fixed, contrast-compatible light/dark pairs rather than user-supplied CSS. Existing version-one backups default to their previous background. The brand asset is displayed inside a tighter SVG viewport with a light badge, preserving the supplied artwork.
 
+Choosing a gallery design applies that template to the existing local draft and saves the design choice, preserving the person’s text, photos and order. It never loads sample content implicitly. The hosting guide is for an exported static portfolio; FolioNest itself still requires the approved Express/Supabase deployment. PDF pages keep A4 dimensions and fill the complete page with the selected background; content keeps its internal layout padding, with no extra white export frame. Analytics adds only a fixed landing/builder visit enum, without URLs or private values; per-load IDs remain intentionally ephemeral.
+
 - React/Vite and Express in npm workspaces with shared TypeScript schemas and portfolio rendering. CSS variables provide a small consistent design system.
 - One canonical schema bounds all text, lists, URLs, sections, fonts and palettes. Drafts may be incomplete; export/publish adds identity validation.
 - Templates share structured content but differ in composition: editorial columns, bento grid, narrative bands and a career timeline.

@@ -1,10 +1,83 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import JSZip from "jszip";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
-import { samplePortfolio } from "../../shared/src/schema";
+import { samplePortfolio, portfolioBackground } from "../../shared/src/schema";
+
+async function verifyPageBackground(
+  page: Page,
+  filename: string,
+  expected: string,
+) {
+  await page.context().route("**/__pdf-render.mjs", (route) =>
+    route.fulfill({
+      contentType: "text/javascript",
+      path: path.resolve("node_modules/pdfjs-dist/build/pdf.mjs"),
+    }),
+  );
+  await page.context().route("**/__pdf-worker.mjs", (route) =>
+    route.fulfill({
+      contentType: "text/javascript",
+      path: path.resolve("node_modules/pdfjs-dist/build/pdf.worker.mjs"),
+    }),
+  );
+  const rendered = await page.evaluate(
+    async ({ bytes, modulePath }) => {
+      const library = (await import(modulePath)) as typeof import("pdfjs-dist");
+      library.GlobalWorkerOptions.workerSrc = "/__pdf-worker.mjs";
+      const loading = library.getDocument({
+        data: new Uint8Array(bytes),
+      });
+      const document = await loading.promise;
+      const output = [];
+      for (let number = 1; number <= document.numPages; number++) {
+        const pdfPage = await document.getPage(number);
+        const viewport = pdfPage.getViewport({ scale: 0.75 });
+        const canvas = window.document.createElement("canvas");
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("PDF render canvas unavailable");
+        await pdfPage.render({ canvas, canvasContext: context, viewport })
+          .promise;
+        output.push({
+          number,
+          png: canvas.toDataURL("image/png"),
+          corners: [
+            [1, 1],
+            [canvas.width - 2, 1],
+            [1, canvas.height - 2],
+            [canvas.width - 2, canvas.height - 2],
+          ].map(([x, y]) =>
+            Array.from(context.getImageData(x, y, 1, 1).data).slice(0, 3),
+          ),
+        });
+      }
+      await loading.destroy();
+      return output;
+    },
+    {
+      bytes: Array.from(await fs.readFile(filename)),
+      modulePath: "/__pdf-render.mjs",
+    },
+  );
+  const rgb = expected
+    .match(/[a-f0-9]{2}/gi)!
+    .map((value) => Number.parseInt(value, 16));
+  for (const renderedPage of rendered) {
+    await fs.writeFile(
+      `${filename}-page-${renderedPage.number}.png`,
+      Buffer.from(renderedPage.png.split(",")[1], "base64"),
+    );
+    // PDF color channels are quantized; a two-level tolerance still rejects a white frame.
+    for (const corner of renderedPage.corners)
+      corner.forEach((channel, index) =>
+        expect(Math.abs(channel - rgb[index])).toBeLessThanOrEqual(2),
+      );
+  }
+}
 
 for (const theme of ["editorial", "studio"] as const) {
   test(`real ${theme} CV, portfolio PDF, PNG and independently operating website ZIP`, async ({
@@ -53,7 +126,7 @@ for (const theme of ["editorial", "studio"] as const) {
     await page.reload();
     await expect(page.locator(".portfolio-portrait")).toBeVisible();
     await page.getByRole("button", { name: /Review & export$/ }).click();
-    await fs.mkdir("artifacts/exports", { recursive: true });
+    await fs.mkdir(`artifacts/exports/${theme}`, { recursive: true });
     const saved: Record<string, string> = {};
     for (const label of [
       "CV PDF",
@@ -66,6 +139,7 @@ for (const theme of ["editorial", "studio"] as const) {
       const download = await pending;
       const target = path.resolve(
         "artifacts/exports",
+        theme,
         download.suggestedFilename(),
       );
       await download.saveAs(target);
@@ -95,6 +169,12 @@ for (const theme of ["editorial", "studio"] as const) {
     const first = await pdf.getPage(1);
     expect((await first.getOperatorList()).fnArray.length).toBeGreaterThan(0);
     await pdf.cleanup();
+    await verifyPageBackground(
+      page,
+      saved["Portfolio PDF"],
+      portfolioBackground(p),
+    );
+    await verifyPageBackground(page, saved["CV PDF"], portfolioBackground(p));
     const png = await fs.readFile(saved["Portfolio PNG"]);
     expect(png.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
     expect(png.readUInt32BE(16)).toBe(960);
@@ -115,7 +195,7 @@ for (const theme of ["editorial", "studio"] as const) {
         .subarray(0, 2)
         .toString("hex"),
     ).toBe("ffd8");
-    const dir = path.resolve("artifacts/exports/standalone");
+    const dir = path.resolve("artifacts/exports", theme, "standalone");
     await fs.mkdir(dir, { recursive: true });
     for (const [filename, file] of Object.entries(zip.files)) {
       if (file.dir) {
@@ -167,9 +247,14 @@ for (const theme of ["editorial", "studio"] as const) {
           document.fonts.check('900 20px "Barlow Condensed"'),
         ),
       ).toBe(true);
+      expect(
+        await standalone
+          .locator(".studio-display")
+          .evaluate((el) => el.scrollWidth <= el.clientWidth),
+      ).toBe(true);
     }
     await standalone.screenshot({
-      path: "artifacts/exports/standalone.png",
+      path: `artifacts/exports/${theme}/standalone.png`,
       fullPage: true,
     });
     await context.close();

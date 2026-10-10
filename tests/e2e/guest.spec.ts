@@ -103,6 +103,17 @@ test("guest editing, ordering, themes, reload and confirmed JSON restore", async
     .getByRole("button", { name: "Replace draft", exact: true })
     .click();
   await expect(page.locator(".portfolio")).toContainText("Restored Guest");
+  await page.goto("/builder?template=studio");
+  await expect(page.locator(".portfolio")).toHaveClass(/template-studio/);
+  await expect(page.locator(".portfolio h1")).toHaveText("Restored Guest");
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => JSON.parse(localStorage.getItem("folionest-draft-v1")!).theme,
+      ),
+    )
+    .toBe("studio");
+  await page.getByRole("button", { name: /Review & export$/ }).click();
   await page.getByLabel("Choose a portfolio JSON backup").setInputFiles({
     name: "invalid.json",
     mimeType: "application/json",
@@ -121,6 +132,11 @@ test("cloud setup is optional and its dialog remains keyboard accessible", async
   page,
 }) => {
   await page.goto("/builder");
+  await page.getByRole("link", { name: "Account", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText(
+    "Cloud services aren’t connected yet.",
+  );
+  await page.keyboard.press("Escape");
   await page.getByRole("button", { name: /Review & export$/ }).click();
   await page.getByRole("button", { name: /Save to cloud/ }).click();
   await expect(page.getByRole("dialog")).toContainText(

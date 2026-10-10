@@ -1,6 +1,6 @@
 # FolioNest
 
-A portfolio builder with four responsive designs, local drafts and useful exports. Building, editing, saving on your device and downloading require no account. Supabase accounts are optional and required for cloud saves and public links.
+A portfolio builder with five responsive designs, local drafts and useful exports. Building, editing, saving on your device and downloading require no account. Supabase accounts are optional and required for cloud saves and public links.
 
 ## Run locally
 
@@ -16,10 +16,10 @@ On PowerShell use `Copy-Item .env.example .env`. Open `http://127.0.0.1:5173/`; 
 
 ## Working features
 
-- Editorial, Pinboard/Bento, Motion Story and Quest/Level-Up layouts, with previews generated from the actual shared renderer.
-- Guided forms for identity, biography, skills, projects, career, education, achievements and contact links. Reorder projects and sections with keyboard-accessible buttons, hide sections and choose section colors, palette, font and portfolio appearance. Editor appearance is independent.
+- Editorial, Pinboard/Bento, Motion Story, Quest/Level-Up and portrait-led Creative Studio layouts, with full-page gallery previews generated from the actual shared renderer.
+- Guided forms for identity, biography, skills, projects, career, education, achievements and contact links. Reorder projects and sections with keyboard-accessible buttons, hide sections and choose section colors, whole-page background, palette, font and portfolio appearance. Editor appearance is independent.
 - Validated local autosave, backup download and confirmed JSON restore. Optional portrait and project photos are resized and stripped of original metadata on your device.
-- Selectable-text CV PDF, paginated portfolio PDF, full-page PNG and a standalone website ZIP with required images. The ZIP runs offline without an account or connection to FolioNest.
+- Selectable-text CV PDF and paginated portfolio PDF with complete page backgrounds, full-page PNG and a standalone website ZIP with required images/fonts. The ZIP runs offline without an account or connection to FolioNest. An illustrated guide explains free browser-only hosting.
 - Optional Supabase sign-up/sign-in/sign-out, explicit cloud save/load/delete, publishing confirmation, unique slugs and unpublishing. Server queries enforce ownership. Public pages use snapshots, so saving a private edit does not change a live page.
 - Public HTML includes portfolio content in its first response, canonical/Open Graph/Person metadata, controlled indexing, sitemap and robots. Private routes are noindex.
 - Optional, disabled-by-default usage analytics with explicit consent, Do Not Track and a strict property allowlist. No form contents, images or authentication tokens are sent.
@@ -28,7 +28,7 @@ On PowerShell use `Copy-Item .env.example .env`. Open `http://127.0.0.1:5173/`; 
 
 Create a project named FolioNest in a **Free** Supabase organization; verify the plan and available project quota before creation. This build has not provisioned or modified an external project. The connected cost lookup was unavailable, so live sign-in and hosted database connectivity are still unverified.
 
-1. Run the committed migration in `supabase/migrations/20261010182706_portfolios.sql` using Supabase's SQL editor or CLI. It creates private drafts and publication snapshots, RLS and indexes; it revokes browser Data API writes. Do not disable those protections.
+1. Run all committed SQL files in `supabase/migrations/` in filename order using Supabase's SQL editor or CLI. The initial migration creates private drafts and publication snapshots, RLS and indexes; the next permits Creative Studio. Browser Data API writes remain revoked. Do not disable those protections.
 2. Enable email/password Auth and keep email confirmation enabled. Set Site URL to your application origin, and add the exact local and future hosted `/builder` redirect URLs. Registration redirects to `/builder`; use email confirmation on the same browser for PKCE. Configure your own SMTP if required for real users. Provider email delivery and rate limits need verification before launch.
 3. From the project's Connect panel copy the **session-pooler** connection string into server-only `DATABASE_URL`. URL-encode the database password. Use a trusted TLS certificate; certificate verification stays on. Prefer a dedicated database role with only the portfolio table privileges when deploying. Privileged database credentials are powerful and must remain server-side.
 4. Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` on the server. Set the same project URL/public publishable key in `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the browser. Restart development or rebuild after changing browser variables.

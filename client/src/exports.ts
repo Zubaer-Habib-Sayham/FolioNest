@@ -1,5 +1,7 @@
 import {
   portfolioSchema,
+  portfolioBackground,
+  palettes,
   publishableSchema,
   sectionNames,
   visiblePortfolio,
@@ -39,7 +41,19 @@ function name(data: PortfolioData) {
       .slice(0, 60) || "portfolio"
   );
 }
-function paragraph(doc: jsPDF, text: string, y: number, size = 10) {
+function paintPage(doc: jsPDF, background: string) {
+  doc.saveGraphicsState();
+  doc.setFillColor(background);
+  doc.rect(0, 0, 210, 297, "F");
+  doc.restoreGraphicsState();
+}
+function paragraph(
+  doc: jsPDF,
+  text: string,
+  y: number,
+  size = 10,
+  background = "#ffffff",
+) {
   if (!text.trim()) return y;
   doc.setFontSize(size);
   const lines = doc.splitTextToSize(text, 170) as string[];
@@ -47,6 +61,7 @@ function paragraph(doc: jsPDF, text: string, y: number, size = 10) {
   for (const line of lines) {
     if (y + height > 278) {
       doc.addPage();
+      paintPage(doc, background);
       y = 20;
     }
     doc.text(line, 20, y);
@@ -58,6 +73,12 @@ async function createCV(data: PortfolioData) {
   data = visiblePortfolio(data);
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+  const background = portfolioBackground(data);
+  const textColor = data.appearance === "dark" ? "#f0f1e9" : "#232a24";
+  const write = (text: string, y: number, size = 10) =>
+    paragraph(doc, text, y, size, background);
+  paintPage(doc, background);
+  doc.setTextColor(textColor);
   const response = await fetch("/fonts/NotoSans-Regular.ttf");
   if (!response.ok)
     throw new Error(
@@ -91,11 +112,10 @@ async function createCV(data: PortfolioData) {
     title: `${data.identity.name} — CV`,
     creator: "FolioNest",
   });
-  let y = paragraph(doc, data.identity.name, 22, 23);
-  y = paragraph(doc, data.identity.headline, y, 12);
+  let y = write(data.identity.name, 22, 23);
+  y = write(data.identity.headline, y, 12);
   const contactVisible = data.sections.find((s) => s.id === "contact")?.visible;
-  y = paragraph(
-    doc,
+  y = write(
     [
       data.identity.location,
       contactVisible ? data.identity.email : "",
@@ -146,21 +166,24 @@ async function createCV(data: PortfolioData) {
     if (!blocks.some((x) => x.trim())) continue;
     if (y > 245) {
       doc.addPage();
+      paintPage(doc, background);
       y = 20;
     }
-    doc.setDrawColor(190, 200, 186);
+    doc.setDrawColor(data.appearance === "dark" ? "#6f8674" : "#bec8ba");
     doc.line(20, y, 190, y);
     y += 8;
-    doc.setTextColor(48, 73, 54);
-    y = paragraph(doc, sectionNames[section.id], y, 13);
-    doc.setTextColor(38, 43, 39);
-    for (const block of blocks) y = paragraph(doc, block, y, 10);
+    doc.setTextColor(
+      data.appearance === "dark" ? textColor : palettes[section.color],
+    );
+    y = write(sectionNames[section.id], y, 13);
+    doc.setTextColor(textColor);
+    for (const block of blocks) y = write(block, y, 10);
     y += 4;
   }
   for (let page = 1; page <= doc.getNumberOfPages(); page++) {
     doc.setPage(page);
     doc.setFontSize(8);
-    doc.setTextColor(110, 115, 108);
+    doc.setTextColor(data.appearance === "dark" ? "#bec8bc" : "#62675d");
     doc.text(`${page} / ${doc.getNumberOfPages()}`, 190, 289, {
       align: "right",
     });
@@ -168,7 +191,7 @@ async function createCV(data: PortfolioData) {
   return doc.output("blob");
 }
 
-async function capture(data: PortfolioData) {
+async function capture(data: PortfolioData, forPdf = false) {
   const iframe = document.createElement("iframe");
   iframe.title = "Preparing portfolio export";
   iframe.setAttribute("aria-hidden", "true");
@@ -187,7 +210,7 @@ async function capture(data: PortfolioData) {
         resolve();
       };
     });
-    iframe.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0}${portfolioCss}*{animation:none!important;transition:none!important}</style></head><body>${portfolioMarkup(data)}</body></html>`;
+    iframe.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0}${portfolioCss}*{animation:none!important;transition:none!important}${forPdf ? ".portfolio-footer{display:none}.portfolio{padding-bottom:16px}" : ""}</style></head><body>${portfolioMarkup(data)}</body></html>`;
     await ready;
     const doc = iframe.contentDocument!;
     await doc.fonts.ready;
@@ -216,7 +239,7 @@ async function capture(data: PortfolioData) {
       pixelRatio: 1,
       skipFonts: true,
       fontEmbedCSS,
-      backgroundColor: data.appearance === "dark" ? "#19231d" : "#f8f6f0",
+      backgroundColor: portfolioBackground(data),
     });
     const bounds = Array.from(
       node.querySelectorAll<HTMLElement>("section,article,p,h2,h3,li"),
@@ -249,17 +272,18 @@ async function canvasBlob(canvas: HTMLCanvasElement) {
   );
 }
 async function createPortfolioPDF(data: PortfolioData) {
-  const { canvas, bounds } = await capture(data);
+  const { canvas, bounds } = await capture(data, true);
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
   doc.setProperties({
     title: `${data.identity.name} — Portfolio`,
     creator: "FolioNest",
   });
-  const maxHeight = Math.floor((277 / 190) * canvas.width);
+  const maxHeight = Math.floor((297 / 210) * canvas.width);
   let start = 0;
   while (start < canvas.height) {
     if (start > 0) doc.addPage();
+    paintPage(doc, portfolioBackground(data));
     const ideal = Math.min(start + maxHeight, canvas.height);
     let end = ideal;
     if (ideal < canvas.height) {
@@ -295,10 +319,10 @@ async function createPortfolioPDF(data: PortfolioData) {
     doc.addImage(
       slice.toDataURL("image/png"),
       "PNG",
-      10,
-      10,
-      190,
-      ((end - start) / canvas.width) * 190,
+      0,
+      0,
+      210,
+      ((end - start) / canvas.width) * 210,
       undefined,
       "FAST",
     );
@@ -387,7 +411,7 @@ export async function exportPortfolio(
       zip.file("script.js", websiteScript);
       zip.file(
         "README.txt",
-        "Open index.html in a browser. Upload all files together to any static host. No installation, server, account or connection to FolioNest is required. External links only open when you click them.",
+        "Open index.html in a browser. No installation or connection to FolioNest is required.\n\nFREE BROWSER-ONLY HOSTING\nCreate a free Cloudflare account at https://dash.cloudflare.com/. Open Workers & Pages, create a Pages application using the drag-and-drop upload option, give it a project name, and upload this entire ZIP. Deploy the site and open its pages.dev address. Use the free Pages plan and pages.dev address; a custom domain is optional and may cost money.\n\nTo update, download a fresh Website ZIP from FolioNest and create a new deployment in the same Pages project. Keep all files together. External links only open when you click them.\n\nOfficial instructions: https://developers.cloudflare.com/pages/get-started/direct-upload/\n",
       );
       download(
         await zip.generateAsync({

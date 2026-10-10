@@ -22,6 +22,7 @@ function App() {
   const builder = location.pathname.replace(/\/$/, "") === "/builder";
   const [analyticsOn, setAnalyticsOn] = useState(analyticsEnabled);
   useEffect(() => {
+    void track("site_opened", { page: builder ? "builder" : "landing" });
     const clicked = (e: MouseEvent) => {
       const link = e.target instanceof Element ? e.target.closest("a") : null;
       if (!builder && link?.getAttribute("href")?.startsWith("/builder"))
@@ -107,9 +108,9 @@ function App() {
             you.
           </p>
           <p>
-            Optional usage analytics records template choices, completed steps
-            and export formats. It never records your writing, photos, contact
-            details or sign-in information. Do Not Track is respected.
+            Optional usage analytics records visits, template choices, completed
+            steps and export formats. It never records your writing, photos,
+            contact details or sign-in information. Do Not Track is respected.
           </p>
           {analyticsConfigured && !hasDoNotTrack() ? (
             <button
@@ -117,6 +118,10 @@ function App() {
               onClick={() => {
                 setAnalyticsEnabled(!analyticsOn);
                 setAnalyticsOn(!analyticsOn);
+                if (!analyticsOn)
+                  void track("site_opened", {
+                    page: builder ? "builder" : "landing",
+                  });
               }}
             >
               Turn usage analytics {analyticsOn ? "off" : "on"}

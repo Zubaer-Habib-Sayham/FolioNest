@@ -575,7 +575,7 @@
   container-type: inline-size;
 }
 .template-studio .portfolio-hero {
-  min-height: 640px;
+  min-height: clamp(500px, 75cqw, 700px);
   padding-bottom: 30px;
 }
 .template-studio .portfolio-hero:has(.portfolio-portrait) {
@@ -588,7 +588,8 @@
 .studio-display {
   font-family: "Barlow Condensed", Impact, sans-serif;
   font-weight: 900;
-  font-size: clamp(64px, 29cqw, 260px);
+  font-size: 25cqw;
+  white-space: nowrap;
   line-height: 1;
   letter-spacing: -0.025em;
   transform: scaleY(1.3);
@@ -708,12 +709,12 @@
   text-transform: uppercase;
   font-size: 11px;
 }
-@container (max-width: 600px) {
+@container (max-width: 480px) {
   .template-studio .portfolio-hero {
     min-height: auto;
   }
   .studio-display {
-    font-size: 29cqw;
+    font-size: 25cqw;
     transform: scaleY(1.2);
     margin-bottom: 32px;
   }

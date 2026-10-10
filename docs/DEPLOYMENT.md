@@ -10,9 +10,13 @@ Current free constraints were checked against provider documentation on 2026-10-
 
 ## Supabase
 
-Create FolioNest in a verified Free organization. Apply the committed SQL migration and configure email/password Auth, Site URL, exact redirect allowlist and SMTP as described in README. Use the session-pooler database URL for Render's IPv4 connectivity. Set the project URL and public publishable key on both server and client. Store the password/database URL only in the server environment.
+Create FolioNest in a verified Free organization. Apply all committed SQL migrations in filename order (including the Studio constraint migration) and configure email/password Auth, Site URL, exact redirect allowlist and SMTP as described in README. Use the session-pooler database URL for Render's IPv4 connectivity. Set the project URL and public publishable key on both server and client. Store the password/database URL only in the server environment.
 
 If the connection's CA is not in Node's trust store, copy the trusted PEM from the project Connect panel into optional server-only `DATABASE_CA_CERT`; it accepts actual newlines or literal `\n`. Never disable certificate verification to make a failed connection appear successful. Live cloud connection and email delivery have not been tested in this build.
+
+## Hosting a downloaded portfolio ZIP
+
+The in-app illustrated guide appears on the homepage and in Review & export. This is for an exported standalone portfolio, which contains no server or account code. It can be uploaded directly as a ZIP through the browser on Cloudflare Pages Free. The free `pages.dev` address avoids a domain purchase. No software installation is required. Illustrations are original explanatory diagrams, not screenshots of a user account. The exported README also includes the instructions. Provider labels can change; consult the [official Direct Upload guide](https://developers.cloudflare.com/pages/get-started/direct-upload/) and [Pages product/free-plan information](https://www.cloudflare.com/products/pages/). The hosted upload itself was not performed.
 
 ## Render API
 

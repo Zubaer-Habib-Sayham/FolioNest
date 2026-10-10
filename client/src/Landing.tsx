@@ -1,6 +1,7 @@
 import React from "react";
 import { templates } from "../../shared/src/templates";
 import previewDimensions from "./preview-dimensions.json";
+import HostingGuide from "./HostingGuide";
 export default function Landing() {
   return (
     <main id="main">
@@ -166,6 +167,7 @@ export default function Landing() {
           ))}
         </div>
       </section>
+      <HostingGuide />
       <section className="closing">
         <p className="eyebrow">There’s a place for your story</p>
         <h2>Let’s make it yours.</h2>

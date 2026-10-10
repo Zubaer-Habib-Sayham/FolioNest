@@ -1,4 +1,5 @@
 import { chromium } from "@playwright/test";
+import assert from "node:assert/strict";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { portfolioMarkup, websiteBaseCss } from "../shared/src/html";
 import { samplePortfolio, templates } from "../shared/src/schema";
@@ -36,6 +37,13 @@ try {
       `<!doctype html><html><head><style>${css}</style></head><body>${portfolioMarkup(p)}</body></html>`,
     );
     await page.evaluate(() => document.fonts.ready);
+    if (template.id === "studio")
+      assert.ok(
+        await page
+          .locator(".studio-display")
+          .evaluate((el) => el.scrollWidth <= el.clientWidth),
+        "Studio display type must fit on one line",
+      );
     await page.screenshot({
       path: `client/public/templates/${template.id}.png`,
       fullPage: true,

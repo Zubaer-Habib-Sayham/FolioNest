@@ -2,6 +2,7 @@ import type { CaptureResult, PostHogConfig } from "posthog-js";
 import { templateIds } from "../../shared/src/templates";
 
 const events: Record<string, Record<string, readonly (string | number)[]>> = {
+  site_opened: { page: ["landing", "builder"] },
   landing_cta_clicked: {},
   builder_started: {},
   template_selected: { template: templateIds },

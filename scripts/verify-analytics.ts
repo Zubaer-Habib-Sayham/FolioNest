@@ -61,6 +61,7 @@ try {
   for (const event of events) {
     assert.ok(
       [
+        "site_opened",
         "builder_started",
         "builder_step_completed",
         "template_selected",
@@ -80,6 +81,7 @@ try {
           "format",
           "token",
           "type",
+          "page",
         ].includes(key),
         key,
       );

@@ -32,6 +32,15 @@ try {
     .getByLabel("Portrait photo (optional)", { exact: true })
     .setInputFiles("client/public/brand/folionest-icon-512.png");
   await expect(page.locator(".portfolio-portrait")).toBeVisible();
+  await page.getByRole("button", { name: /Design$/ }).click();
+  await page.getByRole("button", { name: /^Creative Studio/ }).click();
+  await page
+    .getByLabel("Portfolio appearance", { exact: true })
+    .selectOption("dark");
+  await page.getByRole("button", { name: "Sage", exact: true }).click();
+  await expect(page.locator(".portfolio h1")).toHaveText(
+    "Production Verification",
+  );
   await page.getByRole("button", { name: /Review & export$/ }).click();
   const pending = page.waitForEvent("download");
   await page.getByRole("button", { name: /^Portfolio PNG/ }).click();
@@ -39,6 +48,23 @@ try {
   const png = await readFile((await download.path())!);
   assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
   assert.equal(png.readUInt32BE(16), 960);
+  await page.locator(".hosting-details summary").click();
+  await expect(page.locator(".hosting-details")).toContainText(
+    "No extra app or code is needed.",
+  );
+  await page.locator(".hosting-details img").first().scrollIntoViewIfNeeded();
+  await expect
+    .poll(() =>
+      page
+        .locator(".hosting-details img")
+        .first()
+        .evaluate(
+          (el: HTMLImageElement) => el.complete && el.naturalWidth === 720,
+        ),
+    )
+    .toBe(true);
+  await page.goto(origin + "/builder?account=1");
+  await expect(page.getByRole("dialog")).toBeVisible();
   await page.goto(origin + "/builder/?code=valid-callback-code");
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(
