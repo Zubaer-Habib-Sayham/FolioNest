@@ -101,8 +101,28 @@ for (const theme of ["editorial", "studio"]) {
     await page.getByRole("button", { name: /Introduction$/ }).click();
     await page
       .getByLabel("Portrait photo (optional)", { exact: true })
-      .setInputFiles("client/public/brand/folionest-icon-512.png");
+      .setInputFiles(
+        theme === "studio"
+          ? "tests/fixtures/astronaut.png"
+          : "client/public/brand/folionest-icon-512.png",
+      );
     await expect(page.locator(".portfolio-portrait")).toBeVisible();
+    let originalPhoto = "";
+    if (theme === "studio") {
+      originalPhoto = await page
+        .locator(".portfolio-portrait")
+        .getAttribute("src");
+      await page
+        .getByRole("button", { name: "Remove background", exact: true })
+        .click();
+      await expect(
+        page.getByRole("button", { name: "Use original photo" }),
+      ).toBeVisible({ timeout: 60000 });
+      await page
+        .getByLabel("Signature image (optional)", { exact: true })
+        .setInputFiles("client/public/brand/folionest-icon-512.png");
+      await expect(page.locator(".studio-signature img")).toBeVisible();
+    }
     await page.getByRole("button", { name: /Projects$/ }).click();
     await page
       .getByLabel("Project 1 photo (optional)", { exact: true })
@@ -183,15 +203,21 @@ for (const theme of ["editorial", "studio"]) {
         "styles.css",
         "script.js",
         "README.txt",
-        "assets/photo-1.jpg",
-        "assets/photo-2.jpg",
       ]),
     );
-    expect(
-      (await zip.file("assets/photo-1.jpg").async("nodebuffer"))
-        .subarray(0, 2)
-        .toString("hex"),
-    ).toBe("ffd8");
+    const imageAssets = Object.keys(zip.files).filter((name) =>
+      name.startsWith("assets/photo-"),
+    );
+    expect(imageAssets).toHaveLength(theme === "studio" ? 3 : 2);
+    const websiteHTML = await zip.file("index.html").async("string");
+    if (originalPhoto) {
+      expect(websiteHTML).not.toContain(originalPhoto);
+      const originalBytes = Buffer.from(originalPhoto.split(",")[1], "base64");
+      for (const asset of imageAssets)
+        expect(
+          (await zip.file(asset).async("nodebuffer")).equals(originalBytes),
+        ).toBe(false);
+    }
     const dir = path.resolve("artifacts/exports", theme, "standalone");
     await fs.mkdir(dir, { recursive: true });
     for (const [filename, file] of Object.entries(zip.files)) {
@@ -237,6 +263,15 @@ for (const theme of ["editorial", "studio"]) {
         .evaluate((el) => getComputedStyle(el).padding),
     ).toBe(theme === "studio" ? "42px 40px" : "48px");
     if (theme === "studio") {
+      await expect(standalone.locator(".studio-signature img")).toBeVisible();
+      expect(
+        await standalone
+          .locator(".studio-signature img")
+          .evaluate((el) => el.complete && el.naturalWidth > 0),
+      ).toBe(true);
+      await expect(standalone.locator(".portfolio")).toHaveClass(
+        /portrait-cutout/,
+      );
       expect(zip.file("fonts/BarlowCondensed-Black.ttf")).not.toBeNull();
       await standalone.evaluate(() => document.fonts.ready);
       expect(

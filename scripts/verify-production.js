@@ -30,7 +30,7 @@ try {
     .fill("A working portfolio, built locally.");
   await page
     .getByLabel("Portrait photo (optional)", { exact: true })
-    .setInputFiles("client/public/brand/folionest-icon-512.png");
+    .setInputFiles("tests/fixtures/astronaut.png");
   await expect(page.locator(".portfolio-portrait")).toBeVisible();
   await page.getByRole("button", { name: /Design$/ }).click();
   await page.getByRole("button", { name: /^Creative Studio/ }).click();
@@ -38,6 +38,17 @@ try {
     .getByLabel("Portfolio appearance", { exact: true })
     .selectOption("dark");
   await page.getByRole("button", { name: "Sage", exact: true }).click();
+  await page.getByRole("button", { name: /Introduction$/ }).click();
+  await page
+    .getByRole("button", { name: "Remove background", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Use original photo" }),
+  ).toBeVisible({ timeout: 60000 });
+  await page
+    .getByLabel("Signature image (optional)", { exact: true })
+    .setInputFiles("client/public/brand/folionest-icon-512.png");
+  await expect(page.locator(".studio-signature img")).toBeVisible();
   await expect(page.locator(".portfolio h1")).toHaveText(
     "Production Verification",
   );
@@ -75,7 +86,7 @@ try {
   assert.equal((await fetch(origin + "/missing-page")).status, 404);
   assert.deepEqual(errors, []);
   console.log(
-    "Compiled production smoke passed: initial HTML/metadata, guest editing/photo/PNG, callback routing, 404s and no browser-console errors.",
+    "Compiled production smoke passed: initial HTML/metadata, guest editing/cutout/signature/PNG under CSP, callback routing, 404s and no browser-console errors.",
   );
 } finally {
   await browser.close();

@@ -14,7 +14,7 @@ Build complete, verified slices on main. Preserve the original supplied kit; it 
 8. Optional privacy-preserving analytics, security tests, responsive and keyboard checks.
 9. Setup, deployment, security, SEO and reproducible verification documentation.
 
-For every slice: lint, typecheck, relevant tests, production build, diff review, then a real commit. No deployment without approval. Record actual results and any unverified integrations in QA.md.
+For every slice: lint, JavaScript syntax validation, relevant tests, production build, diff review, then a real commit. No deployment without approval. Record actual results and any unverified integrations in QA.md.
 
 Implementation status: local guest editor, templates, photo uploads, verified exports, cloud-management code, SQL migration, public SSR/SEO, opt-in analytics, hosting routing and guides are implemented. Cloud API tests use PostgreSQL fixtures with injected identities. Supabase provisioning/provider verification and actual hosting remain outstanding. The user requires final product/UI review before deployment. Future design additions use a shared registry and renderer; see TEMPLATES.md.
 

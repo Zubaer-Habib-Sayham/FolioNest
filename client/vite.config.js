@@ -11,6 +11,7 @@ export default defineConfig({
       "jszip",
       "@supabase/supabase-js",
       "posthog-js",
+      "@mediapipe/tasks-vision",
     ],
   },
   server: {

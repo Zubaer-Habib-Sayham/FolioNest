@@ -459,50 +459,6 @@ progress::-webkit-progress-value {
   margin: auto;
   min-width: 0;
 }
-.preview-document .portfolio {
-  padding: 28px 22px;
-}
-.preview-document .portfolio h1 {
-  font-size: 36px;
-}
-.preview-document .portfolio-masthead {
-  margin-bottom: 35px;
-}
-.preview-document .portfolio-section {
-  display: block;
-  padding: 24px 0;
-}
-.preview-document .portfolio-section-label {
-  margin-bottom: 13px;
-}
-.preview-document .portfolio-section-label h2 {
-  font-size: 17px;
-}
-.preview-document .portfolio-prose {
-  font-size: 11px;
-}
-.preview-document .about-prose {
-  font-size: 15px;
-}
-.preview-document .portfolio h3 {
-  font-size: 17px;
-}
-.preview-document .project-art {
-  height: 130px;
-}
-.preview-document .template-bento .portfolio-section {
-  padding: 18px;
-}
-.preview-document .template-motion {
-  padding: 0;
-}
-.preview-document .template-motion .portfolio-hero {
-  padding: 30px 24px 60px;
-  min-height: 300px;
-}
-.preview-document .template-motion .portfolio-section {
-  padding: 28px 24px;
-}
 .preview-note {
   text-align: center;
   font-size: 9px;
@@ -511,13 +467,6 @@ progress::-webkit-progress-value {
 }
 .preview-mobile .preview-document {
   max-width: 375px;
-}
-.preview-mobile .project-grid,
-.preview-mobile .template-bento .portfolio-sections {
-  grid-template-columns: 1fr;
-}
-.preview-mobile .template-bento .portfolio-section {
-  grid-column: auto;
 }
 .empty {
   border: 1px dashed var(--line);
@@ -689,40 +638,6 @@ progress::-webkit-progress-value {
   max-height: none;
   padding: 25px;
 }
-.show-preview .preview-document .portfolio h1 {
-  font-size: 56px;
-}
-.show-preview .preview-document .portfolio-section {
-  display: grid;
-  grid-template-columns: 160px 1fr;
-}
-.show-preview .preview-document .portfolio {
-  padding: 48px;
-}
-.show-preview .preview-document .portfolio-prose {
-  font-size: 14px;
-}
-.show-preview .preview-document .portfolio h3 {
-  font-size: 21px;
-}
-.show-preview .preview-document .template-motion {
-  padding: 0;
-}
-.show-preview .preview-document .template-bento .portfolio-section {
-  display: block;
-}
-.show-preview .preview-mobile .preview-document .portfolio-section {
-  display: block;
-}
-.show-preview .preview-mobile .preview-document .portfolio {
-  padding: 24px;
-}
-.show-preview .preview-mobile .preview-document .portfolio h1 {
-  font-size: 34px;
-}
-.show-preview .preview-mobile .preview-document .template-motion {
-  padding: 0;
-}
 dialog {
   color: var(--ink);
   background: var(--surface);
@@ -795,9 +710,6 @@ dialog h2 {
   .save-state {
     max-width: 200px;
   }
-  .show-preview .preview-document .portfolio-section {
-    display: block;
-  }
 }
 @media (max-width: 600px) {
   .builder {
@@ -851,30 +763,6 @@ dialog h2 {
   .show-preview .preview-scroll {
     padding: 0;
   }
-  .show-preview .preview-document .portfolio {
-    padding: 26px 22px;
-  }
-  .show-preview .preview-document .portfolio h1 {
-    font-size: 35px;
-  }
-  .show-preview .preview-document .template-motion {
-    padding: 0;
-  }
-  .show-preview .preview-document .template-bento .portfolio-sections {
-    grid-template-columns: 1fr;
-  }
-  .show-preview .preview-document .template-bento .portfolio-section {
-    grid-column: auto;
-  }
-  .show-preview .preview-document .project-grid {
-    grid-template-columns: 1fr;
-  }
-  .show-preview .preview-document .portfolio-masthead {
-    font-size: 8px;
-  }
-  .show-preview .preview-document .portfolio h3 {
-    font-size: 20px;
-  }
 }
 .photo-upload img {
   display: block;
@@ -898,4 +786,8 @@ dialog h2 {
 }
 .photo-upload [role="status"] {
   font-size: 13px;
+}
+
+.preview-document {
+  max-width: 960px;
 }

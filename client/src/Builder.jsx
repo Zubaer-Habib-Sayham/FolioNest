@@ -616,8 +616,23 @@ export default function Builder() {
               <PhotoUpload
                 label="Portrait photo (optional)"
                 value={data.identity.photo}
-                onChange={(v) => identity("photo", v)}
+                backgroundRemoval={data.theme === "studio"}
+                original={data.identity.photoOriginal}
+                onChange={(photo, photoOriginal = "") =>
+                  change({
+                    ...data,
+                    identity: { ...data.identity, photo, photoOriginal },
+                  })
+                }
               />
+              {data.theme === "studio" && (
+                <PhotoUpload
+                  label="Signature image (optional)"
+                  value={data.identity.signature}
+                  transparent
+                  onChange={(v) => identity("signature", v)}
+                />
+              )}
             </>
           )}
           {step === 2 && (

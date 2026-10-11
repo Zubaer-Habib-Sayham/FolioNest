@@ -67,20 +67,28 @@ export function rasterDimensions(bytes) {
 export function validPhoto(value) {
   if (!value) return true;
   if (
-    !/^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(value) ||
+    !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(value) ||
     value.length > 171000
   )
     return false;
   try {
-    const bytes = Uint8Array.from(atob(value.slice(23)), (c) =>
-      c.charCodeAt(0),
+    const bytes = Uint8Array.from(
+      atob(value.slice(value.indexOf(",") + 1)),
+      (c) => c.charCodeAt(0),
     );
     const d = rasterDimensions(bytes);
     return (
       bytes.length <= MAX_PHOTO_BYTES &&
-      bytes.at(-2) === 255 &&
-      bytes.at(-1) === 217 &&
-      d.type === "image/jpeg" &&
+      ((d.type === "image/jpeg" &&
+        value.startsWith("data:image/jpeg;") &&
+        bytes.at(-2) === 255 &&
+        bytes.at(-1) === 217) ||
+        (d.type === "image/png" &&
+          value.startsWith("data:image/png;") &&
+          cleanPNG(bytes)) ||
+        (d.type === "image/webp" &&
+          value.startsWith("data:image/webp;") &&
+          cleanWebP(bytes))) &&
       d.width > 0 &&
       d.height > 0 &&
       Math.max(d.width, d.height) <= 1200
@@ -88,4 +96,60 @@ export function validPhoto(value) {
   } catch {
     return false;
   }
+}
+function cleanWebP(bytes) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (bytes.length < 30 || view.getUint32(4, true) + 8 !== bytes.length)
+    return false;
+  let offset = 12,
+    imageData = false;
+  while (offset + 8 <= bytes.length) {
+    const type = String.fromCharCode(...bytes.slice(offset, offset + 4));
+    const length = view.getUint32(offset + 4, true);
+    const end = offset + 8 + length + (length % 2);
+    if (end > bytes.length || !["VP8X", "VP8 ", "VP8L", "ALPH"].includes(type))
+      return false;
+    if (type === "VP8X" && (length !== 10 || bytes[offset + 8] & 2))
+      return false;
+    if (type === "VP8 " || type === "VP8L") imageData = true;
+    offset = end;
+  }
+  return imageData && offset === bytes.length;
+}
+
+// Accept bounded, single-frame PNGs without embedded text or original file metadata.
+function cleanPNG(bytes) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let offset = 8;
+  let imageData = false;
+  while (offset + 12 <= bytes.length) {
+    const length = view.getUint32(offset);
+    const end = offset + 12 + length;
+    if (end > bytes.length) return false;
+    const type = String.fromCharCode(...bytes.slice(offset + 4, offset + 8));
+    if (
+      !["IHDR", "IDAT", "IEND", "sRGB", "pHYs", "PLTE", "tRNS"].includes(type)
+    )
+      return false;
+    if (offset === 8 && (type !== "IHDR" || length !== 13)) return false;
+    if (
+      type === "IHDR" &&
+      (offset !== 8 ||
+        bytes[offset + 16] !== 8 ||
+        ![0, 2, 3, 4, 6].includes(bytes[offset + 17]))
+    )
+      return false;
+    let crc = 0xffffffff;
+    for (let i = offset + 4; i < end - 4; i++) {
+      crc ^= bytes[i];
+      for (let bit = 0; bit < 8; bit++)
+        crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+    }
+    if ((crc ^ 0xffffffff) >>> 0 !== view.getUint32(end - 4)) return false;
+    if (type === "IDAT") imageData = true;
+    if (type === "IEND")
+      return length === 0 && imageData && end === bytes.length;
+    offset = end;
+  }
+  return false;
 }

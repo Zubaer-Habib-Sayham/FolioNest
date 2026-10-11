@@ -4,6 +4,10 @@
   font-weight: 900;
   font-display: swap;
 }
+.portfolio-stage {
+  container: folio / inline-size;
+  width: 100%;
+}
 .portfolio {
   --paper: #f8f6f0;
   --text: #232a24;
@@ -13,6 +17,7 @@
   color: var(--text);
   font-family: Arial, sans-serif;
   line-height: 1.65;
+  font-size: 14px;
   width: 100%;
   overflow-wrap: anywhere;
   padding: 48px;
@@ -37,12 +42,17 @@
 }
 .portfolio h1,
 .portfolio h2,
+.portfolio h3 {
+  font-family: inherit;
+}
+.portfolio h1,
+.portfolio h2,
 .portfolio h3,
 .portfolio p {
   margin-top: 0;
 }
 .portfolio h1 {
-  font-size: clamp(35px, 5vw, 64px);
+  font-size: clamp(35px, 5cqw, 64px);
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -2px;
@@ -474,7 +484,7 @@
     }
   }
 }
-@media (max-width: 600px) {
+@container folio (max-width: 600px) {
   .portfolio .portfolio-hero:has(.portfolio-portrait) {
     padding-right: 24px;
   }
@@ -572,23 +582,27 @@
 }
 .template-studio {
   padding: 42px 40px;
-  container-type: inline-size;
 }
 .template-studio .portfolio-hero {
-  min-height: clamp(500px, 75cqw, 700px);
+  display: grid;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 54fr);
+  column-gap: 4%;
+  align-items: end;
   padding-bottom: 30px;
 }
 .template-studio .portfolio-hero:has(.portfolio-portrait) {
   padding-right: 0;
 }
 .template-studio .portfolio-masthead {
+  grid-column: 1 / -1;
   margin-bottom: 18px;
   border-bottom: 0;
 }
 .studio-display {
+  grid-column: 1 / -1;
   font-family: "Barlow Condensed", Impact, sans-serif;
   font-weight: 900;
-  font-size: 25cqw;
+  font-size: 23cqw;
   white-space: nowrap;
   line-height: 1;
   letter-spacing: -0.025em;
@@ -599,7 +613,7 @@
 .studio-introduction {
   position: relative;
   z-index: 2;
-  width: 42%;
+  min-width: 0;
   padding: 28px 0;
 }
 .template-studio h1 {
@@ -622,31 +636,32 @@
   color: var(--text);
 }
 .studio-signature {
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 21px;
   margin-top: 24px;
-  color: var(--subtle);
+  min-height: 70px;
+}
+.studio-signature img {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
 }
 .studio-photo-circle {
   position: absolute;
   right: 0;
-  bottom: 48px;
-  width: 100%;
+  bottom: 20px;
+  width: min(100%, 440px);
   aspect-ratio: 1;
   border-radius: 50%;
   background: color-mix(in srgb, var(--accent) 85%, var(--paper));
 }
 .studio-photo-area {
-  position: absolute;
-  width: 54%;
-  height: 390px;
-  right: 0;
-  bottom: 0;
+  position: relative;
+  width: 100%;
+  height: clamp(340px, 45cqw, 520px);
 }
 .template-studio .portfolio-portrait {
   width: 100%;
-  height: 390px;
+  height: 100%;
   right: 0;
   top: auto;
   bottom: 0;
@@ -654,6 +669,11 @@
   border: 0;
   border-radius: 46% 46% 2px 2px;
   z-index: 1;
+}
+.template-studio.portrait-cutout .portfolio-portrait {
+  object-fit: contain;
+  object-position: bottom center;
+  border-radius: 0;
 }
 .studio-photo-hint {
   position: absolute;
@@ -709,12 +729,12 @@
   text-transform: uppercase;
   font-size: 11px;
 }
-@container (max-width: 480px) {
+@container folio (max-width: 600px) {
   .template-studio .portfolio-hero {
-    min-height: auto;
+    display: block;
   }
   .studio-display {
-    font-size: 25cqw;
+    font-size: 23cqw;
     transform: scaleY(1.2);
     margin-bottom: 32px;
   }
@@ -761,7 +781,7 @@
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: 600px) {
+@container folio (max-width: 600px) {
   .template-studio {
     padding: 26px 22px;
   }

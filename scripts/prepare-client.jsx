@@ -52,7 +52,7 @@ writeFileSync(
 );
 writeFileSync(
   "client/dist/_headers",
-  "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  X-Frame-Options: DENY\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co https://us.i.posthog.com https://eu.i.posthog.com; frame-src 'self' blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'\n/builder\n  X-Robots-Tag: noindex, nofollow\n/builder/*\n  X-Robots-Tag: noindex, nofollow\n",
+  "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  X-Frame-Options: DENY\n  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co https://us.i.posthog.com https://eu.i.posthog.com; frame-src 'self' blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'\n/builder\n  X-Robots-Tag: noindex, nofollow\n/builder/*\n  X-Robots-Tag: noindex, nofollow\n",
 );
 writeFileSync(
   "client/dist/_routes.json",

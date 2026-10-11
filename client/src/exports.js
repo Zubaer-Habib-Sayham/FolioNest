@@ -354,11 +354,12 @@ export async function exportPortfolio(format, input, _element) {
       const visible = visiblePortfolio(data);
       const images = [
         visible.identity.photo,
+        visible.identity.signature,
         ...visible.projects.map((p) => p.image),
       ].filter(Boolean);
       images.forEach((image, i) => {
-        const asset = `assets/photo-${i + 1}.jpg`;
-        zip.file(asset, image.slice(23), { base64: true });
+        const asset = `assets/photo-${i + 1}.${image.startsWith("data:image/png;") ? "png" : image.startsWith("data:image/webp;") ? "webp" : "jpg"}`;
+        zip.file(asset, image.slice(image.indexOf(",") + 1), { base64: true });
         html = html.replaceAll(image, asset);
       });
       zip.file("index.html", html);

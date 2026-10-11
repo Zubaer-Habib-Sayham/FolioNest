@@ -169,6 +169,8 @@ test("hidden fields are removed from public structured data", async () => {
   hidden.identity.name = "Hidden Contact";
   hidden.sections.find((s) => s.id === "contact").visible = false;
   hidden.sections.find((s) => s.id === "about").visible = false;
+  hidden.identity.photoOriginal = `data:image/png;base64,${(await fs.readFile("client/public/brand/folionest-icon-512.png")).toString("base64")}`;
+  hidden.identity.signature = hidden.identity.photoOriginal;
   const row = await owner("post", "/api/portfolios").send({ data: hidden });
   await owner("post", `/api/portfolios/${row.body.portfolio.id}/publish`).send({
     slug: "hidden-contact",
@@ -179,6 +181,12 @@ test("hidden fields are removed from public structured data", async () => {
   expect(result.body.data.identity.email).toBe("");
   expect(result.body.data.identity.website).toBe("");
   expect(result.body.data.about).toBe("");
+  expect(result.body.data.identity.photoOriginal).toBe("");
+  expect(result.body.data.identity.signature).toBe("");
+  expect(
+    (await owner("get", `/api/portfolios/${row.body.portfolio.id}`)).body
+      .portfolio.data.identity.photoOriginal,
+  ).toBe(hidden.identity.photoOriginal);
 });
 test("stale draft cannot publish a different document accidentally", async () => {
   const current = await repository.get(id, a);

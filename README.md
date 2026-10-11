@@ -20,7 +20,7 @@ On PowerShell use `Copy-Item .env.example .env`. Open `http://127.0.0.1:5173/`; 
 
 - Editorial, Pinboard/Bento, Motion Story, Quest/Level-Up and portrait-led Creative Studio layouts, with full-page gallery previews generated from the actual shared renderer.
 - Guided forms for identity, biography, skills, projects, career, education, achievements and contact links. Reorder projects and sections with keyboard-accessible buttons, hide sections and choose section colors, whole-page background, palette, font and portfolio appearance. Editor appearance is independent.
-- Validated local autosave, backup download and confirmed JSON restore. Optional portrait and project photos are resized and stripped of original metadata on your device.
+- Validated local autosave, backup download and confirmed JSON restore. Optional portrait and project photos are resized and stripped of original metadata on your device. Creative Studio includes local background removal with live cutout preview/original restoration and an optional uploaded signature image.
 - Selectable-text CV PDF and paginated portfolio PDF with complete page backgrounds, full-page PNG and a standalone website ZIP with required images/fonts. The ZIP runs offline without an account or connection to FolioNest. An illustrated guide explains free browser-only hosting.
 - Optional Supabase sign-up/sign-in/sign-out, explicit cloud save/load/delete, publishing confirmation, unique slugs and unpublishing. Server queries enforce ownership. Public pages use snapshots, so saving a private edit does not change a live page.
 - Public HTML includes portfolio content in its first response, canonical/Open Graph/Person metadata, controlled indexing, sitemap and robots. Private routes are noindex.
@@ -67,7 +67,7 @@ Online launch requires final product approval. `render.yaml` is a prepared free-
 
 ## Limits and extension
 
-Backups/documents are limited to 2 MB; stored photos are JPEG, up to 1,200 pixels and 96 KB each. Source uploads are limited to 5 MB and 24 megapixels. Twelve items per project/career collection, forty skills and eight known sections keep rendering bounded. Up to fifty cloud portfolios per account; dashboard lists contain summaries only. A single sitemap is capped at 49,999 portfolios plus the landing page; larger sites need a paginated sitemap index.
+Backups/documents are limited to 2 MB; stored photos are bounded JPEG, PNG or WebP, up to 1,200 pixels and 96 KB each. Source uploads are limited to 5 MB and 24 megapixels. Twelve items per project/career collection, forty skills and eight known sections keep rendering bounded. Up to fifty cloud portfolios per account; dashboard lists contain summaries only. A single sitemap is capped at 49,999 portfolios plus the landing page; larger sites need a paginated sitemap index.
 
 The CV font supports Latin and many additional characters but not every script/symbol. Unsupported text produces an error recommending Portfolio PDF, which preserves browser-rendered text. Portfolio PDF is rasterized; PNG is 960 pixels wide. Captures over 18,000 pixels high and artifacts over 30 MB fail with guidance. Photo crops use a consistent cover layout; advanced cropping and galleries are future additions.
 

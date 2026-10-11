@@ -1,5 +1,15 @@
 # Verification log
 
+## Portrait cutouts, optional signatures and export parity
+
+- `npm run check` passed: ESLint, syntax validation of 53 JavaScript/JSX files, 32 tests across eight files and client/server production builds. `npm run test:e2e` passed all 12 Chrome tests. `npm audit --omit=dev` reported zero vulnerabilities.
+- Real CPU segmentation of the documented public-domain NASA fixture produced a transparent cutout with both opaque and clear pixels. Reload preserved it; restoring the original and uploading/removing a signature worked. Cancellation and a model-download failure preserved the original. Browser requests stayed local and GET-only. No private portrait was used in verification.
+- Every template's downloaded ZIP was extracted and opened offline. Computed positions, dimensions, fonts and grid columns matched its live preview at equal desktop/mobile canvas widths. Studio's portrait region stayed below the display title. Gallery images were regenerated from the corrected shared renderer. An empty signature area contains no fabricated handwriting or typed name.
+- Both Editorial and Studio passed all four actual file exports. Studio's ZIP contained the cutout, explicitly uploaded signature and project image; the normalized original was absent from assets and public JSON. All PDF pages were inspected against the selected corner color; CV text and PNG dimensions were checked. The current Studio PDF first page was visually reviewed for title/portrait separation and transparency.
+- `node scripts/run.js scripts/verify-production.js` passed against the compiled local server on port 3002, exercising cutout/signature/PNG under the production CSP, first-response HTML/metadata, callbacks, 404s and no browser-console errors. This verifies local production output, not an external host.
+- Earlier checks caught a development first-use reload, an oversized transparent PNG, dependency diagnostic traffic and a production-CSP-blocked data-image fetch. Dependency pre-optimization, bounded WebP encoding, a worker fetch guard installed before runtime import, and direct local data-image decoding resolved them. The diagnostic request occurred with a public test fixture; later checks verified no external transport. One overlapping browser invocation interfered with traces; final runs were sequential. A sandbox Vite realpath failure required verification outside filesystem isolation.
+- Live Supabase Auth, hosted TLS/database operations, provider analytics ingestion and remote deployment remain unverified. Existing hosted ZIPs must be replaced with freshly downloaded exports to receive the layout fix. The whole application remains local pending final product approval.
+
 ## JavaScript migration
 
 - Converted all 43 tracked source/config/test files from TypeScript to JavaScript/JSX and removed the TypeScript source/compiler configuration. Retained React, Vite, Express, runtime schemas, query ownership checks, styles and saved-document format. No EJS rewrite was needed.

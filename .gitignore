@@ -8,6 +8,7 @@ test-results/
 playwright-report/
 artifacts/
 .script-*/
+client/public/background-runtime/
 *.log
 *.dump
 *.sql.gz

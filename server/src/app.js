@@ -58,7 +58,8 @@ export function createApp(options) {
       contentSecurityPolicy: {
         directives: {
           "default-src": ["'self'"],
-          "script-src": ["'self'"],
+          "script-src": ["'self'", "'wasm-unsafe-eval'"],
+          "worker-src": ["'self'"],
           "style-src": ["'self'", "'unsafe-inline'"],
           "img-src": ["'self'", "data:", "blob:"],
           "connect-src": [

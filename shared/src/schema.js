@@ -137,6 +137,8 @@ export const portfolioSchema = z
         email: emailSchema,
         website: webUrl,
         photo: photoSchema,
+        photoOriginal: photoSchema,
+        signature: photoSchema,
       })
       .strict(),
     about: text(4000),
@@ -185,6 +187,9 @@ export const portfolioSchema = z
 /** @typedef {import("zod").infer<typeof portfolioSchema>} PortfolioData */
 export function visiblePortfolio(input) {
   const p = structuredClone(input);
+  // The original background is private editing history, never a public asset.
+  p.identity.photoOriginal = "";
+  if (p.theme !== "studio") p.identity.signature = "";
   const visible = new Set(p.sections.filter((s) => s.visible).map((s) => s.id));
   if (!visible.has("about")) p.about = "";
   if (!visible.has("skills")) p.skills = [];
@@ -266,6 +271,8 @@ export function blankPortfolio() {
       email: "",
       website: "",
       photo: "",
+      photoOriginal: "",
+      signature: "",
     },
     about: "",
     skills: [],
@@ -289,6 +296,8 @@ export function samplePortfolio() {
       email: "",
       website: "",
       photo: "",
+      photoOriginal: "",
+      signature: "",
     },
     about:
       "This is sample copy to help you explore the layout. Introduce yourself here: what you do, what matters to you, and the kind of work you want to make next.",

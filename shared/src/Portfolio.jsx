@@ -143,95 +143,105 @@ export function Portfolio({ data, preview = false }) {
     />
   ) : null;
   return (
-    <article
-      className={`portfolio template-${data.theme} portfolio-${data.appearance} font-${data.font}`}
-      style={style}
-      aria-label={
-        preview ? "Portfolio preview" : `${data.identity.name} portfolio`
-      }
-    >
-      <header className="portfolio-hero">
-        <div className="portfolio-masthead">
-          <span>{data.identity.name || "Your name"}</span>
-          <span>{data.identity.location}</span>
-        </div>
-        {data.theme === "studio" && (
-          <div className="studio-display" aria-hidden="true">
-            PORTFOLIO
+    <div className="portfolio-stage">
+      <article
+        className={`portfolio template-${data.theme} portfolio-${data.appearance} font-${data.font}${/^data:image\/(png|webp);/.test(data.identity.photo) ? " portrait-cutout" : ""}`}
+        style={style}
+        aria-label={
+          preview ? "Portfolio preview" : `${data.identity.name} portfolio`
+        }
+      >
+        <header className="portfolio-hero">
+          <div className="portfolio-masthead">
+            <span>{data.identity.name || "Your name"}</span>
+            <span>{data.identity.location}</span>
           </div>
-        )}
-        <div
-          className={
-            data.theme === "studio" ? "studio-introduction" : undefined
-          }
-        >
           {data.theme === "studio" && (
-            <p className="portfolio-kicker">Hello, I’m</p>
-          )}
-          {data.theme === "quest" && (
-            <p className="portfolio-kicker">
-              A CAREER IN PROGRESS / THE JOURNEY SO FAR
-            </p>
-          )}
-          <h1>{data.identity.name || "Your name"}</h1>
-          <p className="hero-name">
-            {data.identity.headline || "Add a headline to introduce your work."}
-          </p>
-          {data.theme === "studio" && (
-            <div className="studio-signature" aria-hidden="true">
-              {data.identity.name || "Your name"}
+            <div className="studio-display" aria-hidden="true">
+              PORTFOLIO
             </div>
           )}
-        </div>
-        {data.theme === "studio" ? (
-          <div className="studio-photo-area">
-            <div className="studio-photo-circle" aria-hidden="true" />
-            {portrait}
-            {!data.identity.photo && preview && (
-              <p className="studio-photo-hint">
-                Your portrait goes here.
-                <br />
-                Add it in Introduction.
+          <div
+            className={
+              data.theme === "studio" ? "studio-introduction" : undefined
+            }
+          >
+            {data.theme === "studio" && (
+              <p className="portfolio-kicker">Hello, I’m</p>
+            )}
+            {data.theme === "quest" && (
+              <p className="portfolio-kicker">
+                A CAREER IN PROGRESS / THE JOURNEY SO FAR
               </p>
             )}
+            <h1>{data.identity.name || "Your name"}</h1>
+            <p className="hero-name">
+              {data.identity.headline ||
+                "Add a headline to introduce your work."}
+            </p>
+            {data.theme === "studio" && (
+              <div className="studio-signature" aria-hidden="true">
+                {data.identity.signature && (
+                  <img
+                    src={data.identity.signature}
+                    alt=""
+                    width="180"
+                    height="70"
+                  />
+                )}
+              </div>
+            )}
           </div>
-        ) : (
-          portrait
-        )}
-        <span className="portfolio-hero-decoration" aria-hidden="true">
-          {data.theme === "quest" ? "01" : "✦"}
-        </span>
-      </header>
-      <div className="portfolio-sections">
-        {data.sections
-          .filter((s) => s.visible)
-          .map((section, i) => {
-            const content = Content({ id: section.id, data });
-            if (!content) return null;
-            return (
-              <section
-                key={section.id}
-                id={`section-${section.id}`}
-                className={`portfolio-section section-${section.id}`}
-                style={{
-                  "--section-accent": palettes[section.color],
-                }}
-              >
-                <div className="portfolio-section-label">
-                  <span aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h2>{sectionNames[section.id]}</h2>
-                </div>
-                <div className="portfolio-section-content">{content}</div>
-              </section>
-            );
-          })}
-      </div>
-      <footer className="portfolio-footer">
-        <span>{data.identity.name || "Your name"}</span>
-        <a href="#">Back to the top</a>
-      </footer>
-    </article>
+          {data.theme === "studio" ? (
+            <div className="studio-photo-area">
+              <div className="studio-photo-circle" aria-hidden="true" />
+              {portrait}
+              {!data.identity.photo && preview && (
+                <p className="studio-photo-hint">
+                  Your portrait goes here.
+                  <br />
+                  Add it in Introduction.
+                </p>
+              )}
+            </div>
+          ) : (
+            portrait
+          )}
+          <span className="portfolio-hero-decoration" aria-hidden="true">
+            {data.theme === "quest" ? "01" : "✦"}
+          </span>
+        </header>
+        <div className="portfolio-sections">
+          {data.sections
+            .filter((s) => s.visible)
+            .map((section, i) => {
+              const content = Content({ id: section.id, data });
+              if (!content) return null;
+              return (
+                <section
+                  key={section.id}
+                  id={`section-${section.id}`}
+                  className={`portfolio-section section-${section.id}`}
+                  style={{
+                    "--section-accent": palettes[section.color],
+                  }}
+                >
+                  <div className="portfolio-section-label">
+                    <span aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <h2>{sectionNames[section.id]}</h2>
+                  </div>
+                  <div className="portfolio-section-content">{content}</div>
+                </section>
+              );
+            })}
+        </div>
+        <footer className="portfolio-footer">
+          <span>{data.identity.name || "Your name"}</span>
+          <a href="#">Back to the top</a>
+        </footer>
+      </article>
+    </div>
   );
 }
