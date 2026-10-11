@@ -43,6 +43,7 @@ export function TemplateCard({ template, selected, onSelect }) {
       </a>
       <button
         type="button"
+        disabled={typeof window === "undefined"}
         className={`shortlist-toggle ${selected ? "selected" : ""}`}
         aria-pressed={selected}
         aria-label={`${selected ? "Remove" : "Shortlist"} ${name}`}
@@ -102,6 +103,7 @@ export default function TemplateGallery({ featured = false }) {
             Find a design
             <input
               type="search"
+              disabled={typeof window === "undefined"}
               maxLength={80}
               value={query}
               placeholder="Search names or styles"
@@ -115,6 +117,7 @@ export default function TemplateGallery({ featured = false }) {
             <label htmlFor="template-style">Style</label>
             <select
               id="template-style"
+              disabled={typeof window === "undefined"}
               value={category}
               onChange={(e) => {
                 setCategory(e.target.value);

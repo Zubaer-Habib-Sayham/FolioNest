@@ -29,6 +29,10 @@ services:
         sync: false
       - key: VITE_SUPABASE_PUBLISHABLE_KEY
         sync: false
+      - key: VITE_GITHUB_AUTH_ENABLED
+        value: "false"
+      - key: VITE_EMAIL_SIGNUP_ENABLED
+        value: "false"
       - key: VITE_POSTHOG_KEY
         value: ""
       - key: VITE_POSTHOG_HOST

@@ -83,7 +83,7 @@ test("real local portrait cutout, original fallback, signature and persistence",
   await expect(page.locator(".studio-signature img")).toHaveCount(0);
   expect(requests.filter((r) => r.method !== "GET")).toEqual([]);
   expect(
-    requests.every((r) => r.url.startsWith("http://127.0.0.1:5173/")),
+    requests.every((r) => r.url.startsWith(`${new URL(page.url()).origin}/`)),
   ).toBe(true);
   await page.screenshot({
     path: "artifacts/studio-original-restored.png",

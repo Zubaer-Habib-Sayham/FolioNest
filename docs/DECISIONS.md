@@ -35,3 +35,11 @@ Choosing a gallery design applies that template to the existing local draft and 
 The template gallery is a public static/prerendered route backed by the same validated registry. Search text and shortlists remain local and are excluded from analytics. A shortlist holds design IDs, while one private draft holds content; this keeps edits consistent across designs and avoids divergent copies. Collection ZIP generation reuses the single-website asset pipeline. Every included design is independent of sibling folders and the application.
 
 Render assigns its public URL at service creation. The server and prerender build accept its documented RENDER_EXTERNAL_URL as a fallback when APP_ORIGIN is absent, avoiding a guessed canonical or allowed origin. An explicit custom origin takes precedence. Production still requires a valid HTTPS origin. Supabase pooler TLS uses the provider-published CA with certificate verification enabled; credentials remain in ignored/server-only environment settings.
+
+## Controlled launch and free registration
+
+The approved launch uses a single Free Render service plus Free Supabase, without paid infrastructure. Assigned hosting origins are validated before use; canonical URLs use the actual public address. The optional static proxy remains undeployed. PostHog measures only explicit consented enum events, and the private owner dashboard reports actions rather than exact people or offline usage.
+
+Public email registration remains hidden when custom SMTP is unavailable. GitHub Auth is an optional build flag, enabled only after the owner configures its provider credentials directly in Supabase. OAuth uses PKCE, the exact builder redirect and provider default identity permissions; it requests no repository-management scopes. Existing confirmed email/password accounts can still sign in. New credentials are never stored in the client or repository.
+
+Gallery prerendered search/filter/shortlist controls remain disabled until React mounts, preventing user input from being discarded during replacement of initial HTML. Ordinary navigation links remain usable before JavaScript loads.

@@ -12,7 +12,7 @@ try {
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
-  const origin = "http://127.0.0.1:3002";
+  const origin = process.env.VERIFY_ORIGIN || "http://127.0.0.1:3002";
   const raw = await fetch(origin);
   assert.equal(raw.status, 200);
   const html = await raw.text();
@@ -109,11 +109,21 @@ try {
     .toBe(true);
   await page.goto(origin + "/builder?account=1");
   await expect(page.getByRole("dialog")).toBeVisible();
-  await page.goto(origin + "/builder/?code=valid-callback-code");
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(
-    page.getByText("Cloud services aren’t connected yet.", { exact: true }),
-  ).toBeVisible();
+  const cloud = Boolean(
+    (await (await fetch(origin + "/api/config")).json()).cloud,
+  );
+  if (!cloud) {
+    await page.goto(origin + "/builder/?code=valid-callback-code");
+    await expect(page.getByRole("dialog")).toBeVisible();
+  }
+  if (cloud)
+    await expect(
+      page.getByRole("dialog").getByLabel("Email", { exact: true }),
+    ).toBeVisible();
+  else
+    await expect(
+      page.getByText("Cloud services aren’t connected yet.", { exact: true }),
+    ).toBeVisible();
   const builder = await fetch(origin + "/builder?code=valid-callback-code");
   assert.equal(builder.status, 200);
   assert.ok(builder.headers.get("X-Robots-Tag")?.includes("noindex"));

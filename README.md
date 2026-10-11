@@ -1,5 +1,7 @@
 # FolioNest
 
+**Live website: [folionest.onrender.com](https://folionest.onrender.com)**
+
 A portfolio builder with eleven responsive designs, local drafts and useful exports. Building, editing, saving on your device and downloading require no account. Supabase accounts are optional and required for cloud saves and public links.
 
 Source uses JavaScript/JSX with React and Express. Runtime Zod schemas validate documents and requests. `npm run validate` checks JavaScript syntax; the project no longer requires a TypeScript compiler or typecheck.
@@ -29,7 +31,7 @@ On PowerShell use `Copy-Item .env.example .env`. Open `http://127.0.0.1:5173/`; 
 
 ## Cloud setup
 
-Create a project named FolioNest in a **Free** Supabase organization; verify the plan and available project quota before creation. This build has not provisioned or modified an external project. The connected cost lookup was unavailable, so live sign-in and hosted database connectivity are still unverified.
+The deployed app uses the FolioNest project in a Free Supabase organization. All three migrations are applied, PostgreSQL connectivity passed with verified TLS, and browser table access remains restricted. Public email registration requires custom SMTP; GitHub sign-in is an optional free alternative being configured. See [free account setup](docs/FREE_AUTH_SETUP.md). Successful real-account cloud management and two-account provider checks are still outstanding.
 
 1. Run all committed SQL files in `supabase/migrations/` in filename order using Supabase's SQL editor or CLI. The initial migration creates private drafts and publication snapshots, RLS and indexes; later migrations permit Creative Studio and the six photographic designs. Browser Data API writes remain revoked. Do not disable those protections.
 2. Enable email/password Auth and keep email confirmation enabled. Set Site URL to your application origin, and add the exact local and future hosted `/builder` redirect URLs. Registration redirects to `/builder`; use email confirmation on the same browser for PKCE. Configure your own SMTP if required for real users. Provider email delivery and rate limits need verification before launch.
@@ -45,6 +47,8 @@ Create a project named FolioNest in a **Free** Supabase organization; verify the
 | `DATABASE_CA_CERT` | Server only, optional | Trusted project PEM if Node's default CA store cannot verify the connection |
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Server | Verify each bearer token with Supabase Auth |
 | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | Client build | Optional browser Auth, public credentials only |
+| `VITE_GITHUB_AUTH_ENABLED` | Client build | Set `true` only after enabling the GitHub provider in Supabase |
+| `VITE_EMAIL_SIGNUP_ENABLED` | Client build | Set `false` without production SMTP; existing confirmed email accounts can still sign in |
 | `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST` | Client build; Express CSP | Optional public analytics project token and US/EU ingestion host |
 | `API_ORIGIN` | Cloudflare Pages runtime only | HTTPS Express origin for the optional narrow proxy |
 
@@ -64,7 +68,7 @@ For intercepted real-SDK analytics verification, start a separate Vite preview o
 
 ## Deployment and SEO
 
-Online launch requires final product approval. `render.yaml` is a prepared free-plan Blueprint with automatic deployment off; it has not created services. The recommended split setup uses Cloudflare Pages for assets and static robots, Render Free for Express/public HTML, and Supabase Free for PostgreSQL/Auth. The Pages function proxies only API, public pages and sitemap. See `docs/DEPLOYMENT.md` for commands, configuration and cold-start caveats; see `docs/SEO_CHECKLIST.md` for raw-HTML and Search Console checks. Crawlability does not guarantee Google indexing or rankings.
+Publication was approved and the app is live on one Render Free Node service, with Supabase Free and consent-based PostHog analytics. Automatic deployments remain off; verified releases are deployed manually. Render can sleep and its idle crawler policy limits reliable SEO. A prepared Cloudflare Pages proxy is an optional future improvement, not part of the current deployment. See [deployment](docs/DEPLOYMENT.md), [usage dashboard](docs/ANALYTICS.md), and [SEO checklist](docs/SEO_CHECKLIST.md). Crawlability does not guarantee indexing or rankings.
 
 ## Limits and extension
 
@@ -72,6 +76,6 @@ Backups/documents are limited to 2 MB; stored photos are bounded JPEG, PNG or We
 
 Résumé and portfolio PDFs preserve browser-rendered typography as raster images; their text is not selectable or tagged for assistive technology or automated résumé parsing. The résumé is captured at approximately 288 DPI, retains clickable links and fits one A4 portrait sheet with about 10 mm internal margins. It uses progressively shorter excerpts and fewer leading items in the user's chosen order, without modifying the draft. Extremely long headings or contact details that still cannot fit produce an error recommending shorter wording or the complete Portfolio PDF. Print the résumé on A4 at Actual size. PNG is 960 pixels wide. Captures over 18,000 pixels high and artifacts over 30 MB fail with guidance. Photo crops use a consistent cover layout; advanced cropping and galleries are future additions.
 
-Free hosts have quotas and may sleep or pause. Hosted operation, live email delivery, real-provider Auth and cloud TLS have not been verified. Process-local rate limits support a demo; distributed abuse resistance and load testing remain launch work. Maintain independent backups.
+Free hosts have quotas and may sleep or pause. Hosted guest operation, strict database TLS and real analytics ingestion are verified. Public email delivery, successful provider login/cloud management, real-account cross-access, idle cold starts and Search Console remain unverified. Process-local rate limits support a demo; distributed abuse resistance and load testing remain future work. Maintain independent backups.
 
 Add future designs using the shared registry and renderer following `docs/TEMPLATES.md`. See `docs/SECURITY.md` for the trust boundaries. Future UI/layout changes can preserve saved content while evolving template CSS.

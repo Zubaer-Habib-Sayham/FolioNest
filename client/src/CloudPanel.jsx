@@ -8,6 +8,9 @@ import {
 import { ConfirmDialog } from "./Dialog.jsx";
 const url = import.meta.env.VITE_SUPABASE_URL,
   key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const githubEnabled = import.meta.env.VITE_GITHUB_AUTH_ENABLED === "true";
+const emailSignupEnabled =
+  import.meta.env.VITE_EMAIL_SIGNUP_ENABLED !== "false";
 function optionalAuth() {
   if (!url || !key) return null;
   try {
@@ -175,6 +178,16 @@ export default function CloudPanel({ data, link, onLink, onLoad, onClose }) {
       );
     });
   }
+  async function authenticateWithGitHub() {
+    if (!supabase) return;
+    await perform(async () => {
+      const result = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: { redirectTo: `${location.origin}/builder` },
+      });
+      if (result.error) throw new Error(result.error.message);
+    });
+  }
   async function save() {
     const parsed = portfolioSchema.safeParse(data);
     if (!parsed.success)
@@ -264,6 +277,23 @@ export default function CloudPanel({ data, link, onLink, onLoad, onClose }) {
             An account is only needed for cloud saving and publishing. Your
             local draft stays here while you sign in.
           </p>
+          {githubEnabled && (
+            <button
+              className="button"
+              type="button"
+              disabled={busy}
+              onClick={() => void authenticateWithGitHub()}
+            >
+              Continue with GitHub
+            </button>
+          )}
+          {!emailSignupEnabled && (
+            <p className="fine-print">
+              {githubEnabled
+                ? "Use GitHub to create a free account. Email sign-in below is for existing confirmed accounts."
+                : "New account registration is being configured. You can build, save locally and export without an account."}
+            </p>
+          )}
           <form onSubmit={(event) => void authenticate(event)}>
             <div className="field">
               <label htmlFor="auth-email">Email</label>
@@ -293,19 +323,21 @@ export default function CloudPanel({ data, link, onLink, onLoad, onClose }) {
             <button className="button" disabled={busy} type="submit">
               {signup ? "Create free account" : "Sign in"}
             </button>
-            <button
-              className="text-button auth-switch"
-              type="button"
-              disabled={busy}
-              onClick={() => {
-                setSignup(!signup);
-                setMessage("");
-              }}
-            >
-              {signup
-                ? "Already have an account? Sign in"
-                : "New here? Create a free account"}
-            </button>
+            {emailSignupEnabled && (
+              <button
+                className="text-button auth-switch"
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setSignup(!signup);
+                  setMessage("");
+                }}
+              >
+                {signup
+                  ? "Already have an account? Sign in"
+                  : "New here? Create a free account"}
+              </button>
+            )}
           </form>
         </>
       ) : (
