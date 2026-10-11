@@ -34,6 +34,28 @@ function required(value) {
 export function createApp(options) {
   const app = express();
   app.disable("x-powered-by");
+  app.use((req, _res, next) => {
+    const separator = req.url.indexOf("?");
+    if (separator !== -1) {
+      const parameters = req.url.slice(separator + 1).split("&");
+      const kept = parameters.filter((parameter) => {
+        const name = (
+          new URLSearchParams(parameter).keys().next().value || ""
+        ).toLowerCase();
+        return (
+          !["fbclid", "gclid", "dclid", "msclkid", "igshid"].includes(name) &&
+          !name.startsWith("utm_")
+        );
+      });
+      if (kept.length !== parameters.length) {
+        // Keep the path and remaining query bytes intact, including duplicates.
+        req.url =
+          req.url.slice(0, separator) +
+          (kept.length ? `?${kept.join("&")}` : "");
+      }
+    }
+    next();
+  });
   app.use((req, res, next) => {
     res.locals.requestId = randomUUID();
     res.set("X-Request-ID", res.locals.requestId);

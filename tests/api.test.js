@@ -87,7 +87,10 @@ test("authentication and strict request validation fail safely", async () => {
   );
   expect(
     (
-      await owner("post", "/api/portfolios").send({
+      await owner(
+        "post",
+        "/api/portfolios?fbclid=test&utm_source=facebook",
+      ).send({
         data: draft(),
         owner_id: b,
       })

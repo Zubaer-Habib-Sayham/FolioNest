@@ -129,3 +129,57 @@ test("private builder accepts bounded email callbacks and rejects arbitrary quer
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test("social tracking is stripped before strict route validation while app queries remain intact", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "folio-tracking-"));
+  try {
+    await writeFile(
+      path.join(directory, "index.html"),
+      "<html><head><title>FolioNest</title></head><body>Build your story</body></html>",
+    );
+    const app = createApp({
+      origin: "https://folio.example",
+      clientDir: directory,
+    });
+    for (const query of [
+      "fbclid=test",
+      "gclid=test&dclid=test&msclkid=test&igshid=test",
+      "utm_source=facebook&utm_medium=social&utm_campaign=launch&utm_custom=x",
+      "FBCLID=test&GcLiD=test&DCLID=test&MSCLKID=test&IGSHID=test&UtM_Source=test",
+      "%66bclid=test&%55TM_campaign=test&fbclid=one&fbclid=two",
+    ]) {
+      const response = await request(app).get(`/?${query}`);
+      expect(response.status, query).toBe(200);
+      expect(response.type).toBe("text/html");
+      expect(response.text).toContain("Build your story");
+    }
+    expect(
+      (await request(app).get("/api/health?fbclid=test&utm_source=facebook"))
+        .status,
+    ).toBe(200);
+    const builder = await request(app).get(
+      "/builder/?fbclid=test&template=studio&account=1&code=valid_callback-code&UTM_Source=facebook",
+    );
+    expect(builder.status).toBe(200);
+    expect(builder.headers["x-robots-tag"]).toContain("noindex");
+    for (const url of [
+      "/?fbclid=test&unknown=value",
+      "/?fbclid_extra=test",
+      "/?utmSource=test",
+      "/builder?fbclid=test&account=2",
+      "/builder?utm_source=test&template=unknown",
+      "/builder?gclid=test&code=invalid%20code",
+      "/builder?fbclid=test&account=1&account=2",
+      "/api/health?utm_medium=social&owner_id=untrusted",
+    ]) {
+      const response = await request(app).get(url);
+      expect(response.status, url).toBe(400);
+      expect(response.body.error.code).toBe("VALIDATION_ERROR");
+    }
+    expect((await request(app).get("/missing-page?fbclid=test")).status).toBe(
+      404,
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
