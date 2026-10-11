@@ -93,6 +93,43 @@ function App() {
           <a data-contact-type="email" href="mailto:zubaersayhamcse1@gmail.com">
             zubaersayhamcse1@gmail.com
           </a>
+          <div
+            className="developer-socials"
+            aria-label="Developer contact links"
+          >
+            <a
+              data-contact-type="website"
+              href="https://www.linkedin.com/in/zubaer-habib-sayham-44272333b"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
+            <a
+              data-contact-type="website"
+              href="https://github.com/Zubaer-Habib-Sayham"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            <a
+              data-contact-type="website"
+              href="https://www.facebook.com/zubaer.habib.sayham"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Facebook
+            </a>
+            <a
+              data-contact-type="website"
+              href="https://wa.me/8801687451349"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp · 01687451349
+            </a>
+          </div>
         </div>
         <a className="brand" href="/">
           FolioNest.

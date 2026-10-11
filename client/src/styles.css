@@ -5,6 +5,12 @@
   background: #f7f8f2;
   font-size: 15px;
 }
+.developer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 18px;
+}
 * {
   box-sizing: border-box;
 }

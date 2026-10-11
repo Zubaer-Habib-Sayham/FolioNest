@@ -1,4 +1,21 @@
 import { test, expect } from "@playwright/test";
+
+test("developer contact links use the supplied destinations and accessible labels", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const footer = page.locator(".developer-note");
+  for (const [label, href] of [
+    ["LinkedIn", "https://www.linkedin.com/in/zubaer-habib-sayham-44272333b"],
+    ["GitHub", "https://github.com/Zubaer-Habib-Sayham"],
+    ["Facebook", "https://www.facebook.com/zubaer.habib.sayham"],
+    ["WhatsApp · 01687451349", "https://wa.me/8801687451349"],
+  ]) {
+    await expect(
+      footer.getByRole("link", { name: label, exact: true }),
+    ).toHaveAttribute("href", href);
+  }
+});
 import fs from "node:fs/promises";
 test("guest editing, ordering, themes, reload and confirmed JSON restore", async ({
   page,

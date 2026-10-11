@@ -1,5 +1,7 @@
 # Implementation plan
 
+Current expansion: (1) add the developer's supplied social/contact links; (2) inspect six supplied design references and implement six distinct responsive templates with the established generated model, restrained photo motion and real shared-renderer previews; (3) feature eight desktop/six mobile designs, add a searchable all-templates page and a persistent shortlist of up to four designs carried into editing/export; (4) verify all layouts, reduced motion, guest persistence, ownership/schema compatibility, one-page résumés and independently operating website ZIPs. Run relevant checks and push verified milestones. Keep whole-application deployment pending final user approval.
+
 Current gallery revision: add professional fictional portrait/project imagery to Creative Studio, using the actual renderer and proportional photo/circle geometry. Verify transparent photo alignment at mobile and desktop sizes, image loading, keyboard/reduced-motion behavior and draft preservation, then commit and push. Additional templates follow the user's next design requests; whole-application publication still requires final approval.
 
 Gallery revision status: imagery and the optimized shared-renderer preview are implemented. All 34 unit/API tests, 14 browser tests, lint, syntax validation, both builds and the compiled-app smoke check passed. Portrait alignment and draft preservation are verified; screenshots were reviewed on mobile and desktop. Ready for the user's next template designs.

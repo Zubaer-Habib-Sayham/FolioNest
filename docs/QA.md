@@ -1,5 +1,10 @@
 # Verification log
 
+## Developer contact links
+
+- Added the four supplied social/contact destinations to the developer footer. WhatsApp displays the supplied local number and uses its Bangladesh international dialing form in the HTTPS link. New tabs use opener protection; analytics records only the existing generic contact type.
+- `npm run check` passed lint, 57-file syntax validation, 34 unit/API tests and both builds. Four guest browser tests passed, including exact contact destinations, signed-out persistence/JSON, optional cloud dialog and mobile/keyboard/reduced-motion workflows. No external contact messages were sent.
+
 ## Creative Studio photographic gallery
 
 - Added a fictional transparent portrait and two matching illustrative project covers using the built-in image generation tool. Asset provenance and prompts are in `assets/gallery/studio/README.md`. All three optimized rasters pass the unchanged 96 KB/1,200-pixel validation bounds. The actual shared renderer generated the 960 × 2648 gallery JPEG (220,613 bytes); only that flattened image is loaded by visitors.
