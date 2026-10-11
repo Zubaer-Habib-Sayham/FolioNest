@@ -1,5 +1,7 @@
 # Implementation plan
 
+Latest request: first keep the Studio circle/photo geometry proportional across preview and website widths, including screenshot-sized regression checks. Then replace the CV export with a one-page A4 résumé retaining template colors, typography and composition, shortening only an export copy. Verify all templates, long/hidden content, page size/count, rendered readability and the remaining exports before pushing each slice. More templates and public launch follow user review; no publication is authorized yet.
+
 Current revision: convert application, server, proxy, scripts and tests to JavaScript/JSX while retaining React, runtime schemas, behavior and layouts. Verify renderer output and the full suite before committing. Then add optional local portrait background removal with an original-photo fallback, bounded transparent image storage and verified exports. Finally make Netlify Drop the simpler illustrated ZIP-hosting path and clarify Cloudflare troubleshooting. Keep publication approval separate from authorized GitHub pushes.
 
 Revision status: JavaScript migration, local portrait cutouts/original restoration, optional uploaded signatures, shared preview/export layout rules and the clearer hosting guide are implemented and locally verified. External cloud/hosting checks remain outstanding; see QA.md. Replace old uploaded ZIPs to receive these changes.

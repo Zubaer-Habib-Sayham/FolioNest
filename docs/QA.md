@@ -1,5 +1,11 @@
 # Verification log
 
+## Proportional Studio portrait geometry
+
+- The user supplied screenshots with different canvas widths. The circle previously capped at 440 pixels while the photo continued growing; fixed pixel heights also changed their proportions. The circle now tracks the photo width and both use an aspect-ratio frame and proportional offset. The title reserves space for its vertical transform and the circle overhang.
+- `npm run check` passed lint, syntax validation, all 32 unit/API tests and both builds. Four relevant browser tests passed, including matching preview/ZIP geometry for all five templates and actual PDF/PNG/ZIP artifacts. Studio circles were checked at 375, 600, 799, 923, 960 and 1366 pixels: round, equal photo/circle widths, aligned edges and clear of the title. The 923-pixel standalone screenshot was visually reviewed. Gallery assets were regenerated.
+- The initial visual review exposed a circle reaching into the display title; added proportional spacing and checks for the circle itself before the passing rerun. The user's hosted URL remains unavailable, so its deployed CSS/version has not been inspected. A new ZIP must replace an old deployment.
+
 ## Clearer browser-only portfolio hosting
 
 - The illustrated guide now starts with Netlify Drop and gives exact sign-in, ZIP upload, Make public, private-window verification and same-address update steps. Expandable help covers blank pages, missing assets, stale layouts and the existing Cloudflare Pages Production upload path. Illustrations open larger in a new tab; no extra installation is needed. The ZIP README includes the same guidance.

@@ -10,7 +10,7 @@ async function layout(locator) {
     const origin = root.getBoundingClientRect();
     return [
       ...root.querySelectorAll(
-        ".portfolio-masthead,.studio-display,.studio-introduction,.studio-photo-area,h1,h2,h3,.portfolio-prose,.project-grid,.portfolio-section,.portfolio-portrait",
+        ".portfolio-masthead,.studio-display,.studio-introduction,.studio-photo-area,.studio-photo-circle,h1,h2,h3,.portfolio-prose,.project-grid,.portfolio-section,.portfolio-portrait",
       ),
     ].map((node) => {
       const box = node.getBoundingClientRect();
@@ -98,13 +98,51 @@ test("all website ZIP layouts match the live preview at the same canvas width", 
           .locator(".studio-photo-area")
           .boundingBox();
         expect(photo.y).toBeGreaterThanOrEqual(title.y + title.height);
+        const circle = await standalone
+          .locator(".studio-photo-circle")
+          .boundingBox();
+        expect(circle.y).toBeGreaterThanOrEqual(title.y + title.height);
       }
     }
     if (template.id === "studio")
-      await standalone.screenshot({
-        path: "artifacts/studio-zip-corrected-mobile.png",
-        fullPage: true,
-      });
+      for (const width of [375, 600, 799, 923, 960, 1366]) {
+        await standalone.setViewportSize({ width, height: 900 });
+        const geometry = await standalone
+          .locator(".studio-photo-area")
+          .evaluate((area) => {
+            const box = area.getBoundingClientRect();
+            const photo = area
+              .querySelector(".portfolio-portrait")
+              .getBoundingClientRect();
+            const circle = area
+              .querySelector(".studio-photo-circle")
+              .getBoundingClientRect();
+            return {
+              ratio: box.width / box.height,
+              circleRatio: circle.width / circle.height,
+              widths: [box.width, photo.width, circle.width],
+              right: [photo.right, circle.right],
+            };
+          });
+        expect(geometry.ratio).toBeCloseTo(1.08, 2);
+        expect(geometry.circleRatio).toBeCloseTo(1, 2);
+        expect(
+          Math.max(...geometry.widths) - Math.min(...geometry.widths),
+        ).toBeLessThan(1);
+        expect(Math.abs(geometry.right[0] - geometry.right[1])).toBeLessThan(1);
+        const display = await standalone
+          .locator(".studio-display")
+          .boundingBox();
+        const circle = await standalone
+          .locator(".studio-photo-circle")
+          .boundingBox();
+        expect(circle.y).toBeGreaterThanOrEqual(display.y + display.height);
+        if (width === 923)
+          await standalone.screenshot({
+            path: "artifacts/studio-zip-923.png",
+            fullPage: true,
+          });
+      }
     await context.close();
     await page
       .getByRole("button", { name: "Back to editing", exact: true })
