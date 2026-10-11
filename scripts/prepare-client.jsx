@@ -5,10 +5,11 @@ import Landing from "../client/src/Landing.jsx";
 import TemplatesPage from "../client/src/TemplatesPage.jsx";
 import { websiteBaseCss } from "../shared/src/html.jsx";
 const raw = readFileSync("client/dist/index.html", "utf8");
-const origin = (process.env.APP_ORIGIN || "http://127.0.0.1:5173").replace(
-  /\/$/,
-  "",
-);
+const origin = (
+  process.env.APP_ORIGIN ||
+  process.env.RENDER_EXTERNAL_URL ||
+  "http://127.0.0.1:5173"
+).replace(/\/$/, "");
 const url = new URL(origin);
 if (
   !["http:", "https:"].includes(url.protocol) ||

@@ -1,4 +1,4 @@
-# Create services only after product review. Automatic deployment stays disabled.
+# Automatic deployment stays disabled so future product changes can be reviewed.
 services:
   - type: web
     name: folionest-api
@@ -18,6 +18,8 @@ services:
       - key: APP_ORIGIN
         sync: false
       - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_CA_CERT
         sync: false
       - key: SUPABASE_URL
         sync: false

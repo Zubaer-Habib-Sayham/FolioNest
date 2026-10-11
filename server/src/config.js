@@ -14,11 +14,12 @@ const httpOrigin = z
     );
   });
 export function readConfig(env) {
+  const configuredOrigin = env.APP_ORIGIN || env.RENDER_EXTERNAL_URL;
   const origin = httpOrigin
-    .parse(env.APP_ORIGIN || "http://127.0.0.1:5173")
+    .parse(configuredOrigin || "http://127.0.0.1:5173")
     .replace(/\/$/, "");
   const production = env.NODE_ENV === "production";
-  if (production && (!env.APP_ORIGIN || !origin.startsWith("https://")))
+  if (production && (!configuredOrigin || !origin.startsWith("https://")))
     throw new Error("Production requires an HTTPS APP_ORIGIN.");
   const databaseUrl = env.DATABASE_URL
     ? z
