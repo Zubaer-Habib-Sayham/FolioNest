@@ -9,10 +9,14 @@ import {
   visiblePortfolio,
   portfolioBackground,
 } from "../../shared/src/schema.js";
-export function landingDocument(index, origin) {
-  const title = "FolioNest — Your story, beautifully online.";
-  const description =
-    "Build a portfolio that feels like you. Distinct thoughtful designs, local drafts and free exports. No account needed to start.";
+export function landingDocument(index, origin, catalog = false) {
+  const path = catalog ? "/templates" : "/";
+  const title = catalog
+    ? "Portfolio templates — FolioNest"
+    : "FolioNest — Your story, beautifully online.";
+  const description = catalog
+    ? "Explore portfolio templates, shortlist your favorites and build freely with live preview and independent exports."
+    : "Build a portfolio that feels like you. Distinct thoughtful designs, local drafts and free exports. No account needed to start.";
   return index
     .replace(
       /<link[^>]*rel="canonical"[^>]*>|<meta[^>]*property="og:[^"]*"[^>]*>/g,
@@ -20,7 +24,7 @@ export function landingDocument(index, origin) {
     )
     .replace(
       "</head>",
-      `<link rel="canonical" href="${escapeHtml(origin)}/"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(origin)}/"><meta property="og:image" content="${escapeHtml(origin)}/brand/folionest-icon-512.png"></head>`,
+      `<link rel="canonical" href="${escapeHtml(origin)}${path}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(origin)}${path}"><meta property="og:image" content="${escapeHtml(origin)}/brand/folionest-icon-512.png"></head>`,
     );
 }
 export function publicDocument(record, origin) {
@@ -81,6 +85,7 @@ export function installPublicRoutes(app, { repository, origin, css }) {
     const rows = repository ? await repository.sitemap() : [];
     const entries = [
       `<url><loc>${escapeHtml(origin)}/</loc></url>`,
+      `<url><loc>${escapeHtml(origin)}/templates</loc></url>`,
       ...rows
         .filter((row) => slugSchema.safeParse(row.slug).success)
         .map(

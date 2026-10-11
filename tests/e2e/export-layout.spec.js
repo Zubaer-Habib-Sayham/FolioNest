@@ -35,6 +35,7 @@ test("all website ZIP layouts match the live preview at the same canvas width", 
   browser,
 }) => {
   test.setTimeout(90000);
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 1366, height: 900 });
   for (const template of templates) {
     await page.goto("/builder");

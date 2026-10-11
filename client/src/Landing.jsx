@@ -1,6 +1,5 @@
 import React from "react";
-import { templates } from "../../shared/src/templates.js";
-import previewDimensions from "./preview-dimensions.json";
+import TemplateGallery from "./TemplateGallery.jsx";
 import HostingGuide from "./HostingGuide.jsx";
 export default function Landing() {
   return (
@@ -82,34 +81,7 @@ export default function Landing() {
             Hover or focus a card to explore the full design.
           </p>
         </div>
-        <div className="template-gallery">
-          {templates.map(
-            ({ id, name, description: copy, previewImage, sampleImagery }) => (
-              <a
-                className="template-card"
-                href={`/builder?template=${id}`}
-                key={id}
-              >
-                <div className={`mini-preview mini-${id}`}>
-                  <img
-                    src={`/templates/${previewImage || `${id}.png`}`}
-                    alt={`${name} sample portfolio preview`}
-                    width="960"
-                    height={previewDimensions[id]}
-                    loading="lazy"
-                  />
-                </div>
-                <div className="template-label">
-                  <h3>{name}</h3>
-                </div>
-                <p>{copy}</p>
-                {(id === "studio" || sampleImagery) && (
-                  <p className="fine-print">AI-generated sample imagery</p>
-                )}
-              </a>
-            ),
-          )}
-        </div>
+        <TemplateGallery featured />
       </section>
       <section className="how section" id="how">
         <p className="eyebrow">From a blank page to a new beginning</p>

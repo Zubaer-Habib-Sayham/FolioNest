@@ -20,6 +20,19 @@ try {
   assert.ok(html.includes('rel="canonical" href="' + origin + '/"'));
   assert.equal((html.match(/rel="canonical"/g) || []).length, 1);
   assert.ok(raw.headers.get("Content-Security-Policy"));
+  const galleryResponse = await fetch(origin + "/templates");
+  assert.equal(galleryResponse.status, 200);
+  const galleryHtml = await galleryResponse.text();
+  assert.ok(galleryHtml.includes("Find your next canvas."));
+  assert.ok(galleryHtml.includes("Golden Hour"));
+  assert.equal((galleryHtml.match(/rel="canonical"/g) || []).length, 1);
+  assert.ok(galleryHtml.includes(`rel="canonical" href="${origin}/templates"`));
+  assert.ok(
+    galleryHtml.includes(`property="og:url" content="${origin}/templates"`),
+  );
+  await page.goto(origin + "/templates");
+  await page.getByLabel("Find a design", { exact: true }).fill("Golden Hour");
+  await expect(page.locator(".template-card")).toHaveCount(1);
   await page.goto(origin);
   const studioPreview = page.getByAltText(
     "Creative Studio sample portfolio preview",
@@ -108,7 +121,7 @@ try {
   assert.equal((await fetch(origin + "/missing-page")).status, 404);
   assert.deepEqual(errors, []);
   console.log(
-    "Compiled production smoke passed: initial HTML/metadata, guest editing/cutout/signature/PNG/one-page A4 résumé under CSP, callback routing, 404s and no browser-console errors.",
+    "Compiled production smoke passed: landing/gallery HTML/metadata/search, guest editing/cutout/signature/PNG/one-page A4 résumé under CSP, callback routing, 404s and no browser-console errors.",
   );
 } finally {
   await browser.close();

@@ -3,7 +3,7 @@ import request from "supertest";
 import { createApp } from "../server/src/app.js";
 import { publicDocument, landingDocument } from "../server/src/seo.js";
 import { samplePortfolio } from "../shared/src/schema.js";
-import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, writeFile, rm, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 const data = { ...samplePortfolio(), sample: false };
@@ -65,6 +65,40 @@ test("landing canonical is derived from configured origin, never an untrusted Ho
   );
   expect(html).toContain('href="https://folio.example/"');
   expect(html).toContain("og:image");
+});
+
+test("template gallery has meaningful HTML and its own canonical on the server", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "folio-gallery-"));
+  try {
+    await mkdir(path.join(directory, "templates"));
+    await writeFile(
+      path.join(directory, "templates/index.html"),
+      '<html><head><title>Portfolio templates — FolioNest</title><link rel="canonical" href="https://stale.example/"></head><body><main><h1>Find your next canvas.</h1><a href="/builder?template=halo">Golden Hour</a></main></body></html>',
+    );
+    const app = createApp({
+      origin: "https://folio.example",
+      clientDir: directory,
+    });
+    const response = await request(app)
+      .get("/templates")
+      .set("Host", "untrusted.example");
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("Golden Hour");
+    expect(response.text).toContain('href="https://folio.example/templates"');
+    expect(response.text).toContain(
+      'property="og:url" content="https://folio.example/templates"',
+    );
+    expect(response.text.match(/rel="canonical"/g)).toHaveLength(1);
+    expect(response.text).not.toMatch(/untrusted|stale|noindex/);
+    expect((await request(app).get("/templates?query=private")).status).toBe(
+      400,
+    );
+    expect((await request(app).get("/sitemap.xml")).text).toContain(
+      "https://folio.example/templates",
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });
 test("private builder accepts bounded email callbacks and rejects arbitrary query keys", async () => {
   const directory = await mkdtemp(path.join(tmpdir(), "folio-pages-"));

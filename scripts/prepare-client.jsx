@@ -2,6 +2,7 @@ import React from "react";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import Landing from "../client/src/Landing.jsx";
+import TemplatesPage from "../client/src/TemplatesPage.jsx";
 import { websiteBaseCss } from "../shared/src/html.jsx";
 const raw = readFileSync("client/dist/index.html", "utf8");
 const origin = (process.env.APP_ORIGIN || "http://127.0.0.1:5173").replace(
@@ -30,6 +31,36 @@ const index = raw
   )
   .replace("</head>", metadata + "</head>");
 writeFileSync("client/dist/index.html", index);
+mkdirSync("client/dist/templates", { recursive: true });
+writeFileSync(
+  "client/dist/templates/index.html",
+  raw
+    .replace(
+      /<div id="root">[\s\S]*?<\/div>/,
+      `<div id="root">${renderToStaticMarkup(<TemplatesPage />)}</div>`,
+    )
+    .replace(
+      /<title>.*?<\/title>/,
+      "<title>Portfolio templates — FolioNest</title>",
+    )
+    .replace(
+      /<meta name="description"[^>]*>/,
+      '<meta name="description" content="Explore portfolio templates, shortlist your favorites and build freely with live preview and independent exports.">',
+    )
+    .replace(
+      "</head>",
+      metadata
+        .replaceAll(`${escaped}/"`, `${escaped}/templates"`)
+        .replaceAll(
+          "FolioNest — Your story, beautifully online.",
+          "Portfolio templates — FolioNest",
+        )
+        .replaceAll(
+          "Build a portfolio that feels like you. Distinct thoughtful designs and free exports.",
+          "Explore portfolio templates, shortlist your favorites and build freely with live preview and independent exports.",
+        ) + "</head>",
+    ),
+);
 writeFileSync(
   "client/dist/404.html",
   '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Page not found — FolioNest</title></head><body><main><h1>Page not found.</h1><a href="/">Back to FolioNest</a></main></body></html>',

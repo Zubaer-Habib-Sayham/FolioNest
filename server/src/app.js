@@ -266,6 +266,18 @@ export function createApp(options) {
     css: options.portfolioCss || "",
   });
   if (options.clientDir) {
+    app.get("/templates", (req, res) => {
+      empty.parse(req.query);
+      res
+        .type("html")
+        .send(
+          landingDocument(
+            readFileSync(`${options.clientDir}/templates/index.html`, "utf8"),
+            options.origin,
+            true,
+          ),
+        );
+    });
     app.get("/builder", (req, res) => {
       z.object({
         template: templateSchema.optional(),

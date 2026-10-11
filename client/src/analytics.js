@@ -1,6 +1,6 @@
 import { templateIds } from "../../shared/src/templates.js";
 const events = {
-  site_opened: { page: ["landing", "builder"] },
+  site_opened: { page: ["landing", "templates", "builder"] },
   landing_cta_clicked: {},
   builder_started: {},
   template_selected: { template: templateIds },

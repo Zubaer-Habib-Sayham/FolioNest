@@ -29,3 +29,5 @@ Choosing a gallery design applies that template to the existing local draft and 
 - The server serves the built client and public HTML locally and may be deployed as one service. A small optional Pages proxy supports the specification's split-host arrangement.
 - Analytics uses an explicit event/property allowlist, no automatic capture, page URL capture, identity, replay or personal data. It respects DNT and opt-out.
 - Supplied build documents remain intact outside the application commits. Commits use the user's configured identity and verified slices are pushed to the existing FolioNest repository with authorization. Online deployment requires the user's final product review.
+
+The template gallery is a public static/prerendered route backed by the same validated registry. Search text and shortlists remain local and are excluded from analytics. A shortlist holds design IDs, while one private draft holds content; this keeps edits consistent across designs and avoids divergent copies. Collection ZIP generation reuses the single-website asset pipeline. Every included design is independent of sibling folders and the application.

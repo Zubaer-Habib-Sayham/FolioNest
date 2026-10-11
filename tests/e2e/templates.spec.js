@@ -132,7 +132,7 @@ test("real full-page previews and all registered layouts stay readable on deskto
 }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("/");
+  await page.goto("/templates");
   await page.locator("#templates").scrollIntoViewIfNeeded();
   for (const template of templates) {
     const image = page.getByAltText(

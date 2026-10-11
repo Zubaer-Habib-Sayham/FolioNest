@@ -2,6 +2,7 @@ import { Suspense, lazy, useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 import Landing from "./Landing.jsx";
+import TemplatesPage from "./TemplatesPage.jsx";
 import {
   analyticsConfigured,
   analyticsEnabled,
@@ -19,9 +20,11 @@ function App() {
     }
   });
   const builder = location.pathname.replace(/\/$/, "") === "/builder";
+  const catalog = location.pathname.replace(/\/$/, "") === "/templates";
+  const analyticsPage = builder ? "builder" : catalog ? "templates" : "landing";
   const [analyticsOn, setAnalyticsOn] = useState(analyticsEnabled);
   useEffect(() => {
-    void track("site_opened", { page: builder ? "builder" : "landing" });
+    void track("site_opened", { page: analyticsPage });
     const clicked = (e) => {
       const link = e.target instanceof Element ? e.target.closest("a") : null;
       if (!builder && link?.getAttribute("href")?.startsWith("/builder"))
@@ -31,7 +34,7 @@ function App() {
     };
     document.addEventListener("click", clicked);
     return () => document.removeEventListener("click", clicked);
-  }, [builder]);
+  }, [builder, analyticsPage]);
   function toggle() {
     setDark(!dark);
     try {
@@ -51,7 +54,9 @@ function App() {
           FolioNest<span className="brand-dot">.</span>
         </a>
         <nav aria-label="Main navigation">
-          {!builder && <a href="#templates">The templates</a>}
+          <a href="/templates" aria-current={catalog ? "page" : undefined}>
+            The templates
+          </a>
           <a className="account-link" href="/builder?account=1">
             Account
           </a>
@@ -79,6 +84,8 @@ function App() {
         >
           <Builder />
         </Suspense>
+      ) : catalog ? (
+        <TemplatesPage />
       ) : (
         <Landing />
       )}
@@ -156,7 +163,7 @@ function App() {
                 setAnalyticsOn(!analyticsOn);
                 if (!analyticsOn)
                   void track("site_opened", {
-                    page: builder ? "builder" : "landing",
+                    page: analyticsPage,
                   });
               }}
             >

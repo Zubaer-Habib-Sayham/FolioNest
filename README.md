@@ -1,6 +1,6 @@
 # FolioNest
 
-A portfolio builder with five responsive designs, local drafts and useful exports. Building, editing, saving on your device and downloading require no account. Supabase accounts are optional and required for cloud saves and public links.
+A portfolio builder with eleven responsive designs, local drafts and useful exports. Building, editing, saving on your device and downloading require no account. Supabase accounts are optional and required for cloud saves and public links.
 
 Source uses JavaScript/JSX with React and Express. Runtime Zod schemas validate documents and requests. `npm run validate` checks JavaScript syntax; the project no longer requires a TypeScript compiler or typecheck.
 
@@ -18,9 +18,10 @@ On PowerShell use `Copy-Item .env.example .env`. Open `http://127.0.0.1:5173/`; 
 
 ## Working features
 
-- Editorial, Pinboard/Bento, Motion Story, Quest/Level-Up and portrait-led Creative Studio layouts, with full-page gallery previews generated from the actual shared renderer.
+- Editorial, Pinboard/Bento, Motion Story, Quest/Level-Up, Creative Studio, Monograph, Portrait Motion, Quiet Atelier, Cinematic, Ember and Golden Hour layouts, with full-page gallery previews generated from the actual shared renderer. Photographic previews use consistent fictional male/female models.
+- Eight featured desktop designs and six on mobile. The searchable `/templates` collection supports style filters and incremental loading for future additions. Shortlist up to four designs, switch among them while editing the same content, and download their independent websites together.
 - Guided forms for identity, biography, skills, projects, career, education, achievements and contact links. Reorder projects and sections with keyboard-accessible buttons, hide sections and choose section colors, whole-page background, palette, font and portfolio appearance. Editor appearance is independent.
-- Validated local autosave, backup download and confirmed JSON restore. Optional portrait and project photos are resized and stripped of original metadata on your device. Creative Studio includes local background removal with live cutout preview/original restoration and an optional uploaded signature image.
+- Validated local autosave, backup download and confirmed JSON restore. Optional portrait and project photos are resized and stripped of original metadata on your device. Creative Studio and the six photographic designs include local background removal with live cutout preview/original restoration; signatures are optional uploaded images.
 - A one-page A4 résumé retaining the selected template's design with shorter excerpts and leading items, plus a complete paginated portfolio PDF, full-page PNG and standalone website ZIP with required images/fonts. The ZIP runs offline without an account or connection to FolioNest. An illustrated guide explains free browser-only hosting.
 - Optional Supabase sign-up/sign-in/sign-out, explicit cloud save/load/delete, publishing confirmation, unique slugs and unpublishing. Server queries enforce ownership. Public pages use snapshots, so saving a private edit does not change a live page.
 - Public HTML includes portfolio content in its first response, canonical/Open Graph/Person metadata, controlled indexing, sitemap and robots. Private routes are noindex.
@@ -30,7 +31,7 @@ On PowerShell use `Copy-Item .env.example .env`. Open `http://127.0.0.1:5173/`; 
 
 Create a project named FolioNest in a **Free** Supabase organization; verify the plan and available project quota before creation. This build has not provisioned or modified an external project. The connected cost lookup was unavailable, so live sign-in and hosted database connectivity are still unverified.
 
-1. Run all committed SQL files in `supabase/migrations/` in filename order using Supabase's SQL editor or CLI. The initial migration creates private drafts and publication snapshots, RLS and indexes; the next permits Creative Studio. Browser Data API writes remain revoked. Do not disable those protections.
+1. Run all committed SQL files in `supabase/migrations/` in filename order using Supabase's SQL editor or CLI. The initial migration creates private drafts and publication snapshots, RLS and indexes; later migrations permit Creative Studio and the six photographic designs. Browser Data API writes remain revoked. Do not disable those protections.
 2. Enable email/password Auth and keep email confirmation enabled. Set Site URL to your application origin, and add the exact local and future hosted `/builder` redirect URLs. Registration redirects to `/builder`; use email confirmation on the same browser for PKCE. Configure your own SMTP if required for real users. Provider email delivery and rate limits need verification before launch.
 3. From the project's Connect panel copy the **session-pooler** connection string into server-only `DATABASE_URL`. URL-encode the database password. Use a trusted TLS certificate; certificate verification stays on. Prefer a dedicated database role with only the portfolio table privileges when deploying. Privileged database credentials are powerful and must remain server-side.
 4. Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` on the server. Set the same project URL/public publishable key in `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the browser. Restart development or rebuild after changing browser variables.
@@ -67,7 +68,7 @@ Online launch requires final product approval. `render.yaml` is a prepared free-
 
 ## Limits and extension
 
-Backups/documents are limited to 2 MB; stored photos are bounded JPEG, PNG or WebP, up to 1,200 pixels and 96 KB each. Source uploads are limited to 5 MB and 24 megapixels. Twelve items per project/career collection, forty skills and eight known sections keep rendering bounded. Up to fifty cloud portfolios per account; dashboard lists contain summaries only. A single sitemap is capped at 49,999 portfolios plus the landing page; larger sites need a paginated sitemap index.
+Backups/documents are limited to 2 MB; stored photos are bounded JPEG, PNG or WebP, up to 1,200 pixels and 96 KB each. Source uploads are limited to 5 MB and 24 megapixels. Twelve items per project/career collection, forty skills and eight known sections keep rendering bounded. Up to fifty cloud portfolios per account; dashboard lists contain summaries only. A single sitemap is capped at 49,998 portfolios plus the landing and gallery pages; larger sites need a paginated sitemap index.
 
 Résumé and portfolio PDFs preserve browser-rendered typography as raster images; their text is not selectable or tagged for assistive technology or automated résumé parsing. The résumé is captured at approximately 288 DPI, retains clickable links and fits one A4 portrait sheet with about 10 mm internal margins. It uses progressively shorter excerpts and fewer leading items in the user's chosen order, without modifying the draft. Extremely long headings or contact details that still cannot fit produce an error recommending shorter wording or the complete Portfolio PDF. Print the résumé on A4 at Actual size. PNG is 960 pixels wide. Captures over 18,000 pixels high and artifacts over 30 MB fail with guidance. Photo crops use a consistent cover layout; advanced cropping and galleries are future additions.
 

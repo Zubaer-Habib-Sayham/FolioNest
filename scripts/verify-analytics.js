@@ -58,6 +58,21 @@ try {
     })
     .toBe(true);
   assert.ok(events.some((e) => e.event === "builder_step_completed"));
+  await page.goto("http://127.0.0.1:5174/templates");
+  await page
+    .getByLabel("Find a design", { exact: true })
+    .fill("PRIVATE SEARCH NEVER SENT");
+  await expect
+    .poll(
+      () =>
+        events.some(
+          (event) =>
+            event.event === "site_opened" &&
+            event.properties.page === "templates",
+        ),
+      { timeout: 10000 },
+    )
+    .toBe(true);
   for (const event of events) {
     assert.ok(
       [
@@ -87,9 +102,11 @@ try {
       );
   }
   assert.ok(!JSON.stringify(events).includes("PRIVATE"));
+  await page.getByText("Privacy & analytics", { exact: true }).click();
   await page.getByRole("button", { name: "Turn usage analytics off" }).click();
   const count = events.length;
-  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.goto("http://127.0.0.1:5174/builder");
+  await page.getByRole("button", { name: /^Pinboard/ }).click();
   await page.waitForTimeout(300);
   assert.equal(events.length, count);
   const dntPage = await browser.newPage();

@@ -10,10 +10,126 @@ import {
   staticWebsite,
   websiteBaseCss,
   websiteScript,
+  escapeHtml,
 } from "../../shared/src/html.jsx";
 import portfolioCss from "../../shared/src/portfolio.css?raw";
 import resumeCss from "../../shared/src/resume.css?raw";
-import { usesDisplayFont } from "../../shared/src/templates.js";
+import { usesDisplayFont, templates } from "../../shared/src/templates.js";
+import { validSelection } from "./template-selection.js";
+
+async function addWebsite(zip, data) {
+  let html = staticWebsite(data);
+  const visible = visiblePortfolio(data);
+  const images = [
+    visible.identity.photo,
+    visible.identity.signature,
+    ...visible.projects.map((p) => p.image),
+  ].filter(Boolean);
+  images.forEach((image, i) => {
+    const asset = `assets/photo-${i + 1}.${image.startsWith("data:image/png;") ? "png" : image.startsWith("data:image/webp;") ? "webp" : "jpg"}`;
+    zip.file(asset, image.slice(image.indexOf(",") + 1), { base64: true });
+    html = html.replaceAll(image, asset);
+  });
+  zip.file("index.html", html);
+  let exportedCss = portfolioCss;
+  if (usesDisplayFont(data.theme)) {
+    for (const asset of [
+      "BarlowCondensed-Black.ttf",
+      "BarlowCondensed-OFL.txt",
+    ]) {
+      const response = await fetch(`/fonts/${asset}`);
+      if (!response.ok)
+        throw new Error("The website font could not load. Try again.");
+      const content = await response.arrayBuffer();
+      zip.file(`fonts/${asset}`, content);
+      if (asset.endsWith(".ttf")) {
+        const bytes = new Uint8Array(content);
+        let binary = "";
+        for (let start = 0; start < bytes.length; start += 8192)
+          binary += String.fromCharCode(...bytes.subarray(start, start + 8192));
+        // An embedded font also works when index.html is opened offline via file://.
+        exportedCss = exportedCss.replaceAll(
+          "/fonts/BarlowCondensed-Black.ttf",
+          `data:font/ttf;base64,${btoa(binary)}`,
+        );
+      }
+    }
+  }
+  zip.file("styles.css", websiteBaseCss + "\n" + exportedCss);
+  zip.file("script.js", websiteScript);
+  zip.file(
+    "README.txt",
+    `Open index.html in a browser. No installation or connection to FolioNest is required.
+
+FREE BROWSER-ONLY HOSTING: NETLIFY DROP
+1. Sign up or sign in to Netlify, choosing the Free plan.
+2. Open https://app.netlify.com/drop and drag this complete Website ZIP into the drop area.
+3. Wait for the project page and a successful deployment. If private, choose Make public to share the visible portfolio content.
+4. Open its .netlify.app address in a private browser window and on your phone to check it.
+
+Netlify Free has a monthly usage limit; sites pause at that limit. An included address needs no custom-domain purchase.
+Official instructions: https://docs.netlify.com/start/quickstarts/netlify-drop-quickstart/
+
+UPDATING THE SAME NETLIFY ADDRESS
+Download a fresh Website ZIP after editing in FolioNest. Extract it using your computer's built-in Extract All or unzip option. Open the same Netlify project and drop the extracted folder under Production deploys. The folder should contain index.html and styles.css directly inside. Keep assets and fonts alongside them.
+
+ALREADY USING CLOUDFLARE PAGES?
+Open Workers & Pages and select your Pages project. Choose Create a new deployment, select Production, upload this complete fresh ZIP and choose Save and Deploy. Wait for completion before opening the .pages.dev address.
+For a new Pages project: Workers & Pages, Create application, Get started, Drag and drop your files. Name it, upload this ZIP and choose Deploy site.
+Official instructions: https://developers.cloudflare.com/pages/get-started/direct-upload/
+
+IF THE LINK IS BLANK OR HAS MISSING STYLES/PHOTOS
+Check that the upload completed and open the full address shown by the host. Upload all files together. To check locally, extract this ZIP and open index.html. Compare the hosted page with Full preview at the same screen width.
+Existing uploads never change automatically: replace the old deployment with a newly downloaded ZIP, then reload the page. Keep your FolioNest JSON backup for editing later.
+External links only open when you click them.
+`,
+  );
+}
+
+export async function exportWebsiteCollection(input, ids) {
+  const selection = validSelection(ids);
+  if (
+    !Array.isArray(ids) ||
+    ids.length < 1 ||
+    ids.length > 4 ||
+    selection.length !== ids.length ||
+    selection.some((id, i) => id !== ids[i])
+  )
+    throw new Error(
+      "Choose up to four available designs before downloading them.",
+    );
+  const parsed = publishableSchema.safeParse(input);
+  if (!parsed.success)
+    throw new Error(
+      "Fix the highlighted fields and add your name and headline before exporting.",
+    );
+  const { default: JSZip } = await import("jszip");
+  const zip = new JSZip();
+  for (const theme of selection)
+    await addWebsite(zip.folder(theme), { ...parsed.data, theme });
+  const links = selection
+    .map(
+      (id) =>
+        `<li><a href="${id}/index.html">${escapeHtml(templates.find((template) => template.id === id).name)}</a></li>`,
+    )
+    .join("");
+  zip.file(
+    "index.html",
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Your portfolio designs</title></head><body><main><h1>Your portfolio designs</h1><p>Open a design to compare the same portfolio in different layouts.</p><ul>${links}</ul></main></body></html>`,
+  );
+  zip.file(
+    "README.txt",
+    "Your selected portfolio designs each have their own complete website folder. Extract the ZIP and open index.html to compare them offline. To publish one design, upload that design's folder with index.html, styles.css, script.js, assets and any fonts directly inside. Follow the README in that folder. Do not upload only an HTML file. Keep a JSON backup for future edits. Uploading the whole collection instead creates a public chooser linking to all included designs.\n",
+  );
+  download(
+    await zip.generateAsync({
+      type: "blob",
+      compression: "DEFLATE",
+      compressionOptions: { level: 6 },
+    }),
+    `${name(parsed.data)}-selected-websites.zip`,
+  );
+}
 function download(blob, filename) {
   if (blob.size === 0 || blob.size > 30_000_000)
     throw new Error(
@@ -299,74 +415,7 @@ export async function exportPortfolio(format, input, _element) {
     case "website_zip": {
       const { default: JSZip } = await import("jszip");
       const zip = new JSZip();
-      let html = staticWebsite(data);
-      const visible = visiblePortfolio(data);
-      const images = [
-        visible.identity.photo,
-        visible.identity.signature,
-        ...visible.projects.map((p) => p.image),
-      ].filter(Boolean);
-      images.forEach((image, i) => {
-        const asset = `assets/photo-${i + 1}.${image.startsWith("data:image/png;") ? "png" : image.startsWith("data:image/webp;") ? "webp" : "jpg"}`;
-        zip.file(asset, image.slice(image.indexOf(",") + 1), { base64: true });
-        html = html.replaceAll(image, asset);
-      });
-      zip.file("index.html", html);
-      let exportedCss = portfolioCss;
-      if (usesDisplayFont(data.theme)) {
-        for (const asset of [
-          "BarlowCondensed-Black.ttf",
-          "BarlowCondensed-OFL.txt",
-        ]) {
-          const response = await fetch(`/fonts/${asset}`);
-          if (!response.ok)
-            throw new Error("The website font could not load. Try again.");
-          const content = await response.arrayBuffer();
-          zip.file(`fonts/${asset}`, content);
-          if (asset.endsWith(".ttf")) {
-            const bytes = new Uint8Array(content);
-            let binary = "";
-            for (let start = 0; start < bytes.length; start += 8192)
-              binary += String.fromCharCode(
-                ...bytes.subarray(start, start + 8192),
-              );
-            // An embedded font also works when index.html is opened offline via file://.
-            exportedCss = exportedCss.replaceAll(
-              "/fonts/BarlowCondensed-Black.ttf",
-              `data:font/ttf;base64,${btoa(binary)}`,
-            );
-          }
-        }
-      }
-      zip.file("styles.css", websiteBaseCss + "\n" + exportedCss);
-      zip.file("script.js", websiteScript);
-      zip.file(
-        "README.txt",
-        `Open index.html in a browser. No installation or connection to FolioNest is required.
-
-FREE BROWSER-ONLY HOSTING: NETLIFY DROP
-1. Sign up or sign in to Netlify, choosing the Free plan.
-2. Open https://app.netlify.com/drop and drag this complete Website ZIP into the drop area.
-3. Wait for the project page and a successful deployment. If private, choose Make public to share the visible portfolio content.
-4. Open its .netlify.app address in a private browser window and on your phone to check it.
-
-Netlify Free has a monthly usage limit; sites pause at that limit. An included address needs no custom-domain purchase.
-Official instructions: https://docs.netlify.com/start/quickstarts/netlify-drop-quickstart/
-
-UPDATING THE SAME NETLIFY ADDRESS
-Download a fresh Website ZIP after editing in FolioNest. Extract it using your computer's built-in Extract All or unzip option. Open the same Netlify project and drop the extracted folder under Production deploys. The folder should contain index.html and styles.css directly inside. Keep assets and fonts alongside them.
-
-ALREADY USING CLOUDFLARE PAGES?
-Open Workers & Pages and select your Pages project. Choose Create a new deployment, select Production, upload this complete fresh ZIP and choose Save and Deploy. Wait for completion before opening the .pages.dev address.
-For a new Pages project: Workers & Pages, Create application, Get started, Drag and drop your files. Name it, upload this ZIP and choose Deploy site.
-Official instructions: https://developers.cloudflare.com/pages/get-started/direct-upload/
-
-IF THE LINK IS BLANK OR HAS MISSING STYLES/PHOTOS
-Check that the upload completed and open the full address shown by the host. Upload all files together. To check locally, extract this ZIP and open index.html. Compare the hosted page with Full preview at the same screen width.
-Existing uploads never change automatically: replace the old deployment with a newly downloaded ZIP, then reload the page. Keep your FolioNest JSON backup for editing later.
-External links only open when you click them.
-`,
-      );
+      await addWebsite(zip, data);
       download(
         await zip.generateAsync({
           type: "blob",

@@ -91,7 +91,7 @@ export function createRepository(db) {
     },
     async sitemap() {
       const result = await db.query(
-        "SELECT slug,published_at FROM public.portfolios WHERE is_published=true AND is_indexable=true AND published_data IS NOT NULL AND published_data->>'sample'='false' ORDER BY slug LIMIT 49999",
+        "SELECT slug,published_at FROM public.portfolios WHERE is_published=true AND is_indexable=true AND published_data IS NOT NULL AND published_data->>'sample'='false' ORDER BY slug LIMIT 49998",
       );
       return result.rows;
     },

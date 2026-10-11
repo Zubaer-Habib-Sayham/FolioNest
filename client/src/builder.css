@@ -338,6 +338,45 @@ progress::-webkit-progress-value {
   gap: 12px;
   margin-bottom: 25px;
 }
+.design-thumbnail {
+  height: 125px;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+.design-thumbnail img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.selected-designs {
+  margin: 0 0 24px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+}
+.selected-designs h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.selected-designs > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.selected-designs button {
+  font-size: 11px;
+  padding: 9px 12px;
+}
+.selected-designs button[aria-pressed="true"] {
+  border-color: var(--green);
+  border-width: 2px;
+}
+.selected-designs > a {
+  font-size: 11px;
+}
 .design-option {
   text-align: left;
   padding: 10px;

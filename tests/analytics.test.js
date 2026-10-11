@@ -81,6 +81,20 @@ test("configured SDK uses privacy controls and only allowed event properties", a
   expect(capture).toHaveBeenCalledTimes(1);
 });
 test("unknown automatic events and arbitrary property values are discarded", () => {
+  const gallery = sanitizeEvent(
+    {
+      uuid: "id",
+      event: "site_opened",
+      properties: {
+        page: "templates",
+        query: "private search",
+        selection: "private draft",
+      },
+    },
+    "anonymous",
+  );
+  expect(gallery.properties.page).toBe("templates");
+  expect(JSON.stringify(gallery)).not.toContain("private");
   const visit = sanitizeEvent(
     {
       uuid: "id",

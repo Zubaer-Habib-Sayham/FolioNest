@@ -19,6 +19,37 @@ import { ConfirmDialog } from "./Dialog.jsx";
 import { PhotoUpload } from "./PhotoUpload.jsx";
 import { track } from "./analytics.js";
 import HostingGuide from "./HostingGuide.jsx";
+import { readSelection } from "./template-selection.js";
+import { photographicTemplates } from "../../shared/src/templates.js";
+function SelectedDesigns({ ids, current, onSelect }) {
+  if (!ids.length) return null;
+  return (
+    <section className="selected-designs" aria-label="Your selected designs">
+      <h3>Your selected designs</h3>
+      <p className="field-hint">
+        Your text, photos and ordering stay with you. Exports use the active
+        design.
+      </p>
+      <div>
+        {ids.map((id) => {
+          const template = templates.find((t) => t.id === id);
+          return (
+            <button
+              type="button"
+              key={id}
+              className="quiet"
+              aria-pressed={id === current}
+              onClick={() => onSelect(id)}
+            >
+              Use {template.name}
+            </button>
+          );
+        })}
+      </div>
+      <a href="/templates">Choose more designs</a>
+    </section>
+  );
+}
 const CloudPanel = lazy(() => import("./CloudPanel.jsx"));
 const steps = [
   "Design",
@@ -227,6 +258,9 @@ export default function Builder() {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState(null);
+  const [selectedDesigns] = useState(readSelection);
+  const [designQuery, setDesignQuery] = useState("");
+  const [designLimit, setDesignLimit] = useState(12);
   const [cloudOpen, setCloudOpen] = useState(() => {
     const params = new URLSearchParams(location.search);
     return (
@@ -352,8 +386,12 @@ export default function Builder() {
     setBusy(true);
     try {
       const module = await import("./exports.js");
-      await module.exportPortfolio(format, data, previewRef.current);
-      void track("export_downloaded", { format });
+      if (format === "collection_zip")
+        await module.exportWebsiteCollection(data, selectedDesigns);
+      else await module.exportPortfolio(format, data, previewRef.current);
+      void track("export_downloaded", {
+        format: format === "collection_zip" ? "website_zip" : format,
+      });
       setNotice("Your file is ready. Check your downloads.");
     } catch (error) {
       setNotice(
@@ -470,31 +508,63 @@ export default function Builder() {
           )}
           {step === 0 && (
             <>
-              <div className="design-options">
-                {templates.map((template) => (
-                  <button
-                    key={template.id}
-                    className={`design-option ${data.theme === template.id ? "selected" : ""}`}
-                    onClick={() => change({ ...data, theme: template.id })}
-                    aria-pressed={data.theme === template.id}
-                  >
-                    <span
-                      className={`design-swatch swatch-${template.id}`}
-                      aria-hidden="true"
-                    >
-                      {template.id === "quest"
-                        ? "01 — 02"
-                        : template.id === "bento"
-                          ? "▦"
-                          : template.id === "motion"
-                            ? "III"
-                            : "Aa"}
-                    </span>
-                    <strong>{template.name}</strong>
-                    <small>{template.description}</small>
-                  </button>
-                ))}
+              <SelectedDesigns
+                ids={selectedDesigns}
+                current={data.theme}
+                onSelect={(theme) => change({ ...data, theme })}
+              />
+              <div className="field">
+                <label htmlFor="design-search">Find an editor design</label>
+                <input
+                  id="design-search"
+                  type="search"
+                  maxLength={80}
+                  value={designQuery}
+                  onChange={(e) => {
+                    setDesignQuery(e.target.value);
+                    setDesignLimit(12);
+                  }}
+                />
               </div>
+              <div className="design-options">
+                {templates
+                  .filter((template) =>
+                    `${template.name} ${template.description}`
+                      .toLowerCase()
+                      .includes(designQuery.toLowerCase().trim()),
+                  )
+                  .slice(0, designLimit)
+                  .map((template) => (
+                    <button
+                      key={template.id}
+                      className={`design-option ${data.theme === template.id ? "selected" : ""}`}
+                      onClick={() => change({ ...data, theme: template.id })}
+                      aria-pressed={data.theme === template.id}
+                    >
+                      <div className="design-thumbnail" aria-hidden="true">
+                        <img
+                          src={`/templates/${template.previewImage || `${template.id}.png`}`}
+                          alt=""
+                          loading="lazy"
+                        />
+                      </div>
+                      <strong>{template.name}</strong>
+                      <small>{template.description}</small>
+                    </button>
+                  ))}
+              </div>
+              {templates.filter((template) =>
+                `${template.name} ${template.description}`
+                  .toLowerCase()
+                  .includes(designQuery.toLowerCase().trim()),
+              ).length > designLimit && (
+                <button
+                  className="secondary"
+                  onClick={() => setDesignLimit(designLimit + 12)}
+                >
+                  More editor designs
+                </button>
+              )}
               <fieldset className="palette-field">
                 <legend>Portfolio accent</legend>
                 <div className="palette-options">
@@ -616,15 +686,10 @@ export default function Builder() {
               <PhotoUpload
                 label="Portrait photo (optional)"
                 value={data.identity.photo}
-                backgroundRemoval={[
-                  "studio",
-                  "monograph",
-                  "portrait",
-                  "atelier",
-                  "cinema",
-                  "ember",
-                  "halo",
-                ].includes(data.theme)}
+                backgroundRemoval={
+                  data.theme === "studio" ||
+                  photographicTemplates.includes(data.theme)
+                }
                 original={data.identity.photoOriginal}
                 onChange={(photo, photoOriginal = "") =>
                   change({
@@ -976,6 +1041,11 @@ export default function Builder() {
                 ))}
               </div>
               <h3 className="subheading">Take your story with you</h3>
+              <SelectedDesigns
+                ids={selectedDesigns}
+                current={data.theme}
+                onSelect={(theme) => change({ ...data, theme })}
+              />
               <p className="field-hint">
                 Exports work without an account. Add your name and headline
                 before exporting. Your backup can include an unfinished draft.
@@ -1019,6 +1089,16 @@ export default function Builder() {
                   </button>
                 ))}
               </div>
+              {selectedDesigns.length > 1 && (
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={busy}
+                  onClick={() => void exportFile("collection_zip")}
+                >
+                  Download selected websites ({selectedDesigns.length})
+                </button>
+              )}
               <p className="field-hint">
                 The résumé uses shorter excerpts and leading items in your
                 chosen order. It keeps your design and fits one A4 sheet.
