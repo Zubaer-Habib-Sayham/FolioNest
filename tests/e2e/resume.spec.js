@@ -4,7 +4,7 @@ import path from "node:path";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { samplePortfolio, templates } from "../../shared/src/schema.js";
 
-test("all five templates export one A4 résumé from a long draft without changing it", async ({
+test("all registered templates export one A4 résumé from a long draft without changing it", async ({
   page,
 }) => {
   test.setTimeout(120000);

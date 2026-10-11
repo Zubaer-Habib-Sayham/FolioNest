@@ -4,7 +4,7 @@ import { PGlite } from "@electric-sql/pglite";
 import fs from "node:fs/promises";
 import { createRepository } from "../server/src/repository.js";
 import { createApp } from "../server/src/app.js";
-import { samplePortfolio } from "../shared/src/schema.js";
+import { samplePortfolio, templateIds } from "../shared/src/schema.js";
 const a = "11111111-1111-4111-8111-111111111111",
   b = "22222222-2222-4222-8222-222222222222";
 const db = new PGlite();
@@ -42,22 +42,40 @@ beforeAll(async () => {
 afterAll(async () => {
   await db.close();
 });
-test("the studio template saves and returns its background through the actual database", async () => {
-  const data = { ...draft(), theme: "studio", background: "sage" };
-  const saved = await owner("post", "/api/portfolios").send({ data });
-  expect(saved.status).toBe(201);
-  const loaded = await owner(
-    "get",
-    `/api/portfolios/${saved.body.portfolio.id}`,
-  );
-  expect(loaded.body.portfolio.data.theme).toBe("studio");
-  expect(loaded.body.portfolio.data.background).toBe("sage");
-  expect(
-    (await owner("get", `/api/portfolios/${saved.body.portfolio.id}`, "b"))
-      .status,
-  ).toBe(404);
-  await owner("delete", `/api/portfolios/${saved.body.portfolio.id}`);
-});
+test.each(templateIds)(
+  "the %s template saves and returns its background through the actual database",
+  async (theme) => {
+    const data = { ...draft(), theme, background: "sage" };
+    const themeApp = createApp({
+      repository,
+      origin: "http://127.0.0.1:5173",
+      verifyToken: async (token) =>
+        token === "token-a" ? a : token === "token-b" ? b : null,
+    });
+    const themeOwner = (method, url, user = "a") => {
+      const agent = request(themeApp);
+      return agent[method](url).set("Authorization", `Bearer token-${user}`);
+    };
+    const saved = await themeOwner("post", "/api/portfolios").send({ data });
+    expect(saved.status).toBe(201);
+    const loaded = await themeOwner(
+      "get",
+      `/api/portfolios/${saved.body.portfolio.id}`,
+    );
+    expect(loaded.body.portfolio.data.theme).toBe(theme);
+    expect(loaded.body.portfolio.data.background).toBe("sage");
+    expect(
+      (
+        await themeOwner(
+          "get",
+          `/api/portfolios/${saved.body.portfolio.id}`,
+          "b",
+        )
+      ).status,
+    ).toBe(404);
+    await themeOwner("delete", `/api/portfolios/${saved.body.portfolio.id}`);
+  },
+);
 test("authentication and strict request validation fail safely", async () => {
   const listing = (await owner("get", "/api/portfolios/me")).body.portfolios;
   expect(listing).toHaveLength(1);

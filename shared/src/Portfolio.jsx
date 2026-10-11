@@ -1,4 +1,6 @@
 import { palettes, portfolioBackground, sectionNames } from "./schema.js";
+import { photographicTemplates } from "./templates.js";
+import { PhotoHero } from "./PhotoHero.jsx";
 function JourneyList({ items, quest }) {
   return (
     <div className={quest ? "journey-map" : "journey-list"}>
@@ -132,6 +134,8 @@ export function Portfolio({ data, preview = false }) {
   const style = {
     "--accent": palettes[data.palette],
     "--paper": portfolioBackground(data),
+    "--warm-accent":
+      data.palette === "terracotta" ? "#efb447" : palettes[data.palette],
   };
   const portrait = data.identity.photo ? (
     <img
@@ -151,66 +155,70 @@ export function Portfolio({ data, preview = false }) {
           preview ? "Portfolio preview" : `${data.identity.name} portfolio`
         }
       >
-        <header className="portfolio-hero">
-          <div className="portfolio-masthead">
-            <span>{data.identity.name || "Your name"}</span>
-            <span>{data.identity.location}</span>
-          </div>
-          {data.theme === "studio" && (
-            <div className="studio-display" aria-hidden="true">
-              PORTFOLIO
+        {photographicTemplates.includes(data.theme) ? (
+          <PhotoHero data={data} portrait={portrait} preview={preview} />
+        ) : (
+          <header className="portfolio-hero">
+            <div className="portfolio-masthead">
+              <span>{data.identity.name || "Your name"}</span>
+              <span>{data.identity.location}</span>
             </div>
-          )}
-          <div
-            className={
-              data.theme === "studio" ? "studio-introduction" : undefined
-            }
-          >
             {data.theme === "studio" && (
-              <p className="portfolio-kicker">Hello, I’m</p>
-            )}
-            {data.theme === "quest" && (
-              <p className="portfolio-kicker">
-                A CAREER IN PROGRESS / THE JOURNEY SO FAR
-              </p>
-            )}
-            <h1>{data.identity.name || "Your name"}</h1>
-            <p className="hero-name">
-              {data.identity.headline ||
-                "Add a headline to introduce your work."}
-            </p>
-            {data.theme === "studio" && (
-              <div className="studio-signature" aria-hidden="true">
-                {data.identity.signature && (
-                  <img
-                    src={data.identity.signature}
-                    alt=""
-                    width="180"
-                    height="70"
-                  />
-                )}
+              <div className="studio-display" aria-hidden="true">
+                PORTFOLIO
               </div>
             )}
-          </div>
-          {data.theme === "studio" ? (
-            <div className="studio-photo-area">
-              <div className="studio-photo-circle" aria-hidden="true" />
-              {portrait}
-              {!data.identity.photo && preview && (
-                <p className="studio-photo-hint">
-                  Your portrait goes here.
-                  <br />
-                  Add it in Introduction.
+            <div
+              className={
+                data.theme === "studio" ? "studio-introduction" : undefined
+              }
+            >
+              {data.theme === "studio" && (
+                <p className="portfolio-kicker">Hello, I’m</p>
+              )}
+              {data.theme === "quest" && (
+                <p className="portfolio-kicker">
+                  A CAREER IN PROGRESS / THE JOURNEY SO FAR
                 </p>
               )}
+              <h1>{data.identity.name || "Your name"}</h1>
+              <p className="hero-name">
+                {data.identity.headline ||
+                  "Add a headline to introduce your work."}
+              </p>
+              {data.theme === "studio" && (
+                <div className="studio-signature" aria-hidden="true">
+                  {data.identity.signature && (
+                    <img
+                      src={data.identity.signature}
+                      alt=""
+                      width="180"
+                      height="70"
+                    />
+                  )}
+                </div>
+              )}
             </div>
-          ) : (
-            portrait
-          )}
-          <span className="portfolio-hero-decoration" aria-hidden="true">
-            {data.theme === "quest" ? "01" : "✦"}
-          </span>
-        </header>
+            {data.theme === "studio" ? (
+              <div className="studio-photo-area">
+                <div className="studio-photo-circle" aria-hidden="true" />
+                {portrait}
+                {!data.identity.photo && preview && (
+                  <p className="studio-photo-hint">
+                    Your portrait goes here.
+                    <br />
+                    Add it in Introduction.
+                  </p>
+                )}
+              </div>
+            ) : (
+              portrait
+            )}
+            <span className="portfolio-hero-decoration" aria-hidden="true">
+              {data.theme === "quest" ? "01" : "✦"}
+            </span>
+          </header>
+        )}
         <div className="portfolio-sections">
           {data.sections
             .filter((s) => s.visible)

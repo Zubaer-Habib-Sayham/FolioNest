@@ -13,6 +13,7 @@ import {
 } from "../../shared/src/html.jsx";
 import portfolioCss from "../../shared/src/portfolio.css?raw";
 import resumeCss from "../../shared/src/resume.css?raw";
+import { usesDisplayFont } from "../../shared/src/templates.js";
 function download(blob, filename) {
   if (blob.size === 0 || blob.size > 30_000_000)
     throw new Error(
@@ -99,7 +100,7 @@ async function capture(data, forPdf = false, resume = false) {
     iframe.contentWindow.scrollTo(0, 0);
     const { toCanvas } = await import("html-to-image");
     let fontEmbedCSS = "";
-    if (data.theme === "studio") {
+    if (usesDisplayFont(data.theme)) {
       const response = await fetch("/fonts/BarlowCondensed-Black.ttf");
       if (!response.ok)
         throw new Error("The template font could not load. Try again.");
@@ -312,7 +313,7 @@ export async function exportPortfolio(format, input, _element) {
       });
       zip.file("index.html", html);
       let exportedCss = portfolioCss;
-      if (data.theme === "studio") {
+      if (usesDisplayFont(data.theme)) {
         for (const asset of [
           "BarlowCondensed-Black.ttf",
           "BarlowCondensed-OFL.txt",

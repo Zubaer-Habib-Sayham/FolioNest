@@ -792,3 +792,567 @@
     transition: none !important;
   }
 }
+
+/* Shared photographic frame keeps faces inside the same responsive canvas everywhere. */
+.photo-hero,
+.photo-hero:has(.portfolio-portrait) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px 32px;
+  padding: 0 0 36px;
+  min-height: 0;
+  align-items: center;
+}
+.photo-hero .portfolio-masthead {
+  grid-column: 1 / -1;
+  margin-bottom: 24px;
+}
+.portfolio-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.portfolio-navigation a {
+  text-decoration: none;
+}
+.photo-introduction,
+.photo-summary {
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+.photo-frame {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  align-self: end;
+  overflow: hidden;
+}
+.photo-frame .portfolio-portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center 25%;
+}
+.portrait-cutout .photo-frame .portfolio-portrait {
+  object-fit: contain;
+  object-position: bottom center;
+}
+.photo-backdrop {
+  position: absolute;
+  inset: 15% 0 0;
+  background: color-mix(in srgb, var(--accent) 12%, var(--paper));
+  border-radius: 50% 50% 0 0;
+}
+.photo-placeholder {
+  position: absolute;
+  inset: 45% 12% auto;
+  text-align: center;
+  color: var(--text);
+}
+.photo-summary .hero-name {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.portfolio-action {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 18px;
+  background: var(--text);
+  color: var(--paper) !important;
+  border-radius: 30px;
+  font-size: 12px;
+  text-decoration: none;
+}
+.photo-hero .photo-summary {
+  grid-column: 1;
+  grid-row: 3;
+}
+.photo-hero .photo-frame {
+  grid-column: 2;
+  grid-row: 2 / 4;
+}
+
+.template-monograph {
+  padding: 30px;
+}
+.template-monograph .photo-hero {
+  border: 2px solid var(--text);
+  border-radius: 20px;
+  padding: 24px;
+  overflow: hidden;
+  gap: 12px 20px;
+}
+.template-monograph h1 {
+  font-size: clamp(40px, 8.5cqw, 86px);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 0.98;
+}
+.template-monograph .photo-frame {
+  aspect-ratio: 3 / 4;
+}
+.template-monograph .photo-backdrop {
+  inset: 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--text) 8%, var(--paper));
+}
+.template-monograph .portfolio-portrait {
+  filter: grayscale(1);
+}
+.template-monograph .portfolio-sections {
+  margin-top: 36px;
+}
+.template-monograph .section-projects {
+  display: block;
+}
+.template-monograph .project-grid {
+  grid-template-columns: 1fr;
+}
+.template-monograph .project-card {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 28px;
+  align-items: center;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+}
+.template-monograph .project-photo,
+.template-monograph .project-art {
+  height: 280px;
+  margin: 0;
+  border-radius: 12px;
+}
+
+.template-portrait .photo-hero {
+  grid-template-columns: minmax(0, 36fr) minmax(0, 64fr);
+  gap: 0 16px;
+}
+.template-portrait .photo-introduction {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+.template-portrait h1 {
+  max-width: none;
+  font-size: clamp(40px, 8.5cqw, 82px);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.name-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text);
+}
+.template-portrait .photo-frame {
+  grid-row: 3;
+  aspect-ratio: 1;
+}
+.template-portrait .photo-backdrop {
+  inset: 8% 0 0;
+  border-radius: 50% 50% 0 0;
+  background: color-mix(in srgb, var(--accent) 10%, var(--paper));
+}
+.template-portrait .photo-summary {
+  align-self: end;
+  padding-bottom: 32px;
+}
+.template-portrait .section-projects,
+.template-portrait .section-skills {
+  display: block;
+}
+.template-portrait .portfolio-section-label {
+  margin-bottom: 26px;
+}
+.template-portrait .project-photo,
+.template-portrait .project-art {
+  height: 240px;
+  border-radius: 16px;
+}
+.template-portrait .skill-list li {
+  border-radius: 4px;
+  padding: 14px 20px;
+}
+
+.template-atelier .photo-hero {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 28px 48px;
+}
+.template-atelier .photo-introduction > .portfolio-kicker {
+  font-family: Georgia, serif;
+  font-style: italic;
+  text-transform: none;
+  font-size: 52px;
+  letter-spacing: -3px;
+  color: var(--text);
+  line-height: 1;
+}
+.template-atelier h1 {
+  font-size: clamp(32px, 4.8cqw, 54px);
+  letter-spacing: -2px;
+}
+.template-atelier .photo-frame {
+  aspect-ratio: 3 / 4;
+}
+.template-atelier .photo-backdrop {
+  background: color-mix(in srgb, var(--text) 5%, var(--paper));
+  border-radius: 0;
+  inset: 0;
+}
+.template-atelier .portfolio-portrait {
+  filter: grayscale(1);
+}
+.template-atelier .portfolio-section {
+  grid-template-columns: 200px minmax(0, 1fr);
+  padding: 52px 0;
+}
+.template-atelier .portfolio-section-label h2 {
+  font-size: 28px;
+  color: var(--text);
+}
+.template-atelier .section-projects {
+  display: block;
+}
+.template-atelier .project-grid {
+  gap: 32px;
+}
+.template-atelier .project-photo,
+.template-atelier .project-art {
+  height: 260px;
+  border-radius: 10px;
+}
+
+.template-cinema {
+  padding: 0;
+}
+.template-cinema .photo-hero {
+  padding: 32px 42px 0;
+  grid-template-columns: minmax(0, 48fr) minmax(0, 52fr);
+  gap: 20px 28px;
+}
+.template-cinema h1 {
+  font-family: "Barlow Condensed", Impact, sans-serif;
+  font-weight: 900;
+  font-size: clamp(44px, 8.5cqw, 92px);
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+}
+.template-cinema .photo-frame {
+  aspect-ratio: 1;
+  border-radius: 28px 28px 0 0;
+}
+.template-cinema .photo-backdrop {
+  inset: 0;
+  background: var(--warm-accent);
+  border-radius: inherit;
+}
+.template-cinema .photo-summary {
+  padding-bottom: 36px;
+}
+.template-cinema .portfolio-section {
+  padding: 38px 42px;
+  grid-template-columns: 180px minmax(0, 1fr);
+}
+.template-cinema .portfolio-section:nth-child(3n + 1) {
+  background: var(--text);
+  color: var(--paper);
+}
+.template-cinema
+  .portfolio-section:nth-child(3n + 1)
+  :is(
+    .portfolio-prose,
+    .portfolio-kicker,
+    .portfolio-section-label h2,
+    .portfolio-section-label > span
+  ) {
+  color: var(--paper);
+}
+.template-cinema .portfolio-section:nth-child(3n + 1) {
+  --border: #808080;
+}
+.template-cinema .section-projects {
+  display: block;
+}
+.template-cinema .project-photo,
+.template-cinema .project-art {
+  height: 260px;
+  border-radius: 24px;
+}
+.template-cinema .section-skills .skill-list li {
+  border-radius: 0;
+  padding: 12px 20px;
+}
+.template-cinema .portfolio-footer {
+  padding: 28px 42px;
+}
+
+.template-ember {
+  padding: 36px;
+}
+.template-ember .photo-hero {
+  grid-template-columns: minmax(0, 30fr) minmax(0, 38fr) minmax(0, 32fr);
+  column-gap: 18px;
+  background: color-mix(in srgb, var(--text) 5%, var(--paper));
+  margin: -36px -36px 32px;
+  padding: 30px 36px 0;
+}
+.template-ember .photo-introduction {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+  padding-top: 38px;
+}
+.template-ember .photo-frame {
+  grid-column: 2;
+  grid-row: 2;
+  aspect-ratio: 3 / 4;
+}
+.template-ember .photo-summary {
+  grid-column: 3;
+  grid-row: 2;
+  padding-bottom: 50px;
+}
+.template-ember h1 {
+  font-size: clamp(32px, 4.8cqw, 52px);
+  font-weight: 700;
+  letter-spacing: -1.7px;
+}
+.template-ember h1::after {
+  content: "";
+  display: block;
+  width: 45px;
+  height: 5px;
+  background: var(--warm-accent);
+  margin-top: 18px;
+}
+.template-ember .photo-backdrop {
+  background: transparent;
+}
+.template-ember .photo-summary .hero-name {
+  font-size: 16px;
+}
+.template-ember .portfolio-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+.template-ember .portfolio-section {
+  display: block;
+  padding: 24px;
+  border: 1px solid var(--border);
+}
+.template-ember .section-projects {
+  grid-column: 1 / -1;
+}
+.template-ember .portfolio-section-label {
+  margin-bottom: 24px;
+}
+.template-ember .skill-list li {
+  border-radius: 0;
+  padding: 16px;
+}
+.template-ember .project-photo,
+.template-ember .project-art {
+  height: 250px;
+  border-radius: 0;
+}
+.template-ember .portfolio-footer {
+  margin-top: 28px;
+}
+
+.template-halo .photo-hero {
+  grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+  column-gap: 24px;
+  background: radial-gradient(
+    ellipse at 60% 50%,
+    color-mix(in srgb, var(--warm-accent) 45%, transparent),
+    transparent 65%
+  );
+}
+.template-halo .photo-introduction {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+}
+.template-halo .photo-introduction > .portfolio-kicker {
+  font-family: Georgia, serif;
+  font-style: italic;
+  text-transform: none;
+  color: var(--text);
+  font-size: 40px;
+  letter-spacing: -2px;
+  line-height: 1.1;
+}
+.template-halo h1 {
+  font-family: "Barlow Condensed", Impact, sans-serif;
+  font-weight: 900;
+  font-size: clamp(40px, 7cqw, 76px);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.template-halo .photo-frame {
+  aspect-ratio: 1;
+}
+.template-halo .photo-backdrop {
+  background: transparent;
+}
+.template-halo .photo-summary {
+  padding-bottom: 20px;
+}
+.template-halo .portfolio-section {
+  display: block;
+  padding: 38px 0;
+}
+.template-halo .portfolio-section-label {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+  margin-bottom: 24px;
+}
+.template-halo .portfolio-section-label h2 {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 30px;
+}
+.template-halo .project-photo,
+.template-halo .project-art {
+  height: 250px;
+  border-radius: 18px;
+}
+.template-halo .journey-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 22px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .photo-hero .photo-frame {
+    animation: portrait-arrive 0.8s ease-out both;
+  }
+  .template-portrait .photo-introduction {
+    animation: type-arrive 0.75s ease-out both;
+  }
+  .template-ember .photo-summary {
+    animation: type-arrive 0.8s ease-out both;
+  }
+  .photo-frame .portfolio-portrait,
+  .project-photo {
+    transition: transform 0.45s ease;
+  }
+  .photo-frame:hover .portfolio-portrait {
+    transform: scale(1.025);
+  }
+  .project-card:hover .project-photo {
+    transform: translateY(-5px);
+  }
+  @keyframes portrait-arrive {
+    from {
+      opacity: 0.7;
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes type-arrive {
+    from {
+      opacity: 0.7;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+@container folio (max-width: 600px) {
+  .portfolio .photo-hero,
+  .portfolio .photo-hero:has(.portfolio-portrait) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    padding: 0 0 26px;
+    margin: 0;
+  }
+  .photo-hero .portfolio-masthead {
+    margin: 0 0 8px;
+    flex-wrap: wrap;
+  }
+  .portfolio-navigation {
+    gap: 12px;
+    font-size: 10px;
+  }
+  .portfolio .photo-frame {
+    aspect-ratio: 1;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+  .portfolio .photo-frame .portfolio-portrait {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+  .portfolio .photo-hero h1 {
+    font-size: clamp(34px, 10cqw, 52px);
+    text-align: left;
+  }
+  .portfolio .photo-summary {
+    padding: 0;
+  }
+  .template-monograph .photo-hero {
+    padding: 18px !important;
+  }
+  .template-monograph .project-card {
+    display: block;
+  }
+  .template-monograph .project-photo {
+    margin-bottom: 18px;
+  }
+  .template-cinema .photo-hero {
+    padding: 26px 22px !important;
+  }
+  .template-cinema .portfolio-section {
+    display: block;
+    padding: 26px 22px;
+  }
+  .template-cinema .portfolio-footer {
+    padding: 22px;
+  }
+  .template-cinema .photo-frame {
+    border-radius: 24px;
+  }
+  .template-ember .portfolio-sections {
+    grid-template-columns: 1fr;
+  }
+  .template-ember .section-projects {
+    grid-column: auto;
+  }
+  .template-ember .portfolio-section {
+    padding: 22px;
+  }
+  .template-atelier .portfolio-section {
+    display: block;
+    padding: 30px 0;
+  }
+  .portfolio .photo-introduction {
+    padding: 0;
+  }
+  .template-halo .journey-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,10 +1,11 @@
 import { test, expect } from "vitest";
 import { samplePortfolio } from "../shared/src/schema.js";
 import { portfolioMarkup, staticWebsite } from "../shared/src/html.jsx";
+import { templateIds } from "../shared/src/templates.js";
 test("all templates render escaped meaningful independent content", () => {
   const p = samplePortfolio();
   p.identity.name = "<script>alert(1)</script>";
-  for (const theme of ["editorial", "bento", "motion", "quest"]) {
+  for (const theme of templateIds) {
     p.theme = theme;
     const html = staticWebsite(p);
     expect(html).toContain(`template-${theme}`);

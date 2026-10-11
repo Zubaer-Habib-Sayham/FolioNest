@@ -1,14 +1,25 @@
 import { readFile } from "node:fs/promises";
 import { samplePortfolio, portfolioSchema } from "../shared/src/schema.js";
+import { photographicTemplates } from "../shared/src/templates.js";
 
 // Gallery imagery is illustrative and never replaces a visitor's saved draft.
 export async function galleryPortfolio(templateId) {
   const p = samplePortfolio();
   p.theme = templateId;
-  if (templateId === "studio") {
+  if (templateId === "studio" || photographicTemplates.includes(templateId)) {
     const asset = async (filename, type) =>
       `data:image/${type};base64,${(await readFile(new URL(`../assets/gallery/studio/${filename}`, import.meta.url))).toString("base64")}`;
-    p.identity.photo = await asset("portrait.webp", "webp");
+    const portraits = {
+      monograph: "profile.webp",
+      cinema: "camera.webp",
+      atelier: "female-close.webp",
+      portrait: "female-wide.webp",
+      halo: "female-wide.webp",
+    };
+    p.identity.photo = portraits[templateId]
+      ? `data:image/webp;base64,${(await readFile(new URL(`../assets/gallery/portraits/${portraits[templateId]}`, import.meta.url))).toString("base64")}`
+      : await asset("portrait.webp", "webp");
+    if (templateId === "ember") p.appearance = "dark";
     p.projects[0] = {
       ...p.projects[0],
       title: "Form & space",

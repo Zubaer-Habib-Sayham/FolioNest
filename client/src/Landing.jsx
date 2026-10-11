@@ -83,30 +83,32 @@ export default function Landing() {
           </p>
         </div>
         <div className="template-gallery">
-          {templates.map(({ id, name, description: copy, previewImage }) => (
-            <a
-              className="template-card"
-              href={`/builder?template=${id}`}
-              key={id}
-            >
-              <div className={`mini-preview mini-${id}`}>
-                <img
-                  src={`/templates/${previewImage || `${id}.png`}`}
-                  alt={`${name} sample portfolio preview`}
-                  width="960"
-                  height={previewDimensions[id]}
-                  loading="lazy"
-                />
-              </div>
-              <div className="template-label">
-                <h3>{name}</h3>
-              </div>
-              <p>{copy}</p>
-              {id === "studio" && (
-                <p className="fine-print">AI-generated sample imagery</p>
-              )}
-            </a>
-          ))}
+          {templates.map(
+            ({ id, name, description: copy, previewImage, sampleImagery }) => (
+              <a
+                className="template-card"
+                href={`/builder?template=${id}`}
+                key={id}
+              >
+                <div className={`mini-preview mini-${id}`}>
+                  <img
+                    src={`/templates/${previewImage || `${id}.png`}`}
+                    alt={`${name} sample portfolio preview`}
+                    width="960"
+                    height={previewDimensions[id]}
+                    loading="lazy"
+                  />
+                </div>
+                <div className="template-label">
+                  <h3>{name}</h3>
+                </div>
+                <p>{copy}</p>
+                {(id === "studio" || sampleImagery) && (
+                  <p className="fine-print">AI-generated sample imagery</p>
+                )}
+              </a>
+            ),
+          )}
         </div>
       </section>
       <section className="how section" id="how">

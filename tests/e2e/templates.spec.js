@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { samplePortfolio, templates } from "../../shared/src/schema.js";
 import { galleryPortfolio } from "../../scripts/gallery-samples.js";
+import { photographicTemplates } from "../../shared/src/templates.js";
 
 test("Studio sample portrait keeps its transparent alignment and gallery selection preserves the draft", async ({
   page,
@@ -126,7 +127,7 @@ test("gallery previews reveal their full page on hover and keyboard focus, and r
     )
     .toBeLessThan(-100);
 });
-test("real full-page previews and all five layouts stay readable on desktop and mobile", async ({
+test("real full-page previews and all registered layouts stay readable on desktop and mobile", async ({
   page,
 }) => {
   const errors = [];
@@ -183,5 +184,91 @@ test("real full-page previews and all five layouts stay readable on desktop and 
       });
     }
   }
+  expect(errors).toEqual([]);
+});
+
+test("generated model cutouts fit all photographic frames in both modes and motion remains optional", async ({
+  page,
+}) => {
+  test.setTimeout(60000);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  for (const theme of photographicTemplates) {
+    const sample = await galleryPortfolio(theme);
+    for (const appearance of ["light", "dark"]) {
+      sample.appearance = appearance;
+      await page.goto("/builder");
+      await page.evaluate(
+        (data) =>
+          localStorage.setItem("folionest-draft-v1", JSON.stringify(data)),
+        sample,
+      );
+      await page.reload();
+      await page.getByRole("button", { name: /^Preview$/ }).click();
+      for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        await page
+          .getByRole("button", {
+            name: width === 390 ? "Mobile" : "Desktop",
+            exact: true,
+          })
+          .click();
+        const image = page.locator(".photo-frame .portfolio-portrait");
+        await image.evaluate((el) => el.decode());
+        const geometry = await image.evaluate((el) => {
+          const frame = el.parentElement.getBoundingClientRect();
+          const photo = el.getBoundingClientRect();
+          const canvas = document.createElement("canvas");
+          canvas.width = el.naturalWidth;
+          canvas.height = el.naturalHeight;
+          const context = canvas.getContext("2d");
+          context.drawImage(el, 0, 0);
+          return {
+            gaps: [
+              photo.top - frame.top,
+              photo.bottom - frame.bottom,
+              photo.left - frame.left,
+              photo.right - frame.right,
+            ],
+            fit: getComputedStyle(el).objectFit,
+            alpha: context.getImageData(0, 0, 1, 1).data[3],
+            animation: getComputedStyle(el.parentElement).animationName,
+            overflow: document.documentElement.scrollWidth > innerWidth,
+          };
+        });
+        geometry.gaps.forEach((gap) => expect(Math.abs(gap)).toBeLessThan(1));
+        expect(geometry.fit).toBe("contain");
+        expect(geometry.alpha).toBe(0);
+        expect(geometry.animation).toBe("none");
+        expect(geometry.overflow).toBe(false);
+        await expect(page.locator(".portfolio h1")).toHaveText(
+          sample.identity.name,
+        );
+        if (appearance === "light")
+          await page.screenshot({
+            path: `artifacts/models-${theme}-${width}.png`,
+            fullPage: true,
+          });
+      }
+    }
+  }
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(page.locator(".photo-frame")).toHaveCSS(
+    "animation-name",
+    "portrait-arrive",
+  );
+  await page.locator(".photo-frame").hover();
+  await expect
+    .poll(() =>
+      page
+        .locator(".photo-frame img")
+        .evaluate(
+          (el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m11,
+        ),
+    )
+    .toBeCloseTo(1.025, 2);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".photo-frame img")).toHaveCSS("transform", "none");
   expect(errors).toEqual([]);
 });

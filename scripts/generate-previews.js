@@ -29,9 +29,11 @@ try {
           ? "ocean"
           : template.id === "quest"
             ? "ink"
-            : template.id === "studio"
+            : ["studio", "cinema", "ember", "halo"].includes(template.id)
               ? "terracotta"
-              : "forest";
+              : ["monograph", "portrait", "atelier"].includes(template.id)
+                ? "ink"
+                : "forest";
     p.sections.forEach((section) => (section.color = p.palette));
     await page.setContent(
       `<!doctype html><html><head><style>${css}</style></head><body>${portfolioMarkup(p)}</body></html>`,

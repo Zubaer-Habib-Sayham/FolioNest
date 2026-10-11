@@ -616,7 +616,15 @@ export default function Builder() {
               <PhotoUpload
                 label="Portrait photo (optional)"
                 value={data.identity.photo}
-                backgroundRemoval={data.theme === "studio"}
+                backgroundRemoval={[
+                  "studio",
+                  "monograph",
+                  "portrait",
+                  "atelier",
+                  "cinema",
+                  "ember",
+                  "halo",
+                ].includes(data.theme)}
                 original={data.identity.photoOriginal}
                 onChange={(photo, photoOriginal = "") =>
                   change({

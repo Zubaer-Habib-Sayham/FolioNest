@@ -234,3 +234,121 @@
   font-size: 12px;
   border-bottom-width: 1px;
 }
+
+.portfolio.portfolio-resume .photo-hero,
+.portfolio.portfolio-resume .photo-hero:has(.portfolio-portrait) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px;
+  gap: 6px 20px;
+  padding: 12px 0 14px;
+  margin: 0 0 10px;
+  border-width: 0;
+  min-height: 0;
+  background: transparent;
+}
+.portfolio-resume .photo-hero .portfolio-masthead {
+  margin: 0 0 6px;
+  padding: 0 0 6px;
+}
+.portfolio-resume .portfolio-navigation {
+  display: none;
+}
+.portfolio-resume .photo-introduction {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 0;
+  align-self: center;
+}
+.portfolio-resume .photo-introduction > .portfolio-kicker {
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  line-height: 1.1;
+}
+.portfolio-resume .photo-hero h1 {
+  font-size: 32px;
+  letter-spacing: -0.8px;
+  text-align: left;
+  line-height: 1.05;
+  margin-bottom: 6px;
+}
+.portfolio-resume .photo-frame {
+  grid-column: 2;
+  grid-row: 2 / 4;
+  width: 140px;
+  aspect-ratio: 1;
+  border-radius: 10px;
+}
+.portfolio-resume .photo-frame .portfolio-portrait {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.portfolio-resume .photo-summary {
+  grid-column: 1;
+  grid-row: 3;
+  padding: 0;
+}
+.portfolio-resume .photo-summary .hero-name {
+  font-size: 13px;
+}
+.portfolio-resume .portfolio-action {
+  display: none;
+}
+.portfolio-resume .photo-hero h1::after {
+  height: 3px;
+  margin-top: 6px;
+}
+.portfolio-resume.template-monograph .portfolio-sections {
+  margin-top: 0;
+}
+.portfolio-resume.template-monograph .project-card {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+.portfolio-resume.template-monograph .project-grid {
+  grid-template-columns: 1fr 1fr;
+}
+.portfolio-resume.template-portrait .portfolio-section-label,
+.portfolio-resume.template-atelier .portfolio-section-label,
+.portfolio-resume.template-cinema .portfolio-section-label,
+.portfolio-resume.template-ember .portfolio-section-label,
+.portfolio-resume.template-halo .portfolio-section-label {
+  margin-bottom: 6px;
+}
+.portfolio-resume.template-cinema {
+  padding: 38px;
+}
+.portfolio-resume.template-cinema .portfolio-section {
+  padding: 8px 12px;
+}
+.portfolio-resume.template-cinema .portfolio-footer {
+  padding: 10px 0 0;
+}
+.portfolio-resume.template-ember .portfolio-sections {
+  gap: 10px;
+}
+.portfolio-resume.template-ember .portfolio-section {
+  padding: 8px 12px;
+}
+.portfolio-resume.template-halo .journey-list {
+  display: block;
+}
+.portfolio-resume.template-halo .portfolio-section {
+  display: grid;
+}
+.portfolio-resume.template-halo .portfolio-section-label {
+  display: block;
+}
+.portfolio-resume.template-halo .portfolio-section-label h2 {
+  margin-bottom: 6px;
+}
+.portfolio-resume.template-atelier .portfolio-section-label h2,
+.portfolio-resume.template-halo .portfolio-section-label h2 {
+  font-size: 16px;
+}
+.portfolio-resume.template-portrait .skill-list li,
+.portfolio-resume.template-cinema .skill-list li,
+.portfolio-resume.template-ember .skill-list li {
+  padding: 3px 7px;
+}

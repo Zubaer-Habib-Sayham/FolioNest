@@ -10,7 +10,7 @@ async function layout(locator) {
     const origin = root.getBoundingClientRect();
     return [
       ...root.querySelectorAll(
-        ".portfolio-masthead,.studio-display,.studio-introduction,.studio-photo-area,.studio-photo-circle,h1,h2,h3,.portfolio-prose,.project-grid,.portfolio-section,.portfolio-portrait",
+        ".portfolio-masthead,.studio-display,.studio-introduction,.studio-photo-area,.studio-photo-circle,.photo-frame,.photo-backdrop,.photo-introduction,.photo-summary,h1,h2,h3,.portfolio-prose,.project-grid,.portfolio-section,.portfolio-portrait",
       ),
     ].map((node) => {
       const box = node.getBoundingClientRect();

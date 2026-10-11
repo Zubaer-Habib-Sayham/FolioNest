@@ -39,6 +39,12 @@ export function portfolioBackground(data) {
       return data.appearance === "dark" ? "#241d2d" : "#f4eff9";
     if (data.theme === "quest")
       return data.appearance === "dark" ? "#27261b" : "#f7f0dd";
+    if (data.theme === "ember")
+      return data.appearance === "dark" ? "#272936" : "#eff0f6";
+    if (["monograph", "portrait", "atelier"].includes(data.theme))
+      return data.appearance === "dark" ? "#202020" : "#fafafa";
+    if (["cinema", "halo"].includes(data.theme))
+      return data.appearance === "dark" ? "#262119" : "#fffaf0";
   }
   return backgrounds[data.background][data.appearance];
 }

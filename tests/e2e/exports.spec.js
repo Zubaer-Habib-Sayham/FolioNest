@@ -4,11 +4,12 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import JSZip from "jszip";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { photographicTemplates } from "../../shared/src/templates.js";
 import {
   samplePortfolio,
   portfolioBackground,
 } from "../../shared/src/schema.js";
-async function verifyPageBackground(page, filename, expected) {
+async function verifyPageBackground(page, filename, expected, heroColor) {
   await page.context().route("**/__pdf-render.mjs", (route) =>
     route.fulfill({
       contentType: "text/javascript",
@@ -70,13 +71,16 @@ async function verifyPageBackground(page, filename, expected) {
       Buffer.from(renderedPage.png.split(",")[1], "base64"),
     );
     // PDF color channels are quantized; a two-level tolerance still rejects a white frame.
-    for (const corner of renderedPage.corners)
+    for (const [index, corner] of renderedPage.corners.entries()) {
+      const expectedColor =
+        heroColor && renderedPage.number === 1 && index < 2 ? heroColor : rgb;
       corner.forEach((channel, index) =>
-        expect(Math.abs(channel - rgb[index])).toBeLessThanOrEqual(2),
+        expect(Math.abs(channel - expectedColor[index])).toBeLessThanOrEqual(2),
       );
+    }
   }
 }
-for (const theme of ["editorial", "studio"]) {
+for (const theme of ["editorial", "studio", ...photographicTemplates]) {
   test(`real ${theme} résumé, portfolio PDF, PNG and independently operating website ZIP`, async ({
     page,
     browser,
@@ -189,6 +193,19 @@ for (const theme of ["editorial", "studio"]) {
       page,
       saved["Portfolio PDF"],
       portfolioBackground(p),
+      theme === "ember"
+        ? await page.locator(".photo-hero").evaluate((el) => {
+            const canvas = document.createElement("canvas");
+            canvas.width = canvas.height = 1;
+            const context = canvas.getContext("2d");
+            context.fillStyle = getComputedStyle(el).backgroundColor;
+            context.fillRect(0, 0, 1, 1);
+            return Array.from(context.getImageData(0, 0, 1, 1).data).slice(
+              0,
+              3,
+            );
+          })
+        : undefined,
     );
     await verifyPageBackground(
       page,
@@ -269,7 +286,11 @@ for (const theme of ["editorial", "studio"]) {
       await standalone
         .locator(".portfolio")
         .evaluate((el) => getComputedStyle(el).padding),
-    ).toBe(theme === "studio" ? "42px 40px" : "48px");
+    ).toBe(
+      { studio: "42px 40px", monograph: "30px", cinema: "0px", ember: "36px" }[
+        theme
+      ] || "48px",
+    );
     if (theme === "studio") {
       await expect(standalone.locator(".studio-signature img")).toBeVisible();
       expect(
