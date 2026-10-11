@@ -2,6 +2,8 @@
 
 Current revision: convert application, server, proxy, scripts and tests to JavaScript/JSX while retaining React, runtime schemas, behavior and layouts. Verify renderer output and the full suite before committing. Then add optional local portrait background removal with an original-photo fallback, bounded transparent image storage and verified exports. Finally make Netlify Drop the simpler illustrated ZIP-hosting path and clarify Cloudflare troubleshooting. Keep publication approval separate from authorized GitHub pushes.
 
+Revision status: JavaScript migration, local portrait cutouts/original restoration, optional uploaded signatures, shared preview/export layout rules and the clearer hosting guide are implemented and locally verified. External cloud/hosting checks remain outstanding; see QA.md. Replace old uploaded ZIPs to receive these changes.
+
 Build complete, verified slices on main. Preserve the original supplied kit; it is an implementation input, not application source.
 
 1. Workspace tooling, brand assets, accessible landing page and independent editor modes.

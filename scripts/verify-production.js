@@ -59,7 +59,7 @@ try {
   const png = await readFile(await download.path());
   assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
   assert.equal(png.readUInt32BE(16), 960);
-  await page.locator(".hosting-details summary").click();
+  await page.locator(".hosting-details > summary").click();
   await expect(page.locator(".hosting-details")).toContainText(
     "No extra app or code is needed.",
   );

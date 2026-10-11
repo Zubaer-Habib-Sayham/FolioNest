@@ -1,5 +1,13 @@
 # Verification log
 
+## Clearer browser-only portfolio hosting
+
+- The illustrated guide now starts with Netlify Drop and gives exact sign-in, ZIP upload, Make public, private-window verification and same-address update steps. Expandable help covers blank pages, missing assets, stale layouts and the existing Cloudflare Pages Production upload path. Illustrations open larger in a new tab; no extra installation is needed. The ZIP README includes the same guidance.
+- `npm run check` passed: lint, 53-file syntax validation, 32 unit/API tests and both builds. The four relevant browser tests passed: the guide on homepage/editor with keyboard/mobile checks, both templates' four real exports with offline ZIPs and bundled hosting instructions, and long-CV/incomplete-export behavior. The first guide runs found ambiguous selectors after adding nested help and larger-image links; exact/scoped selectors fixed the harness, and the complete four-test rerun passed.
+- The latest compiled app passed `node scripts/run.js scripts/verify-production.js`, including guide assets, cutout/signature/PNG under CSP, metadata/routes and no browser-console errors. The temporary production server was stopped. The mobile guide viewport was visually inspected; text wraps without horizontal overflow, and small illustrations can be opened larger.
+- Official Netlify Drop, visibility/pricing and Cloudflare Direct Upload instructions were checked on 2026-10-11. Netlify Free uses monthly credits and pauses at the limit; the guide discloses limits. No external account, upload or deployment was performed, and the user's existing hosted address has not been inspected because no URL was supplied.
+- GitHub verification for `7b8de2d` and `0598aa1` completed successfully. GitHub resolves the latter's author to `Zubaer-Habib-Sayham` using the supplied email. Commits are real milestones on main; contribution graph timing is controlled by GitHub.
+
 ## Portrait cutouts, optional signatures and export parity
 
 - `npm run check` passed: ESLint, syntax validation of 53 JavaScript/JSX files, 32 tests across eight files and client/server production builds. `npm run test:e2e` passed all 12 Chrome tests. `npm audit --omit=dev` reported zero vulnerabilities.

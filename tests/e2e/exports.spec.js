@@ -210,6 +210,11 @@ for (const theme of ["editorial", "studio"]) {
     );
     expect(imageAssets).toHaveLength(theme === "studio" ? 3 : 2);
     const websiteHTML = await zip.file("index.html").async("string");
+    const instructions = await zip.file("README.txt").async("string");
+    expect(instructions).toContain("https://app.netlify.com/drop");
+    expect(instructions).toContain("Make public");
+    expect(instructions).toContain("Production deploys");
+    expect(instructions).toContain("Create a new deployment");
     if (originalPhoto) {
       expect(websiteHTML).not.toContain(originalPhoto);
       const originalBytes = Buffer.from(originalPhoto.split(",")[1], "base64");

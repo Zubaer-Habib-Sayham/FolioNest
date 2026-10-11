@@ -5,22 +5,22 @@ export default function HostingGuide({ compact = false }) {
     {
       image: "download",
       title: "Download your finished website",
-      text: "In Review & export, choose Website ZIP. Keep the ZIP as it is: your pages, colors and photos are already inside. Check that you’re happy to share the visible content publicly.",
+      text: "In Review & export, choose Website ZIP. Find the new file ending in -website.zip in Downloads. Your layout, colors and photos are inside. Keep a JSON backup for future editing.",
     },
     {
       image: "dashboard",
-      title: "Open a free hosting account",
-      text: "Sign up or sign in to Cloudflare in your browser. Open Workers & Pages, then Create application, Get started and Drag and drop your files. If you see a Pages tab, choose it for the website upload.",
+      title: "Sign in and open Netlify Drop",
+      text: "Use the Open Netlify Drop button below. Sign up or sign in and choose the Free plan. Then open app.netlify.com/drop again. Signing in lets you keep and update this website.",
     },
     {
       image: "upload",
-      title: "Upload the ZIP and publish",
-      text: "Give your site a name, then drop your Website ZIP into the upload area. Choose Deploy site, or Save and Deploy if prompted. Use the free Pages plan and the included pages.dev address.",
+      title: "Drop your Website ZIP",
+      text: "Drag the downloaded -website.zip onto the large drop area. Wait for the upload to finish and the project page to appear. Keep the complete ZIP together so the styles and photos arrive too.",
     },
     {
       image: "live",
-      title: "Open your link and share it",
-      text: "Open the pages.dev link shown after upload. Check your photos, links and phone layout. For updates, download a new ZIP and choose Create a new deployment in the same hosting project.",
+      title: "Make public, then check your link",
+      text: "If the project is private, choose Make public once its deployment succeeds. Open the address ending in .netlify.app. Check it in a private browser window and on your phone before sharing.",
     },
   ];
   const content = (
@@ -31,20 +31,26 @@ export default function HostingGuide({ compact = false }) {
         <h2 id={headingId}>Your website. Your link. Ready to share.</h2>
       )}
       <p className="hosting-intro">
-        Publish your downloaded portfolio with Cloudflare Pages using just your
-        browser. You’ll need a free Cloudflare account. No extra app or code is
-        needed.
+        Give your downloaded portfolio a link with Netlify Drop using just your
+        browser. Choose its Free plan. No extra app or code is needed.
       </p>
       <ol className="hosting-steps">
         {steps.map((step, i) => (
           <li key={step.image}>
-            <img
-              src={`/guides/${step.image}.svg`}
-              width="720"
-              height="400"
-              loading="lazy"
-              alt={`Step ${i + 1} illustration: ${step.title}`}
-            />
+            <a
+              href={`/guides/${step.image}.svg`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open a larger illustration for step ${i + 1}: ${step.title}`}
+            >
+              <img
+                src={`/guides/${step.image}.svg`}
+                width="720"
+                height="400"
+                loading="lazy"
+                alt={`Step ${i + 1} illustration: ${step.title}`}
+              />
+            </a>
             <span className="hosting-step-number" aria-hidden="true">
               0{i + 1}
             </span>
@@ -54,29 +60,86 @@ export default function HostingGuide({ compact = false }) {
         ))}
       </ol>
       <p className="hosting-caption">
-        Illustrations show the idea of each step; the hosting dashboard may look
-        a little different. The free address is enough to share your work.
-        Buying a custom domain is optional.
+        Tap an illustration to view it larger. Illustrations show the idea of
+        each step; the hosting dashboard may look a little different. The
+        included address needs no domain purchase. Netlify Free has a monthly
+        usage limit; sites pause if it is reached.
       </p>
       <div className="hosting-actions">
         <a
           className="button"
-          href="https://dash.cloudflare.com/"
+          href="https://app.netlify.com/drop"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open Cloudflare
+          Open Netlify Drop
         </a>
         <a
-          href="https://developers.cloudflare.com/pages/get-started/direct-upload/"
+          href="https://docs.netlify.com/start/quickstarts/netlify-drop-quickstart/"
           target="_blank"
           rel="noopener noreferrer"
         >
           Official upload instructions
         </a>
       </div>
+      <details className="hosting-help">
+        <summary>Update your link or fix an upload</summary>
+        <dl>
+          <dt>How do I update my existing website?</dt>
+          <dd>
+            Download a fresh Website ZIP after your edits. On Netlify, open the
+            same project and find Production deploys. Extract the new ZIP using
+            your computer’s built-in Extract All or unzip option, then drop that
+            folder there. The folder should show index.html and styles.css
+            directly inside. This replaces the site at the same address.
+          </dd>
+          <dt>My link asks visitors to sign in.</dt>
+          <dd>
+            On Netlify, choose Make public in the project. You can also open
+            Project configuration, General, Visitor access, Project visibility
+            and set production to Public. Confirm you want the visible portfolio
+            content shared.
+          </dd>
+          <dt>I see a blank page, a 404, or missing photos.</dt>
+          <dd>
+            Wait until the upload has succeeded. Open the complete address the
+            host shows. If files are missing, upload the entire fresh ZIP again;
+            keep index.html, styles.css and the assets folder together.
+            Extracting the ZIP and opening index.html locally lets you check the
+            files before another upload.
+          </dd>
+          <dt>The hosted layout still looks like the old version.</dt>
+          <dd>
+            Existing uploads do not change when you edit here. Replace the old
+            deployment with a newly downloaded ZIP, then reload the hosted page.
+            Compare it with Full preview at the same screen width.
+          </dd>
+        </dl>
+      </details>
+      <details className="hosting-help">
+        <summary>Already using Cloudflare Pages?</summary>
+        <p>
+          Keep your existing address: open Workers &amp; Pages, select your
+          Pages project, then Create a new deployment. Choose Production, upload
+          the fresh Website ZIP and select Save and Deploy. Wait for completion,
+          then open the project’s .pages.dev address.
+        </p>
+        <p>
+          For a new project, open Workers &amp; Pages, Create application, Get
+          started, then Drag and drop your files. Enter a name, drop your
+          Website ZIP and choose Deploy site. This upload path is for Pages.
+          Follow the host’s labels if its dashboard changes.
+        </p>
+        <a
+          href="https://developers.cloudflare.com/pages/get-started/direct-upload/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Cloudflare Pages upload instructions
+        </a>
+      </details>
       <p className="hosting-caption">
-        Your ZIP is an independent portfolio website. Updating it on Cloudflare
+        Your ZIP is an independent portfolio website. Updating it on a host
         doesn’t update your saved FolioNest draft; keep your JSON backup for
         future edits.
       </p>

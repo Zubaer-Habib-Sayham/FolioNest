@@ -393,7 +393,30 @@ export async function exportPortfolio(format, input, _element) {
       zip.file("script.js", websiteScript);
       zip.file(
         "README.txt",
-        "Open index.html in a browser. No installation or connection to FolioNest is required.\n\nFREE BROWSER-ONLY HOSTING\nCreate a free Cloudflare account at https://dash.cloudflare.com/. Open Workers & Pages, create a Pages application using the drag-and-drop upload option, give it a project name, and upload this entire ZIP. Deploy the site and open its pages.dev address. Use the free Pages plan and pages.dev address; a custom domain is optional and may cost money.\n\nTo update, download a fresh Website ZIP from FolioNest and create a new deployment in the same Pages project. Keep all files together. External links only open when you click them.\n\nOfficial instructions: https://developers.cloudflare.com/pages/get-started/direct-upload/\n",
+        `Open index.html in a browser. No installation or connection to FolioNest is required.
+
+FREE BROWSER-ONLY HOSTING: NETLIFY DROP
+1. Sign up or sign in to Netlify, choosing the Free plan.
+2. Open https://app.netlify.com/drop and drag this complete Website ZIP into the drop area.
+3. Wait for the project page and a successful deployment. If private, choose Make public to share the visible portfolio content.
+4. Open its .netlify.app address in a private browser window and on your phone to check it.
+
+Netlify Free has a monthly usage limit; sites pause at that limit. An included address needs no custom-domain purchase.
+Official instructions: https://docs.netlify.com/start/quickstarts/netlify-drop-quickstart/
+
+UPDATING THE SAME NETLIFY ADDRESS
+Download a fresh Website ZIP after editing in FolioNest. Extract it using your computer's built-in Extract All or unzip option. Open the same Netlify project and drop the extracted folder under Production deploys. The folder should contain index.html and styles.css directly inside. Keep assets and fonts alongside them.
+
+ALREADY USING CLOUDFLARE PAGES?
+Open Workers & Pages and select your Pages project. Choose Create a new deployment, select Production, upload this complete fresh ZIP and choose Save and Deploy. Wait for completion before opening the .pages.dev address.
+For a new Pages project: Workers & Pages, Create application, Get started, Drag and drop your files. Name it, upload this ZIP and choose Deploy site.
+Official instructions: https://developers.cloudflare.com/pages/get-started/direct-upload/
+
+IF THE LINK IS BLANK OR HAS MISSING STYLES/PHOTOS
+Check that the upload completed and open the full address shown by the host. Upload all files together. To check locally, extract this ZIP and open index.html. Compare the hosted page with Full preview at the same screen width.
+Existing uploads never change automatically: replace the old deployment with a newly downloaded ZIP, then reload the page. Keep your FolioNest JSON backup for editing later.
+External links only open when you click them.
+`,
       );
       download(
         await zip.generateAsync({
