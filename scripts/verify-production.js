@@ -1,6 +1,7 @@
 import { chromium, expect } from "@playwright/test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 const browser = await chromium.launch({
   channel: process.env.CI ? undefined : "chrome",
 });
@@ -59,6 +60,17 @@ try {
   const png = await readFile(await download.path());
   assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
   assert.equal(png.readUInt32BE(16), 960);
+  const resumePending = page.waitForEvent("download");
+  await page.getByRole("button", { name: /^Download résumé/ }).click();
+  const resumeDownload = await resumePending;
+  const resume = await getDocument({
+    data: new Uint8Array(await readFile(await resumeDownload.path())),
+  }).promise;
+  assert.equal(resume.numPages, 1);
+  const sheet = await resume.getPage(1);
+  assert.ok(Math.abs(sheet.view[2] - 595.28) < 0.1);
+  assert.ok(Math.abs(sheet.view[3] - 841.89) < 0.1);
+  await resume.cleanup();
   await page.locator(".hosting-details > summary").click();
   await expect(page.locator(".hosting-details")).toContainText(
     "No extra app or code is needed.",
@@ -86,7 +98,7 @@ try {
   assert.equal((await fetch(origin + "/missing-page")).status, 404);
   assert.deepEqual(errors, []);
   console.log(
-    "Compiled production smoke passed: initial HTML/metadata, guest editing/cutout/signature/PNG under CSP, callback routing, 404s and no browser-console errors.",
+    "Compiled production smoke passed: initial HTML/metadata, guest editing/cutout/signature/PNG/one-page A4 résumé under CSP, callback routing, 404s and no browser-console errors.",
   );
 } finally {
   await browser.close();

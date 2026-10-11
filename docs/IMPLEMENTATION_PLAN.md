@@ -2,6 +2,8 @@
 
 Latest request: first keep the Studio circle/photo geometry proportional across preview and website widths, including screenshot-sized regression checks. Then replace the CV export with a one-page A4 résumé retaining template colors, typography and composition, shortening only an export copy. Verify all templates, long/hidden content, page size/count, rendered readability and the remaining exports before pushing each slice. More templates and public launch follow user review; no publication is authorized yet.
 
+Latest request status: proportional Studio geometry is verified and pushed. Download résumé now creates one template-matched A4 page using readable excerpts without changing the draft; all five templates, actual PDF renders, remaining exports, the full 13-test browser suite and compiled-app checks passed. The user's hosted CSS/version remains uninspected because its URL has not been supplied. Replace the old hosted ZIP with a fresh export. New templates and final launch review are next.
+
 Current revision: convert application, server, proxy, scripts and tests to JavaScript/JSX while retaining React, runtime schemas, behavior and layouts. Verify renderer output and the full suite before committing. Then add optional local portrait background removal with an original-photo fallback, bounded transparent image storage and verified exports. Finally make Netlify Drop the simpler illustrated ZIP-hosting path and clarify Cloudflare troubleshooting. Keep publication approval separate from authorized GitHub pushes.
 
 Revision status: JavaScript migration, local portrait cutouts/original restoration, optional uploaded signatures, shared preview/export layout rules and the clearer hosting guide are implemented and locally verified. External cloud/hosting checks remain outstanding; see QA.md. Replace old uploaded ZIPs to receive these changes.
@@ -11,7 +13,7 @@ Build complete, verified slices on main. Preserve the original supplied kit; it 
 1. Workspace tooling, brand assets, accessible landing page and independent editor modes.
 2. Strict shared data schema, guided guest editor, local persistence and confirmed JSON restore.
 3. Four distinct responsive templates, live preview, curated fonts, palettes and per-section colors.
-4. Selectable CV PDF, paginated portfolio PDF, PNG and independent website ZIP; inspect actual artifacts.
+4. One-page A4 résumé PDF (superseding the originally specified CV), paginated portfolio PDF, PNG and independent website ZIP; inspect actual artifacts.
 5. Optional Supabase Auth, PostgreSQL schema and parameterized owner-scoped APIs.
 6. Cloud management, explicit publishing, unique slugs and unpublishing.
 7. Initial-response public HTML, metadata, sitemap and robots; private-route noindex.

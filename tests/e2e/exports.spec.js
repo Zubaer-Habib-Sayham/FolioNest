@@ -77,7 +77,7 @@ async function verifyPageBackground(page, filename, expected) {
   }
 }
 for (const theme of ["editorial", "studio"]) {
-  test(`real ${theme} CV, portfolio PDF, PNG and independently operating website ZIP`, async ({
+  test(`real ${theme} résumé, portfolio PDF, PNG and independently operating website ZIP`, async ({
     page,
     browser,
   }) => {
@@ -146,7 +146,7 @@ for (const theme of ["editorial", "studio"]) {
     await fs.mkdir(`artifacts/exports/${theme}`, { recursive: true });
     const saved = {};
     for (const label of [
-      "CV PDF",
+      "Download résumé",
       "Portfolio PDF",
       "Portfolio PNG",
       "Website ZIP",
@@ -163,22 +163,21 @@ for (const theme of ["editorial", "studio"]) {
       expect((await fs.stat(target)).size).toBeGreaterThan(500);
       saved[label] = target;
     }
-    const cv = await getDocument({
-      data: new Uint8Array(await fs.readFile(saved["CV PDF"])),
+    const resume = await getDocument({
+      data: new Uint8Array(await fs.readFile(saved["Download résumé"])),
       useSystemFonts: true,
     }).promise;
-    let cvText = "";
-    for (let n = 1; n <= cv.numPages; n++) {
-      const content = await (await cv.getPage(n)).getTextContent();
-      cvText += content.items
-        .filter((item) => "str" in item)
-        .map((item) => item.str)
-        .join(" ");
-    }
-    expect(cvText).toContain("Export Verification");
-    expect(cvText).toContain("A softer kind of digital");
-    expect(cv.numPages).toBeGreaterThan(0);
-    await cv.cleanup();
+    expect(resume.numPages).toBe(1);
+    expect((await resume.getMetadata()).info.Title).toContain(
+      "Export Verification",
+    );
+    const resumePage = await resume.getPage(1);
+    expect(resumePage.view[2]).toBeCloseTo(595.28, 1);
+    expect(resumePage.view[3]).toBeCloseTo(841.89, 1);
+    expect((await resumePage.getOperatorList()).fnArray.length).toBeGreaterThan(
+      0,
+    );
+    await resume.cleanup();
     const pdf = await getDocument({
       data: new Uint8Array(await fs.readFile(saved["Portfolio PDF"])),
     }).promise;
@@ -191,7 +190,11 @@ for (const theme of ["editorial", "studio"]) {
       saved["Portfolio PDF"],
       portfolioBackground(p),
     );
-    await verifyPageBackground(page, saved["CV PDF"], portfolioBackground(p));
+    await verifyPageBackground(
+      page,
+      saved["Download résumé"],
+      portfolioBackground(p),
+    );
     const png = await fs.readFile(saved["Portfolio PNG"]);
     expect(png.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
     expect(png.readUInt32BE(16)).toBe(960);
@@ -299,7 +302,7 @@ for (const theme of ["editorial", "studio"]) {
     expect(errors).toEqual([]);
   });
 }
-test("long text CV paginates and incomplete exports fail without losing the draft", async ({
+test("long text résumé stays one page and incomplete exports fail without losing the draft", async ({
   page,
 }) => {
   await page.goto("/builder");
@@ -314,12 +317,12 @@ test("long text CV paginates and incomplete exports fail without losing the draf
   await page.reload();
   await page.getByRole("button", { name: /Review & export$/ }).click();
   const pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: /^CV PDF/ }).click();
+  await page.getByRole("button", { name: /^Download résumé/ }).click();
   const download = await pending;
   const pdf = await getDocument({
     data: new Uint8Array(await fs.readFile(await download.path())),
   }).promise;
-  expect(pdf.numPages).toBeGreaterThan(1);
+  expect(pdf.numPages).toBe(1);
   await pdf.cleanup();
   await page.getByRole("button", { name: /Introduction$/ }).click();
   await page.getByLabel("Your name", { exact: true }).fill("");

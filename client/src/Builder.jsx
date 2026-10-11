@@ -975,9 +975,9 @@ export default function Builder() {
               <div className="export-grid">
                 {[
                   [
-                    "cv_pdf",
-                    "CV PDF",
-                    "Selectable text, ready for applications",
+                    "resume_pdf",
+                    "Download résumé",
+                    "Your template, compacted to one A4 page",
                   ],
                   [
                     "portfolio_pdf",
@@ -1011,6 +1011,12 @@ export default function Builder() {
                   </button>
                 ))}
               </div>
+              <p className="field-hint">
+                The résumé uses shorter excerpts and leading items in your
+                chosen order. It keeps your design and fits one A4 sheet.
+                Portfolio PDF includes the full content; your saved draft is
+                unchanged. Print on A4 in portrait orientation at Actual size.
+              </p>
               <div className="backup-import">
                 <input
                   type="file"

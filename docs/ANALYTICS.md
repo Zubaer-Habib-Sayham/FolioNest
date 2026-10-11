@@ -4,7 +4,7 @@ Set the public project token in `VITE_POSTHOG_KEY` and the ingestion origin in `
 
 Analytics is disabled by default. The footer's Privacy & analytics control enables it explicitly and stores only that preference. Do Not Track overrides consent. Turning analytics off immediately blocks capture and the final send hook. The SDK loads only when an allowed event occurs after consent. Failure to load it has no effect on editing or exports.
 
-Tracked events: `site_opened` (only the fixed page value `landing` or `builder`), `landing_cta_clicked`, `builder_started`, `template_selected` (fixed template ID), `builder_step_completed` (numbered step), `export_downloaded` (fixed format) and `contact_link_clicked` (email/website type only). `site_opened` is an explicit page-load event, or a single event when a visitor first enables analytics. Automatic pageviews remain disabled; no page address, authentication callback or query is sent. Export events occur only after successful artifact creation.
+Tracked events: `site_opened` (only the fixed page value `landing` or `builder`), `landing_cta_clicked`, `builder_started`, `template_selected` (fixed template ID), `builder_step_completed` (numbered step), `export_downloaded` (fixed format) and `contact_link_clicked` (email/website type only). `site_opened` is an explicit page-load event, or a single event when a visitor first enables analytics. Automatic pageviews remain disabled; no page address, authentication callback or query is sent. Export events occur only after successful artifact creation. Allowed formats are `json`, `resume_pdf`, `portfolio_pdf`, `png` and `website_zip`; the retired CV format is no longer accepted.
 
 ## Reading the numbers after launch
 

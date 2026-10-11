@@ -1,0 +1,236 @@
+/* Print-only composition: retain each template's fonts, colors and structure. */
+.portfolio-resume {
+  padding: 38px;
+  min-height: 1123px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.portfolio-resume .portfolio-masthead {
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  font-size: 10px;
+}
+.portfolio-resume .portfolio-hero {
+  padding: 12px 0 18px;
+  min-height: 0;
+  margin-bottom: 8px;
+}
+.portfolio-resume .portfolio-hero:has(.portfolio-portrait) {
+  min-height: 160px;
+  padding-right: 135px;
+}
+.portfolio-resume h1 {
+  font-size: 32px;
+  line-height: 1.08;
+  letter-spacing: -0.8px;
+  margin-bottom: 10px;
+}
+.portfolio-resume .hero-name {
+  font-size: 13px;
+  line-height: 1.4;
+}
+.portfolio-resume .portfolio-portrait {
+  width: 105px;
+  height: 120px;
+  top: 28px;
+  right: 0;
+}
+.portfolio-resume .portfolio-hero-decoration {
+  font-size: 22px;
+  bottom: 12px;
+}
+.portfolio-resume .portfolio-section {
+  padding: 7px 0;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 18px;
+}
+.portfolio-resume .portfolio-section-label {
+  margin-bottom: 0;
+}
+.portfolio-resume .portfolio-section-label h2 {
+  font-size: 16px;
+  margin: 4px 0 0;
+  line-height: 1.25;
+}
+.portfolio-resume .portfolio-section-label > span {
+  font-size: 9px;
+  display: block;
+  line-height: 1.1;
+}
+.portfolio-resume h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+.portfolio-resume .portfolio-prose {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.portfolio-resume .portfolio-kicker {
+  font-size: 10px;
+  margin-bottom: 4px;
+  letter-spacing: 0.6px;
+}
+.portfolio-resume .organization {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.portfolio-resume .journey-item {
+  margin-bottom: 10px;
+}
+.portfolio-resume .journey-item:last-child {
+  margin-bottom: 0;
+}
+.portfolio-resume .skill-list {
+  gap: 5px;
+}
+.portfolio-resume .skill-list li {
+  font-size: 12px;
+  padding: 3px 7px;
+}
+.portfolio-resume .project-grid {
+  gap: 14px;
+}
+.portfolio-resume .project-photo,
+.portfolio-resume .project-art {
+  height: 48px;
+  margin-bottom: 6px;
+}
+.portfolio-resume .project-art i {
+  width: 32px;
+  height: 32px;
+  top: 8px;
+  left: calc(50% - 16px);
+  box-shadow: none;
+}
+.portfolio-resume .project-body > a {
+  font-size: 11px;
+}
+.portfolio-resume .portfolio-links li {
+  padding: 4px 0;
+  font-size: 13px;
+}
+.portfolio-resume .contact-links {
+  gap: 6px 18px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+.portfolio-resume .portfolio-footer {
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 10px;
+}
+.portfolio-resume .portfolio-footer a {
+  display: none;
+}
+.template-bento.portfolio-resume .portfolio-hero {
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.template-bento.portfolio-resume .portfolio-hero:has(.portfolio-portrait) {
+  padding-right: 145px;
+}
+.template-bento.portfolio-resume .portfolio-portrait {
+  right: 18px;
+  border-radius: 14px;
+}
+.template-bento.portfolio-resume .portfolio-sections {
+  gap: 10px;
+}
+.template-bento.portfolio-resume .portfolio-section {
+  padding: 10px 14px;
+}
+.template-motion.portfolio-resume {
+  padding: 0 0 38px;
+}
+.template-motion.portfolio-resume .portfolio-hero {
+  padding: 24px 38px;
+  margin-bottom: 0;
+}
+.template-motion.portfolio-resume .portfolio-hero:has(.portfolio-portrait) {
+  padding-right: 180px;
+  min-height: 180px;
+}
+.template-motion.portfolio-resume .portfolio-portrait {
+  right: 38px;
+  top: 40px;
+  height: 105px;
+}
+.template-motion.portfolio-resume .portfolio-section {
+  padding: 10px 38px;
+}
+.template-motion.portfolio-resume .portfolio-footer {
+  margin: auto 38px 0;
+  padding: 10px 0 0;
+}
+.template-quest.portfolio-resume .portfolio-hero-decoration {
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
+}
+.template-quest.portfolio-resume .journey-map {
+  margin-left: 8px;
+  padding-left: 22px;
+}
+.template-quest.portfolio-resume .journey-marker {
+  left: -34px;
+  width: 22px;
+  height: 22px;
+  font-size: 9px;
+}
+.template-studio.portfolio-resume .portfolio-hero {
+  grid-template-columns: minmax(0, 1fr) 140px;
+  column-gap: 24px;
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 10px;
+}
+.template-studio.portfolio-resume .portfolio-masthead {
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+.template-studio.portfolio-resume .studio-display {
+  font-size: 70px;
+  transform: scaleY(1.15);
+  margin-bottom: 24px;
+}
+.template-studio.portfolio-resume .studio-introduction {
+  padding: 8px 0;
+}
+.template-studio.portfolio-resume .studio-photo-area {
+  width: 140px;
+  aspect-ratio: 1.08;
+}
+.template-studio.portfolio-resume .portfolio-portrait {
+  width: 100%;
+  height: 100%;
+  top: auto;
+  right: 0;
+}
+.template-studio.portfolio-resume .studio-signature {
+  margin-top: 8px;
+  min-height: 20px;
+}
+.template-studio.portfolio-resume .studio-signature img {
+  width: 120px;
+  height: 20px;
+}
+.template-studio.portfolio-resume .section-projects .portfolio-section-label {
+  margin-bottom: 8px;
+}
+.template-studio.portfolio-resume .portfolio-section {
+  padding: 5px 0;
+}
+.template-studio.portfolio-resume .skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.template-studio.portfolio-resume .skill-list li {
+  padding: 2px 0;
+  font-size: 12px;
+  border-bottom-width: 1px;
+}

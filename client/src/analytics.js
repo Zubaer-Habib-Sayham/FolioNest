@@ -6,7 +6,7 @@ const events = {
   template_selected: { template: templateIds },
   builder_step_completed: { step: [0, 1, 2, 3, 4, 5, 6, 7] },
   export_downloaded: {
-    format: ["json", "cv_pdf", "portfolio_pdf", "png", "website_zip"],
+    format: ["json", "resume_pdf", "portfolio_pdf", "png", "website_zip"],
   },
   contact_link_clicked: { type: ["email", "website"] },
 };

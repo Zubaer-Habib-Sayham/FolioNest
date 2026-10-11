@@ -128,7 +128,7 @@ export default function Landing() {
             [
               "03",
               "Take it with you",
-              "Download a CV, PDF, image or complete website. Sign in only if you want to publish.",
+              "Download a one-page résumé, portfolio PDF, image or complete website. Sign in for cloud saving and publishing.",
             ],
           ].map(([n, title, copy]) => (
             <article key={n}>
@@ -155,7 +155,7 @@ export default function Landing() {
         </div>
         <div className="formats">
           {[
-            "CV / PDF",
+            "One-page résumé / PDF",
             "Portfolio / PDF",
             "Full-page / PNG",
             "Independent website / ZIP",
