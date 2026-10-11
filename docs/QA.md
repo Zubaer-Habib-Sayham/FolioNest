@@ -1,5 +1,14 @@
 # Verification log
 
+## Creative Studio photographic gallery
+
+- Added a fictional transparent portrait and two matching illustrative project covers using the built-in image generation tool. Asset provenance and prompts are in `assets/gallery/studio/README.md`. All three optimized rasters pass the unchanged 96 KB/1,200-pixel validation bounds. The actual shared renderer generated the 960 × 2648 gallery JPEG (220,613 bytes); only that flattened image is loaded by visitors.
+- `npm run check` passed lint, syntax validation in 57 files, all 34 unit/API tests across nine files and both production builds. The complete corrected `npm run test:e2e` passed 14 Chrome tests in 1.4 minutes, including all four real exports, offline ZIP operation, one-page A4 résumés, guest persistence/JSON, keyboard/reduced motion, local cutouts and gallery loading.
+- The new Studio case tests the final transparent WebP in the live renderer at 375, 600, 799, 923 and 960-pixel viewport sizes. It verifies transparent corner pixels, contained photo sizing, round circle proportions, aligned right/bottom edges, title clearance and two project images. Selecting Studio from the gallery preserves the saved name and portrait. Mobile and desktop screenshots were visually inspected alongside the generated full-page gallery image.
+- `node scripts/run.js scripts/verify-production.js` passed on the compiled local app: the new JPEG loads under the actual CSP, existing guest/export flows work, metadata/routes remain valid and no browser-console errors occur. Local gallery-image HTTP status is 200. The temporary compiled server was stopped; development remains on port 5173.
+- The first isolated unit run hit the previously observed test-runner temporary-module access failure; the permitted rerun passed. The initial new browser case omitted navigation to Review & export before Full preview; its harness was corrected, then the relevant three cases and complete fourteen-case suite passed. Source-image encoding initially exceeded the size bound or included disallowed color-profile metadata; optimized files now pass existing validation without weakening it.
+- The previous résumé milestone's GitHub Actions run completed successfully. This slice changes gallery imagery, not deployed hosting or cloud configuration. Hosted Supabase/authentication, live analytics ingestion, Safari/Firefox and the user's existing hosted address remain unverified. Whole-application publication requires the user's final approval.
+
 ## One-page A4 résumé
 
 - Replaced the former CV button with Download résumé. All five templates use the shared renderer with print-only composition, selected colors/fonts/photos, shorter excerpts and leading records in the user's chosen order. Hidden content stays hidden, and the original draft is unchanged. Full Portfolio PDF, PNG and offline website ZIP remain available.

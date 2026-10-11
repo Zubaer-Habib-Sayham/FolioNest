@@ -1,5 +1,96 @@
 import { test, expect } from "@playwright/test";
 import { samplePortfolio, templates } from "../../shared/src/schema.js";
+import { galleryPortfolio } from "../../scripts/gallery-samples.js";
+
+test("Studio sample portrait keeps its transparent alignment and gallery selection preserves the draft", async ({
+  page,
+}) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const sample = await galleryPortfolio("studio");
+  sample.palette = "terracotta";
+  sample.sections.forEach((section) => (section.color = sample.palette));
+  await page.goto("/builder");
+  await page.evaluate(
+    (data) => localStorage.setItem("folionest-draft-v1", JSON.stringify(data)),
+    sample,
+  );
+  await page.reload();
+  await page.getByRole("button", { name: /Review & export$/ }).click();
+  await page.getByRole("button", { name: "Full preview", exact: true }).click();
+  for (const width of [375, 600, 799, 923, 960]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page
+      .getByRole("button", {
+        name: width <= 600 ? "Mobile" : "Desktop",
+        exact: true,
+      })
+      .click();
+    await page
+      .locator(".portfolio-portrait")
+      .evaluate((image) => image.decode());
+    const geometry = await page
+      .locator(".studio-photo-area")
+      .evaluate((area) => {
+        const frame = area.getBoundingClientRect();
+        const image = area.querySelector("img");
+        const photo = image.getBoundingClientRect();
+        const circle = area
+          .querySelector(".studio-photo-circle")
+          .getBoundingClientRect();
+        const display = document
+          .querySelector(".studio-display")
+          .getBoundingClientRect();
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0);
+        return {
+          ratio: frame.width / frame.height,
+          circleRatio: circle.width / circle.height,
+          rightGap: Math.abs(photo.right - circle.right),
+          bottomGap: Math.abs(photo.bottom - frame.bottom),
+          titleGap: circle.top - display.bottom,
+          fit: getComputedStyle(image).objectFit,
+          cornerAlpha: context.getImageData(0, 0, 1, 1).data[3],
+          imageCount: document.querySelectorAll(".project-photo").length,
+        };
+      });
+    expect(geometry.ratio).toBeCloseTo(1.08, 2);
+    expect(geometry.circleRatio).toBeCloseTo(1, 2);
+    expect(geometry.rightGap).toBeLessThan(1);
+    expect(geometry.bottomGap).toBeLessThan(1);
+    expect(geometry.titleGap).toBeGreaterThanOrEqual(0);
+    expect(geometry.fit).toBe("contain");
+    expect(geometry.cornerAlpha).toBe(0);
+    expect(geometry.imageCount).toBe(2);
+    if (width === 375 || width === 960)
+      await page.screenshot({
+        path: `artifacts/studio-gallery-${width}.png`,
+        fullPage: true,
+      });
+  }
+  const draft = samplePortfolio();
+  draft.identity.name = "My saved portfolio";
+  draft.identity.photo = sample.identity.photo;
+  await page.evaluate(
+    (data) => localStorage.setItem("folionest-draft-v1", JSON.stringify(data)),
+    draft,
+  );
+  await page.goto("/");
+  const card = page
+    .locator(".template-card")
+    .filter({ hasText: "Creative Studio" });
+  await expect(card).toContainText("AI-generated sample imagery");
+  await card.click();
+  await expect(page.locator(".portfolio h1")).toHaveText(draft.identity.name);
+  await expect(page.locator(".portfolio-portrait")).toHaveAttribute(
+    "src",
+    draft.identity.photo,
+  );
+  expect(errors).toEqual([]);
+});
 test("gallery previews reveal their full page on hover and keyboard focus, and respect reduced motion", async ({
   page,
 }) => {

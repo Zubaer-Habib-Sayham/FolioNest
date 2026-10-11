@@ -1,5 +1,9 @@
 # Implementation plan
 
+Current gallery revision: add professional fictional portrait/project imagery to Creative Studio, using the actual renderer and proportional photo/circle geometry. Verify transparent photo alignment at mobile and desktop sizes, image loading, keyboard/reduced-motion behavior and draft preservation, then commit and push. Additional templates follow the user's next design requests; whole-application publication still requires final approval.
+
+Gallery revision status: imagery and the optimized shared-renderer preview are implemented. All 34 unit/API tests, 14 browser tests, lint, syntax validation, both builds and the compiled-app smoke check passed. Portrait alignment and draft preservation are verified; screenshots were reviewed on mobile and desktop. Ready for the user's next template designs.
+
 Latest request: first keep the Studio circle/photo geometry proportional across preview and website widths, including screenshot-sized regression checks. Then replace the CV export with a one-page A4 résumé retaining template colors, typography and composition, shortening only an export copy. Verify all templates, long/hidden content, page size/count, rendered readability and the remaining exports before pushing each slice. More templates and public launch follow user review; no publication is authorized yet.
 
 Latest request status: proportional Studio geometry is verified and pushed. Download résumé now creates one template-matched A4 page using readable excerpts without changing the draft; all five templates, actual PDF renders, remaining exports, the full 13-test browser suite and compiled-app checks passed. The user's hosted CSS/version remains uninspected because its URL has not been supplied. Replace the old hosted ZIP with a fresh export. New templates and final launch review are next.

@@ -83,7 +83,7 @@ export default function Landing() {
           </p>
         </div>
         <div className="template-gallery">
-          {templates.map(({ id, name, description: copy }) => (
+          {templates.map(({ id, name, description: copy, previewImage }) => (
             <a
               className="template-card"
               href={`/builder?template=${id}`}
@@ -91,7 +91,7 @@ export default function Landing() {
             >
               <div className={`mini-preview mini-${id}`}>
                 <img
-                  src={`/templates/${id}.png`}
+                  src={`/templates/${previewImage || `${id}.png`}`}
                   alt={`${name} sample portfolio preview`}
                   width="960"
                   height={previewDimensions[id]}
@@ -102,6 +102,9 @@ export default function Landing() {
                 <h3>{name}</h3>
               </div>
               <p>{copy}</p>
+              {id === "studio" && (
+                <p className="fine-print">AI-generated sample imagery</p>
+              )}
             </a>
           ))}
         </div>

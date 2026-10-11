@@ -2,7 +2,8 @@ import { chromium } from "@playwright/test";
 import assert from "node:assert/strict";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { portfolioMarkup, websiteBaseCss } from "../shared/src/html.jsx";
-import { samplePortfolio, templates } from "../shared/src/schema.js";
+import { templates } from "../shared/src/schema.js";
+import { galleryPortfolio } from "./gallery-samples.js";
 const css =
   websiteBaseCss +
   (await readFile("shared/src/portfolio.css", "utf8")).replaceAll(
@@ -20,8 +21,7 @@ try {
   });
   const dimensions = {};
   for (const template of templates) {
-    const p = samplePortfolio();
-    p.theme = template.id;
+    const p = await galleryPortfolio(template.id);
     p.palette =
       template.id === "bento"
         ? "violet"
@@ -37,6 +37,11 @@ try {
       `<!doctype html><html><head><style>${css}</style></head><body>${portfolioMarkup(p)}</body></html>`,
     );
     await page.evaluate(() => document.fonts.ready);
+    await page
+      .locator(".portfolio img")
+      .evaluateAll((images) =>
+        Promise.all(images.map((image) => image.decode())),
+      );
     if (template.id === "studio")
       assert.ok(
         await page
@@ -45,8 +50,9 @@ try {
         "Studio display type must fit on one line",
       );
     await page.screenshot({
-      path: `client/public/templates/${template.id}.png`,
+      path: `client/public/templates/${template.previewImage || `${template.id}.png`}`,
       fullPage: true,
+      ...(template.previewImage?.endsWith(".jpg") ? { quality: 85 } : {}),
     });
     dimensions[template.id] = Math.ceil(
       await page

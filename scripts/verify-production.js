@@ -21,6 +21,16 @@ try {
   assert.equal((html.match(/rel="canonical"/g) || []).length, 1);
   assert.ok(raw.headers.get("Content-Security-Policy"));
   await page.goto(origin);
+  const studioPreview = page.getByAltText(
+    "Creative Studio sample portfolio preview",
+  );
+  await studioPreview.scrollIntoViewIfNeeded();
+  await studioPreview.evaluate((image) => image.decode());
+  await expect(studioPreview).toHaveAttribute("src", "/templates/studio.jpg");
+  assert.equal(
+    await studioPreview.evaluate((image) => image.naturalWidth),
+    960,
+  );
   await page.getByRole("link", { name: "Create your portfolio" }).click();
   await page.getByRole("button", { name: /Introduction$/ }).click();
   await page

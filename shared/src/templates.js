@@ -24,5 +24,6 @@ export const templates = [
     id: "studio",
     name: "Creative Studio",
     description: "Oversized type, warm paper and a portrait in the spotlight.",
+    previewImage: "studio.jpg",
   },
 ];
