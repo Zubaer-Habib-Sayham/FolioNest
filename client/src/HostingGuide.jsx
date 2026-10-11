@@ -1,4 +1,44 @@
 import { useId } from "react";
+function PublishTutorial({ compact }) {
+  const titleId = useId();
+  const title = "Publish your portfolio, step by step";
+  return (
+    <section className="publish-tutorial" aria-labelledby={titleId}>
+      <div>
+        <p className="eyebrow">Watch the walkthrough</p>
+        {compact ? (
+          <h3 id={titleId}>{title}</h3>
+        ) : (
+          <h2 id={titleId}>{title}</h2>
+        )}
+        <p>
+          Follow Zubaer Habib Sayham’s video to turn your downloaded Website ZIP
+          into a link you can share.
+        </p>
+      </div>
+      <a
+        className="tutorial-video"
+        href="https://youtu.be/2kCjUCnunng"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Watch FolioNest Website Publish Tutorial on YouTube (opens a new tab)"
+      >
+        <img
+          src="/guides/publish-video.jpg"
+          width="480"
+          height="360"
+          loading="lazy"
+          alt="Thumbnail for FolioNest Website Publish Tutorial"
+        />
+        <span>Watch on YouTube</span>
+      </a>
+      <p className="hosting-caption">
+        The video opens on YouTube when you choose to watch. The illustrated
+        instructions are below.
+      </p>
+    </section>
+  );
+}
 export default function HostingGuide({ compact = false }) {
   const headingId = useId();
   const steps = [
@@ -146,12 +186,16 @@ export default function HostingGuide({ compact = false }) {
     </section>
   );
   return compact ? (
-    <details className="hosting-details">
-      <summary>Publish your ZIP for free — illustrated guide</summary>
-      {content}
-    </details>
+    <>
+      <PublishTutorial compact />
+      <details className="hosting-details">
+        <summary>Publish your ZIP for free — illustrated guide</summary>
+        {content}
+      </details>
+    </>
   ) : (
     <div className="section" id="hosting">
+      <PublishTutorial />
       {content}
     </div>
   );

@@ -6,7 +6,23 @@ test("illustrated browser-only hosting guide works on home and in the export ste
   const guide = page.locator("#hosting");
   await guide.scrollIntoViewIfNeeded();
   await expect(guide).toContainText("No extra app or code is needed.");
-  for (const image of await guide.locator("img").all()) {
+  const tutorial = guide.getByRole("link", {
+    name: /Watch FolioNest Website Publish Tutorial/,
+  });
+  await expect(tutorial).toHaveAttribute(
+    "href",
+    "https://youtu.be/2kCjUCnunng",
+  );
+  await tutorial.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() =>
+      tutorial
+        .locator("img")
+        .evaluate((el) => el.complete && el.naturalWidth === 480),
+    )
+    .toBe(true);
+  await expect(guide).toContainText("Publish your portfolio, step by step");
+  for (const image of await guide.locator(".hosting-steps img").all()) {
     await image.scrollIntoViewIfNeeded();
     await expect
       .poll(() =>
@@ -39,6 +55,11 @@ test("illustrated browser-only hosting guide works on home and in the export ste
   );
   await page.goto("/builder");
   await page.getByRole("button", { name: /Review & export$/ }).click();
+  await expect(
+    page.getByRole("link", {
+      name: /Watch FolioNest Website Publish Tutorial/,
+    }),
+  ).toBeVisible();
   const details = page.locator(".hosting-details");
   await details.locator(":scope > summary").focus();
   await page.keyboard.press("Enter");

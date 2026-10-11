@@ -1,5 +1,7 @@
 # Decisions
 
+The supplied publishing tutorial links to YouTube using a locally served thumbnail, rather than loading a third-party player on every visit. Visitors choose when to open it. Whole-application publication is authorized as of 2026-10-11; only verified free plans are in scope, and provider setup/results must be reported accurately.
+
 Six photographic designs adapt the supplied references through structured shared markup and CSS. The registry controls their allowed IDs, display-font inclusion and gallery metadata; the database check constraint is extended by a new transactional migration. Ownership, RLS and publication visibility are unchanged. Entrance/hover effects respect reduced motion; captured exports disable motion. Build-only female portrait variants supplement the established male model at the user's request. Choosing a gallery design never injects sample pictures into a saved draft.
 
 

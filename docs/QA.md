@@ -1,5 +1,11 @@
 # Verification notes
 
+## Publishing tutorial video
+
+- Added the supplied YouTube tutorial immediately above the illustrated guide on the homepage and above the expandable guide in Review & export. YouTube's oEmbed endpoint confirms the title “FolioNest Website Publish Tutorial” and author Zubaer Habib Sayham. Its 480 × 360 thumbnail is served locally; no YouTube iframe or third-party request is loaded before a visitor clicks the link. New-tab links use opener protection.
+- `npm run check` passed lint, 63-file syntax validation, all 47 unit/API tests and both production builds. The relevant guide browser test passed in 10.2 seconds, verifying the exact video URL, actual decoded thumbnail, homepage/export placement, keyboard operation and mobile overflow checks.
+- Whole-application publication was authorized on 2026-10-11. Deployment and real analytics configuration are being prepared; this entry does not claim that hosting or provider ingestion has succeeded.
+
 ## Searchable gallery, shortlists and independent collections
 
 - The homepage shows eight featured designs on desktop and six on mobile. The public `/templates` collection includes all eleven, searchable by name/style with incremental loading. Up to four validated design IDs persist independently of the content draft. Keyboard selection, four-design limits, reload, removal and editor switching preserve the saved text and photos. The developer footer contains the supplied LinkedIn, GitHub, Facebook and WhatsApp destinations.
