@@ -1,16 +1,21 @@
 import js from "@eslint/js";
-import ts from "typescript-eslint";
-export default ts.config(
-  { ignores: ["**/dist/**", "node_modules/**"] },
-  js.configs.recommended,
-  ...ts.configs.recommended,
+import globals from "globals";
+export default [
   {
-    files: ["**/*.{ts,tsx}"],
+    ignores: ["**/dist/**", "node_modules/**", "artifacts/**", ".script-*/**"],
+  },
+  js.configs.recommended,
+  {
+    files: ["**/*.{js,jsx}"],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
     rules: {
-      "@typescript-eslint/no-unused-vars": [
+      "no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^[A-Z]" },
       ],
     },
   },
-);
+];

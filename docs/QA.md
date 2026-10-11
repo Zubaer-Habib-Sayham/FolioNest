@@ -1,5 +1,12 @@
 # Verification log
 
+## JavaScript migration
+
+- Converted all 43 tracked source/config/test files from TypeScript to JavaScript/JSX and removed the TypeScript source/compiler configuration. Retained React, Vite, Express, runtime schemas, query ownership checks, styles and saved-document format. No EJS rewrite was needed.
+- Compared all five rendered template HTML strings against pre-migration captures: byte-for-byte identical. Both production client asset hashes and CSS remained the same before the later requested visual fixes.
+- `npm run check` passed: ESLint, JavaScript syntax validation, 31 tests across eight files and both production builds. `npm run test:e2e` passed all nine browser tests, including actual file artifacts, offline ZIP, guest persistence, keyboard/mobile and gallery previews.
+- JavaScript syntax validation is not a TypeScript typecheck; runtime validation and behavior tests enforce the data boundaries. Earlier verification entries below describe the historical TypeScript setup and its actual commands.
+
 ## Requested UI revision: identity, branding and background
 
 - Lint, typecheck, 30 unit/API tests and production builds passed. All six browser tests passed, including real exports, offline ZIP operation, four responsive layouts and keyboard operation. The guest test now verifies the whole-page Sage color, autosave and the JSON backup field. Older version-one backups default to their existing template background.

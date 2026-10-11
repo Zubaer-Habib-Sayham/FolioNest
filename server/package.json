@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file-if-exists=../.env src/index.ts",
-    "build": "tsc -p tsconfig.json",
-    "start": "node --env-file-if-exists=../.env dist/server/src/index.js"
+    "dev": "node ../scripts/dev-server.js",
+    "build": "node ../scripts/build-server.js",
+    "start": "node --env-file-if-exists=../.env dist/index.js"
   },
   "dependencies": {
     "zod": "4.6.5",

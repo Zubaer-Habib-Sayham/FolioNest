@@ -1,5 +1,7 @@
 # Implementation plan
 
+Current revision: convert application, server, proxy, scripts and tests to JavaScript/JSX while retaining React, runtime schemas, behavior and layouts. Verify renderer output and the full suite before committing. Then add optional local portrait background removal with an original-photo fallback, bounded transparent image storage and verified exports. Finally make Netlify Drop the simpler illustrated ZIP-hosting path and clarify Cloudflare troubleshooting. Keep publication approval separate from authorized GitHub pushes.
+
 Build complete, verified slices on main. Preserve the original supplied kit; it is an implementation input, not application source.
 
 1. Workspace tooling, brand assets, accessible landing page and independent editor modes.

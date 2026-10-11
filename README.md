@@ -2,6 +2,8 @@
 
 A portfolio builder with five responsive designs, local drafts and useful exports. Building, editing, saving on your device and downloading require no account. Supabase accounts are optional and required for cloud saves and public links.
 
+Source uses JavaScript/JSX with React and Express. Runtime Zod schemas validate documents and requests. `npm run validate` checks JavaScript syntax; the project no longer requires a TypeScript compiler or typecheck.
+
 ## Run locally
 
 Use Node.js 24 LTS (minimum 22.12) and npm. No Docker or hosted service is needed for the guest workflow.
@@ -55,9 +57,9 @@ npm run test:e2e
 npm audit --omit=dev
 ```
 
-`check` runs ESLint, TypeScript, Vitest/Supertest and both production builds. Browser tests use installed Chrome locally; CI installs Chromium. They download and inspect real PDFs/PNG/ZIP, open the extracted website offline, check guest persistence, modes, restore, mobile and keyboard flows. API tests apply the migration to PGlite's PostgreSQL engine and inject test token identities, covering owner predicates and RLS. They do not contact a live Auth provider. GitHub Actions verifies code; it does not deploy.
+`check` runs ESLint, JavaScript syntax validation, Vitest/Supertest and both production builds. Browser tests use installed Chrome locally; CI installs Chromium. They download and inspect real PDFs/PNG/ZIP, open the extracted website offline, check guest persistence, modes, restore, mobile and keyboard flows. API tests apply the migration to PGlite's PostgreSQL engine and inject test token identities, covering owner predicates and RLS. They do not contact a live Auth provider. GitHub Actions verifies code; it does not deploy.
 
-For intercepted real-SDK analytics verification, start a separate Vite preview on port 5174 with a fake `VITE_POSTHOG_KEY` and run `npm exec tsx -- scripts/verify-analytics.ts`. Requests are intercepted locally. See `docs/ANALYTICS.md` for event definitions and privacy controls. For exact executed results and limitations see `docs/QA.md`.
+For intercepted real-SDK analytics verification, start a separate Vite preview on port 5174 with a fake `VITE_POSTHOG_KEY` and run `node scripts/run.js scripts/verify-analytics.js`. Requests are intercepted locally. See `docs/ANALYTICS.md` for event definitions and privacy controls. For exact executed results and limitations see `docs/QA.md`.
 
 ## Deployment and SEO
 
