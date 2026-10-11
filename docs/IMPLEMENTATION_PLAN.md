@@ -1,6 +1,6 @@
 # Implementation plan
 
-Current launch status (2026-10-11): publication is approved and the guest builder is live at https://folionest.onrender.com on Render Free. Supabase Free migrations/TLS and real PostHog ingestion/dashboard are verified. GitHub provider setup is confirmed; successful real-account cloud and cross-account workflows need verification. Earlier entries below are historical slice notes; their launch restrictions and unconfigured-service statements are superseded.
+Current launch status (2026-10-11): publication is approved and the builder is live at https://folionest.onrender.com on Render Free. Supabase Free migrations/TLS, real PostHog ingestion/dashboard, GitHub login, cloud save/load, private snapshot updates, publish/republish/unpublish and sign-out are verified. Two real-account access checks remain outstanding. Earlier entries below are historical slice notes; their launch restrictions and unconfigured-service statements are superseded.
 
 Launch request: publication is now authorized. Add the owner's supplied tutorial and local thumbnail above the publishing guide, verify it, then provision only verified free hosting/cloud resources, configure consent-based usage counts, verify the live guest/cloud/SEO workflows, add the confirmed live address to README and prepare a factual LinkedIn launch post. Any missing provider access or credentials must remain explicitly documented.
 

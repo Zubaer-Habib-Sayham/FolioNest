@@ -11,3 +11,5 @@
 - Test an API cold start through the Pages hostname. A free-host 503 or timeout can delay crawling; do not mistake a client-side landing preview for verified public-page availability.
 
 Locally tested: raw portfolio HTML, title/description/canonical/OG/JSON-LD escaping, 200/404 responses, publication snapshots, private/noindex responses, sitemap exclusions and unpublishing. Not executed: hosted crawling, Search Console verification/submission, social-network fetches or indexing. Google controls indexing and ranking; neither is guaranteed by the app.
+
+Live verified on 2026-10-11: landing/gallery canonical and OG URLs, initial HTML and CSP; builder noindex; missing routes 404; warm robots/sitemap origin. An actual owner-published test portfolio returned content, canonical and Person JSON-LD, respected noindex and stayed outside sitemap. Republish with indexing enabled included it; unpublish removed it and returned HTML/JSON 404. Render Free idle crawler behavior remains a limitation. Search Console and external sharing fetches have not been executed.

@@ -8,7 +8,7 @@ Publication was approved on 2026-10-11. The builder is live at **https://folione
 - [Render service](https://dashboard.render.com/web/srv-db5nnjcs728c738ekrb0): Node 24.21.0, Free, Singapore. Build: `npm ci --include=dev && npm run build`. Start: `npm start`. Express binds the hosting-provided PORT on 0.0.0.0.
 - APP_ORIGIN: https://folionest.onrender.com on server and build. Render's assigned RENDER_EXTERNAL_URL is a validated HTTPS fallback when APP_ORIGIN is absent.
 - All three Supabase migrations are applied. RLS is enabled; anonymous draft reads and direct browser writes are denied. The session-pooler connection passed SELECT 1 with strict TLS and the project's trusted CA.
-- Supabase Site URL: https://folionest.onrender.com. Exact redirect: https://folionest.onrender.com/builder. Public email registration requires custom SMTP; [free GitHub sign-in setup](FREE_AUTH_SETUP.md) is configured. Successful real-account cloud workflows still need verification.
+- Supabase Site URL: https://folionest.onrender.com. Exact redirect: https://folionest.onrender.com/builder. [Free GitHub sign-in](FREE_AUTH_SETUP.md), cloud save/load, private updates, publish/republish/unpublish and sign-out passed. Public email registration requires custom SMTP and is hidden. Two real-account access checks remain outstanding.
 - Public Supabase URL/key and PostHog ingestion token/host are build variables. DATABASE_URL and DATABASE_CA_CERT belong only in the server environment. No elevated API key is needed. Never disable TLS certificate verification.
 - Health endpoint: /api/health. It checks process availability, not database connectivity. The connector-created service did not configure a provider health-check path; set that path in Render if desired.
 
